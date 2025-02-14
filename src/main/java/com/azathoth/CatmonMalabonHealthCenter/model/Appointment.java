@@ -19,7 +19,6 @@ public class Appointment {
     private Status status;
 
     @OneToOne
-    @JoinColumn(name = "patient_id")
     private Patient patient;
 
     @ManyToOne // many appointments can be hold by one doctor
@@ -29,14 +28,14 @@ public class Appointment {
     @OneToOne(mappedBy = "appointment")
     private PatientRecord patientRecord;
 
-    public Appointment(Long id, LocalDate scheduleDate, Status status, Patient patient, Doctor doctor, PatientRecord patientRecord) {
+    public Appointment(Long id, LocalDate scheduleDate, Status status) {
         this.id = id;
         this.scheduleDate = scheduleDate;
         this.status = status;
-        this.patient = patient;
-        this.doctor = doctor;
-        this.patientRecord = patientRecord;
     }
+
+    // for creation of new appointment
+    public Appointment(){};
 
     public Long getId() {
         return id;

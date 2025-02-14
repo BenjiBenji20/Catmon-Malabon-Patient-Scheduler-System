@@ -2,6 +2,7 @@ package com.azathoth.CatmonMalabonHealthCenter.model;
 
 import jakarta.persistence.*;
 import org.hibernate.annotations.CreationTimestamp;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.Date;
 
@@ -15,7 +16,7 @@ public class Patient {
 
     @CreationTimestamp
     @Column(name = "created_at", updatable = false)
-    private Date dataAt;
+    private Date dateAt;
 
     @Column(name = "complete_name",
         length = 255, nullable = false
@@ -37,20 +38,19 @@ public class Patient {
     @Column(name = "verification_no", nullable = false)
     private String verificationNumber;
 
-    @OneToOne(mappedBy = "patient")
+    @OneToOne(mappedBy = "patient", cascade = CascadeType.ALL, orphanRemoval = true)
+    @JoinColumn(name = "appointment_id", referencedColumnName = "id")
     private final Appointment appointment;
 
-    // constructor injected
-    public Patient(Appointment appointment, String verificationNumber, String contactNumber, int age, String address, String gender, String completeName, Date dataAt, Long id) {
-        this.appointment = appointment;
-        this.verificationNumber = verificationNumber;
-        this.contactNumber = contactNumber;
-        this.age = age;
-        this.address = address;
-        this.gender = gender;
-        this.completeName = completeName;
-        this.dataAt = dataAt;
+    public Patient(Long id, Date dateAt, String completeName, int age, String gender, String contactNumber, String address, Appointment appointment) {
         this.id = id;
+        this.dateAt = dateAt;
+        this.completeName = completeName;
+        this.age = age;
+        this.gender = gender;
+        this.contactNumber = contactNumber;
+        this.address = address;
+        this.appointment = appointment;
     }
 
     public Long getId() {
@@ -61,12 +61,12 @@ public class Patient {
         this.id = id;
     }
 
-    public Date getDataAt() {
-        return dataAt;
+    public Date getDateAt() {
+        return dateAt;
     }
 
-    public void setDataAt(Date dataAt) {
-        this.dataAt = dataAt;
+    public void setDateAt(Date dateAt) {
+        this.dateAt = dateAt;
     }
 
     public String getCompleteName() {
@@ -119,5 +119,20 @@ public class Patient {
 
     public Appointment getAppointment() {
         return appointment;
+    }
+
+    @Override
+    public String toString() {
+        return "Patient{" +
+                "id=" + id +
+                ", dateAt=" + dateAt +
+                ", completeName='" + completeName + '\'' +
+                ", gender='" + gender + '\'' +
+                ", address='" + address + '\'' +
+                ", age=" + age +
+                ", contactNumber='" + contactNumber + '\'' +
+                ", verificationNumber='" + verificationNumber + '\'' +
+                ", appointment=" + appointment +
+                '}';
     }
 }
