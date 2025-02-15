@@ -13,3 +13,5 @@ SELECT * FROM patient;
 SELECT * FROM doctor;
 
 SELECT * FROM admin;
+
+INSERT INTO doctor (complete_name) VALUES ('jomarie');

@@ -39,10 +39,10 @@ public class Patient {
     private String verificationNumber;
 
     @OneToOne(mappedBy = "patient", cascade = CascadeType.ALL, orphanRemoval = true)
-    @JoinColumn(name = "appointment_id", referencedColumnName = "id")
-    private final Appointment appointment;
+    private Appointment appointment;
 
-    public Patient(Long id, Date dateAt, String completeName, int age, String gender, String contactNumber, String address, Appointment appointment) {
+    public Patient(Long id, Date dateAt, String completeName, int age, String gender,
+                   String contactNumber, String address, Appointment appointment) {
         this.id = id;
         this.dateAt = dateAt;
         this.completeName = completeName;
@@ -51,7 +51,11 @@ public class Patient {
         this.contactNumber = contactNumber;
         this.address = address;
         this.appointment = appointment;
+
+        if(appointment != null) appointment.setPatient(this);
     }
+
+    protected Patient(){}
 
     public Long getId() {
         return id;

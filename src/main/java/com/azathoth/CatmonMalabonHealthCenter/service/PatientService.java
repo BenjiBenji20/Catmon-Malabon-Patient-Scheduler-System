@@ -1,8 +1,6 @@
 package com.azathoth.CatmonMalabonHealthCenter.service;
 
-import com.azathoth.CatmonMalabonHealthCenter.model.Appointment;
 import com.azathoth.CatmonMalabonHealthCenter.model.Patient;
-import com.azathoth.CatmonMalabonHealthCenter.model.Status;
 import com.azathoth.CatmonMalabonHealthCenter.repository.PatientRepository;
 import org.springframework.stereotype.Service;
 
@@ -23,6 +21,11 @@ public class PatientService {
     public Optional<Patient> registerPatient(Patient newPatient) {
         // create a verification number to the new added patient
         newPatient.setVerificationNumber(getVerificationNumber());
+
+        if (newPatient.getAppointment() != null) {
+            newPatient.getAppointment().setPatient(newPatient);
+        }
+
         Patient addedPatient = patientRepository.save(newPatient);
 
         return Optional.of(addedPatient);

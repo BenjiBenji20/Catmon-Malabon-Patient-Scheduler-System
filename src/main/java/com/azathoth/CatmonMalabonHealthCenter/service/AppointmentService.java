@@ -22,7 +22,7 @@ public class AppointmentService {
         // check in the db using repository the patient count
         long patientCount = appointmentRepository.countByScheduleDate(schedule);
 
-        // return true if patient count in the passed schedule is lesser than 50
+        // return true if patient count passed schedule is lesser than 50
         return patientCount < MAX_PATIENT_SCHEDULE_PER_DATE;
     }
 
