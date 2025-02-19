@@ -5,6 +5,10 @@ import com.azathoth.CatmonMalabonHealthCenter.model.Doctor;
 import com.azathoth.CatmonMalabonHealthCenter.model.Patient;
 import com.azathoth.CatmonMalabonHealthCenter.repository.DoctorRepository;
 import com.azathoth.CatmonMalabonHealthCenter.repository.PatientRepository;
+import com.twilio.Twilio;
+import com.twilio.rest.api.v2010.account.Message;
+import com.twilio.type.PhoneNumber;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.time.DayOfWeek;
@@ -18,6 +22,14 @@ public class PatientService {
     // dependencies injected via constructor
     private final PatientRepository patientRepository;
     private final DoctorRepository doctorRepository;
+
+    // twilio api keys
+    @Value("${twilio.acc.sid}")
+    private String twilioSID;
+    @Value("${twilio.auth.key}")
+    private String twilioKey;
+    @Value("${twilio.my.phone.number}")
+    private String myPhoneNumber;
 
     public PatientService(PatientRepository patientRepository, DoctorRepository doctorRepository) {
         this.patientRepository = patientRepository;
@@ -41,6 +53,15 @@ public class PatientService {
         // create a verification number to the new added patient
         newPatient.setVerificationNumber(getVerificationNumber());
 
+        // configured twilio
+        Twilio.init(twilioSID, twilioKey);
+        Message.creator(
+                new PhoneNumber("+63" + newPatient.getContactNumber()), // to
+                new PhoneNumber(myPhoneNumber), // from
+                "From Catmon Health Center this is your confirmation code: " + getVerificationNumber() // body (message)
+        ).create();
+
+        // if patient doesn't have an appointment, then set an appointment
         if (newPatient.getAppointment() != null) {
             newPatient.getAppointment().setPatient(newPatient);
         }
@@ -48,12 +69,12 @@ public class PatientService {
         LocalDate patientScheduleDate = newPatient.getAppointment().getScheduleDate();
         // convert the date into day ex. monday, tuesday...
         DayOfWeek patientSelectedDay = patientScheduleDate.getDayOfWeek();
-        // convert the date into day ex. monday, tuesday...
+        // convert the date into day ex. monday, tuesday... from enum
         AvailableDay doctorScheduleDay = AvailableDay.valueOf(patientSelectedDay.toString());
-        // find doctor with the same schedule with patient
+        // find doctors with the same schedule with patient
         List<Doctor> availableDoctors = doctorRepository.findDoctorsByAvailableDay(doctorScheduleDay);
         if(!availableDoctors.isEmpty()) {
-            newPatient.getAppointment().setDoctor(availableDoctors.getFirst()); // save the available doctor to the newly created patient
+            newPatient.getAppointment().setDoctor(availableDoctors.getFirst()); // save the first available doctor to the newly created patient
         }
 
         Patient addedPatient = patientRepository.save(newPatient); // save patient to the db

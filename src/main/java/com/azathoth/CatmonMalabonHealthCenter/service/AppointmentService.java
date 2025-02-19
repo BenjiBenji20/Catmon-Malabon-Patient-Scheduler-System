@@ -1,6 +1,5 @@
 package com.azathoth.CatmonMalabonHealthCenter.service;
 
-import com.azathoth.CatmonMalabonHealthCenter.model.Appointment;
 import com.azathoth.CatmonMalabonHealthCenter.repository.AppointmentRepository;
 import org.springframework.stereotype.Service;
 
@@ -24,9 +23,5 @@ public class AppointmentService {
 
         // return true if patient count passed schedule is lesser than 50
         return patientCount < MAX_PATIENT_SCHEDULE_PER_DATE;
-    }
-
-    public Appointment createAppointment(Appointment appointment) {
-        return appointmentRepository.save(appointment);
     }
 }
