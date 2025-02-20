@@ -24,8 +24,8 @@ public class PatientController {
     private final AppointmentService appointmentService;
 
     // stores error and good message as object to response as json
-    Map<String, String> errorMessage = new HashMap<>();
-    Map<String, String> goodMessage = new HashMap<>();
+    private final Map<String, String> errorMessage = new HashMap<>();
+    private final Map<String, String> goodMessage = new HashMap<>();
 
     public PatientController(PatientService patientService, AppointmentService appointmentService) {
         this.patientService = patientService;

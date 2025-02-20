@@ -6,7 +6,12 @@ import java.util.Arrays;
 import java.util.List;
 
 @Entity
-@Table(name = "doctor")
+@Table(name = "doctor",
+    uniqueConstraints = {
+        @UniqueConstraint(columnNames = "complete_name"),
+        @UniqueConstraint(columnNames = "email_address")
+    }
+)
 public class Doctor {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -37,13 +42,17 @@ public class Doctor {
     @OneToMany(mappedBy = "doctor") // one doctor can hold many appointments
     private List<Appointment> appointment;
 
-    public Doctor(Long id, String completeName, String email, String password, AvailableDay[] availableDays, List<Appointment> appointment) {
+    @Enumerated(EnumType.STRING)
+    private Role role;
+
+    public Doctor(Long id, String completeName, String email, String password, AvailableDay[] availableDays, List<Appointment> appointment, Role role) {
         this.id = id;
         this.completeName = completeName;
         this.email = email;
         this.password = password;
         this.availableDays = availableDays;
         this.appointment = appointment;
+        this.role = role;
     }
 
     protected Doctor() {}
@@ -92,6 +101,18 @@ public class Doctor {
         return appointment;
     }
 
+    public void setAppointment(List<Appointment> appointment) {
+        this.appointment = appointment;
+    }
+
+    public Role getRole() {
+        return role;
+    }
+
+    public void setRole(Role role) {
+        this.role = role;
+    }
+
     @Override
     public String toString() {
         return "Doctor{" +
@@ -101,6 +122,7 @@ public class Doctor {
                 ", password='" + password + '\'' +
                 ", availableDays=" + Arrays.toString(availableDays) +
                 ", appointment=" + appointment +
+                ", role=" + role +
                 '}';
     }
 }

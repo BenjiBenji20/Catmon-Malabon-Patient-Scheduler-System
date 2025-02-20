@@ -16,4 +16,6 @@ public interface DoctorRepository extends JpaRepository<Doctor, Long> {
      */
     @Query("SELECT d FROM Doctor d WHERE :day MEMBER OF d.availableDays")
     List<Doctor> findDoctorsByAvailableDay(@Param("day")AvailableDay day);
+
+    Doctor findDoctorByEmail(String email);
 }

@@ -19,13 +19,16 @@ import java.util.Optional;
 @RequestMapping("/api/doctor")
 public class DoctorController {
     // stores error and good message as object to response as json
-    Map<String, String> errorMessage = new HashMap<>();
-    Map<String, String> goodMessage = new HashMap<>();
+    private final Map<String, String> errorMessage = new HashMap<>();
+    private final Map<String, String> goodMessage = new HashMap<>();
 
     private final DoctorService doctorService;
 
     public DoctorController(DoctorService doctorService) {
         this.doctorService = doctorService;
+
+        errorMessage.put("error", "");
+        goodMessage.put("message", "");
     }
 
     /**
@@ -56,6 +59,33 @@ public class DoctorController {
             return addedNewDoctor.isEmpty() ?
                     new ResponseEntity<>(errorMessage, HttpStatus.BAD_REQUEST) :
                     new ResponseEntity<>(goodMessage, HttpStatus.CREATED);
+        }
+        catch (Exception e) {
+            System.out.println("Error found: " + e.getMessage());
+            errorMessage.replace("error", "Invalid registration");
+            return new ResponseEntity<>(errorMessage, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    @PostMapping("/login")
+    public ResponseEntity<?> authenticate(@RequestBody Doctor doctor) {
+        try {
+            if(doctor.getEmail().trim().isEmpty() || doctor.getEmail() == null ||
+                doctor.getPassword().trim().isEmpty() || doctor.getPassword() == null
+            ) {
+                errorMessage.replace("error", "Invalid email or password");
+                return new ResponseEntity<>(errorMessage, HttpStatus.UNAUTHORIZED);
+            }
+
+            // verify the doctor
+            Optional<?> verifyDoctor = doctorService.authenticate(doctor);
+
+            goodMessage.replace("message", "Login successful");
+            errorMessage.replace("error", "Invalid email or password");
+
+            return  verifyDoctor.isEmpty() ?
+                    new ResponseEntity<>(errorMessage, HttpStatus.UNAUTHORIZED) :
+                    new ResponseEntity<>(verifyDoctor, HttpStatus.OK);
         }
         catch (Exception e) {
             System.out.println("Error found: " + e.getMessage());
