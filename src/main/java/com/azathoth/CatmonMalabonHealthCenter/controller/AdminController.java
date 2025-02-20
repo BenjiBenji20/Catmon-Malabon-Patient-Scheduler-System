@@ -29,6 +29,10 @@ public class AdminController {
         goodMessage.put("message", "");
     }
 
+    /**
+     * create account for admin
+     * required fields for the body: adminName, email and password
+     */
     @PostMapping("/create")
     public ResponseEntity<?> createAccount(@RequestBody Admin admin) {
         try {
@@ -49,6 +53,35 @@ public class AdminController {
             return createdAdmin.isEmpty() ?
                     new ResponseEntity<>(errorMessage, HttpStatus.BAD_REQUEST) :
                     new ResponseEntity<>(goodMessage, HttpStatus.CREATED);
+        }
+        catch (Exception e) {
+            System.out.println("Error found: " + e.getMessage());
+            errorMessage.replace("error", "Invalid registration");
+            return new ResponseEntity<>(errorMessage, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    /**
+     * authenticate admin credentials
+     */
+    @PostMapping("/auth")
+    public ResponseEntity<?> authenticate(@RequestBody Admin admin) {
+        try {
+            if(admin.getEmail().trim().isEmpty() || admin.getEmail() == null ||
+                admin.getPassword().trim().isEmpty() || admin.getPassword() == null
+            ) {
+                errorMessage.replace("error", "Invalid email or password");
+                return new ResponseEntity<>(errorMessage, HttpStatus.UNAUTHORIZED);
+            }
+
+            Optional<?> authenticateAdmin = adminService.authenticate(admin);
+
+            goodMessage.replace("message", "Login successful");
+            errorMessage.replace("error", "Invalid email or password");
+
+            return  authenticateAdmin.isEmpty() ?
+                    new ResponseEntity<>(errorMessage, HttpStatus.UNAUTHORIZED) :
+                    new ResponseEntity<>(goodMessage, HttpStatus.OK);
         }
         catch (Exception e) {
             System.out.println("Error found: " + e.getMessage());

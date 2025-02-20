@@ -32,7 +32,6 @@ public class DoctorController {
     }
 
     /**
-     *
      * Doctor controller endpoint.
      * Doctor should pass request object with value: completeName,
      * email, password, and an array of availableDay enum
@@ -67,6 +66,9 @@ public class DoctorController {
         }
     }
 
+    /**
+     * authenticate doctor credentials
+     */
     @PostMapping("/login")
     public ResponseEntity<?> authenticate(@RequestBody Doctor doctor) {
         try {
@@ -85,7 +87,7 @@ public class DoctorController {
 
             return  verifyDoctor.isEmpty() ?
                     new ResponseEntity<>(errorMessage, HttpStatus.UNAUTHORIZED) :
-                    new ResponseEntity<>(verifyDoctor, HttpStatus.OK);
+                    new ResponseEntity<>(goodMessage, HttpStatus.OK);
         }
         catch (Exception e) {
             System.out.println("Error found: " + e.getMessage());

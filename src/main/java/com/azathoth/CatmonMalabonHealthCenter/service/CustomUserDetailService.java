@@ -23,7 +23,15 @@ public class CustomUserDetailService implements UserDetailsService {
         this.adminRepository = adminRepository;
     }
 
-    // I will also have admin role to check that's why I created a custom method
+    /**
+     * loadUserByUsername(email) which find matching email from 2 repositories,
+     * if the first repository (doctor repo) found a matching email, which means, the
+     * login credential (email) is from doctor. Else from the admin.
+     * After, it creates a user details by passing email, password and role.
+     * In createUserDetails method, the chain of conditional statements checks role
+     * if role matched from any of that statement, then it will grant an authority.
+     * Else, throw exception.
+     */
     @Override
     public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
         Doctor doctor = doctorRepository.findDoctorByEmail(email);
@@ -39,6 +47,7 @@ public class CustomUserDetailService implements UserDetailsService {
         throw new UsernameNotFoundException("User not found");
     }
 
+    // create user details and grant role for each user
     private UserDetails createUserDetails(String email, String password, String role) {
         if ("DOCTOR".equals(role)) {
             return new User(email, password, Collections.singleton(new SimpleGrantedAuthority("DOCTOR")));
