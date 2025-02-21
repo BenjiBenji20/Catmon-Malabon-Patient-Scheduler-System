@@ -4,10 +4,7 @@ import com.azathoth.CatmonMalabonHealthCenter.model.Admin;
 import com.azathoth.CatmonMalabonHealthCenter.service.AdminService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -33,7 +30,7 @@ public class AdminController {
      * create account for admin
      * required fields for the body: adminName, email and password
      */
-    @PostMapping("/create")
+    @PostMapping("/public/create")
     public ResponseEntity<?> createAccount(@RequestBody Admin admin) {
         try {
             if(admin.getAdminName().trim().isEmpty() || admin.getAdminName() == null ||
@@ -64,7 +61,7 @@ public class AdminController {
     /**
      * authenticate admin credentials
      */
-    @PostMapping("/auth")
+    @PostMapping("/public/auth")
     public ResponseEntity<?> authenticate(@RequestBody Admin admin) {
         try {
             if(admin.getEmail().trim().isEmpty() || admin.getEmail() == null ||
@@ -81,12 +78,17 @@ public class AdminController {
 
             return  authenticateAdmin.isEmpty() ?
                     new ResponseEntity<>(errorMessage, HttpStatus.UNAUTHORIZED) :
-                    new ResponseEntity<>(goodMessage, HttpStatus.OK);
+                    new ResponseEntity<>(authenticateAdmin, HttpStatus.OK);
         }
         catch (Exception e) {
             System.out.println("Error found: " + e.getMessage());
             errorMessage.replace("error", "Invalid registration");
             return new ResponseEntity<>(errorMessage, HttpStatus.INTERNAL_SERVER_ERROR);
         }
+    }
+
+    @GetMapping("/private/hello")
+    public String greet() {
+        return "Hello world";
     }
 }

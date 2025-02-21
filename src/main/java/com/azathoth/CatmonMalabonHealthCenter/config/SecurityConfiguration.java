@@ -1,6 +1,8 @@
 package com.azathoth.CatmonMalabonHealthCenter.config;
 
 import com.azathoth.CatmonMalabonHealthCenter.service.CustomUserDetailService;
+import com.azathoth.CatmonMalabonHealthCenter.service.JwtService;
+import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -13,10 +15,19 @@ import org.springframework.security.config.annotation.web.configurers.AbstractHt
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 @Configuration
 @EnableWebSecurity
 public class SecurityConfiguration {
+
+    private final JwtService jwtService;
+    private final ApplicationContext context;
+
+    public SecurityConfiguration(JwtService jwtService, ApplicationContext context) {
+        this.jwtService = jwtService;
+        this.context = context;
+    }
 
     /**
      * customized the spring security filter chain
@@ -31,10 +42,13 @@ public class SecurityConfiguration {
                     .authorizeHttpRequests(
                             request -> request
                                     .requestMatchers("/api/patient/**").permitAll() // permitted all request
-                                    .requestMatchers("/api/admin/create", "/api/admin/auth").permitAll() // permit specific request
-                                    .requestMatchers("/api/doctor/register", "/api/doctor/login").permitAll() // permit specific request
-                                    .anyRequest().authenticated() // require authentication other request
-                    );
+                                    .requestMatchers("/api/admin/public/**").permitAll() // permit specific request
+                                    .requestMatchers("/api/doctor/public/**").permitAll() // permit specific request
+                                    .requestMatchers("/api/doctor/private/**").hasRole("DOCTOR") // only authenticated doctor can access
+                                    .requestMatchers("/api/admin/private/**").hasAuthority("ROLE_ADMIN") // only authenticated admin can access
+                                    .anyRequest().authenticated()) // require authentication other request
+                    .addFilterBefore(new JwtFilter(jwtService, context), UsernamePasswordAuthenticationFilter.class);
+
 
             return httpSecurity.build();
         }

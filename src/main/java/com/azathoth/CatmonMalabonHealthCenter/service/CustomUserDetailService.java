@@ -50,9 +50,9 @@ public class CustomUserDetailService implements UserDetailsService {
     // create user details and grant role for each user
     private UserDetails createUserDetails(String email, String password, String role) {
         if ("DOCTOR".equals(role)) {
-            return new User(email, password, Collections.singleton(new SimpleGrantedAuthority("DOCTOR")));
+            return new User(email, password, Collections.singleton(new SimpleGrantedAuthority("ROLE_DOCTOR")));
         } else if ("ADMIN".equals(role)) {
-            return new User(email, password, Collections.singleton(new SimpleGrantedAuthority("ADMIN")));
+            return new User(email, password, Collections.singleton(new SimpleGrantedAuthority("ROLE_ADMIN")));
         } else {
             throw new UsernameNotFoundException("Invalid role");
         }

@@ -36,7 +36,7 @@ public class DoctorController {
      * Doctor should pass request object with value: completeName,
      * email, password, and an array of availableDay enum
      */
-    @PostMapping("register")
+    @PostMapping("/public/register")
     public ResponseEntity<?> register(@RequestBody Doctor newDoctor) {
         try {
             // check for empty or null fields to avoid sql injection
@@ -69,7 +69,7 @@ public class DoctorController {
     /**
      * authenticate doctor credentials
      */
-    @PostMapping("/login")
+    @PostMapping("/public/login")
     public ResponseEntity<?> authenticate(@RequestBody Doctor doctor) {
         try {
             if(doctor.getEmail().trim().isEmpty() || doctor.getEmail() == null ||
