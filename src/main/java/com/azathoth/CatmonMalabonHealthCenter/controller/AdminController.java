@@ -2,7 +2,9 @@ package com.azathoth.CatmonMalabonHealthCenter.controller;
 
 import com.azathoth.CatmonMalabonHealthCenter.model.Admin;
 import com.azathoth.CatmonMalabonHealthCenter.model.Doctor;
+import com.azathoth.CatmonMalabonHealthCenter.model.Patient;
 import com.azathoth.CatmonMalabonHealthCenter.model.utils.UpdateDoctor;
+import com.azathoth.CatmonMalabonHealthCenter.model.utils.UpdatePatient;
 import com.azathoth.CatmonMalabonHealthCenter.service.AdminService;
 import com.azathoth.CatmonMalabonHealthCenter.service.DoctorService;
 import org.springframework.http.HttpStatus;
@@ -21,11 +23,9 @@ public class AdminController {
     private final Map<String, String> goodMessage = new HashMap<>();
 
     private final AdminService adminService;
-    private final DoctorService doctorService;
 
-    public AdminController(AdminService adminService, DoctorService doctorService) {
+    public AdminController(AdminService adminService) {
         this.adminService = adminService;
-        this.doctorService = doctorService;
 
         errorMessage.put("error", "");
         goodMessage.put("message", "");
@@ -145,4 +145,41 @@ public class AdminController {
             return new ResponseEntity<>(errorMessage, HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
+
+    /**
+     * SEARCH Doctor
+     */
+
+    /**
+     * Update patient
+     * Id is important because it is unique in all patient table row.
+     * Update will be based on existing id so id cannot and should not be updated.
+     */
+    @PutMapping("/private/update-patient")
+    public ResponseEntity<?> updatePatient(@RequestBody UpdatePatient patient) {
+        try {
+            if(patient.getNewCompleteName().trim().isEmpty() || patient.getNewCompleteName() == null ||
+                patient.getNewGender().trim().isEmpty() || patient.getNewGender() == null ||
+                patient.getNewAddress().trim().isEmpty() || patient.getNewAddress() == null ||
+                patient.getNewAge() == 0 || patient.getId() == null || patient.getId() == 0
+            ) {
+                return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+            }
+
+            Optional<Patient> updatedPatient = adminService.updatePatient(patient);
+
+            goodMessage.replace("message", "Update successful");
+            errorMessage.replace("error", "Update failed");
+
+            return  updatedPatient.isEmpty() ?
+                    new ResponseEntity<>(errorMessage, HttpStatus.NOT_ACCEPTABLE) :
+                    new ResponseEntity<>(goodMessage, HttpStatus.OK);
+        }
+        catch (Exception e) {
+            System.out.println("Error found: " + e.getMessage());
+            errorMessage.replace("error", "Invalid request");
+            return new ResponseEntity<>(errorMessage, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
 }
