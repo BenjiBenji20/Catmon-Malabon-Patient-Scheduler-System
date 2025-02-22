@@ -19,17 +19,14 @@ public class JwtService {
     @Value("${jwt.secret.key}")
     private String secretKey;
 
-    public String generateToken(String email) {
-        Map<String, Object> claims = new HashMap<>();
+    public String generateToken(String email, String role) {
 
         return Jwts.builder()
-                .claims()
-                .add(claims)
                 .issuer("Azathoth")
+                .claim("role", "ROLE_" + role)
                 .subject(email)
                 .issuedAt(new Date(System.currentTimeMillis()))
                 .expiration(new Date(System.currentTimeMillis() + 7 * 24 * 60 * 60 * 1000)) // 7 days
-                .and()
                 .signWith(getKey())
                 .compact();
     }
@@ -69,5 +66,9 @@ public class JwtService {
 
     private Date extractExpiration(String token) {
         return extractClaims(token, Claims::getExpiration);
+    }
+
+    public String extractRole(String token) {
+        return extractClaims(token, claims -> claims.get("role", String.class));
     }
 }

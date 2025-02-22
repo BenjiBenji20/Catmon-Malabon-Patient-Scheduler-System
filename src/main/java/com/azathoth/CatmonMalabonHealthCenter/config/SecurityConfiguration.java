@@ -44,7 +44,7 @@ public class SecurityConfiguration {
                                     .requestMatchers("/api/patient/**").permitAll() // permitted all request
                                     .requestMatchers("/api/admin/public/**").permitAll() // permit specific request
                                     .requestMatchers("/api/doctor/public/**").permitAll() // permit specific request
-                                    .requestMatchers("/api/doctor/private/**").hasRole("DOCTOR") // only authenticated doctor can access
+                                    .requestMatchers("/api/doctor/private/**").hasAuthority("ROLE_DOCTOR") // only authenticated doctor can access
                                     .requestMatchers("/api/admin/private/**").hasAuthority("ROLE_ADMIN") // only authenticated admin can access
                                     .anyRequest().authenticated()) // require authentication other request
                     .addFilterBefore(new JwtFilter(jwtService, context), UsernamePasswordAuthenticationFilter.class);

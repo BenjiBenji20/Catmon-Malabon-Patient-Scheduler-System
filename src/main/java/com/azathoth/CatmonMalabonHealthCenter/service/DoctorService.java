@@ -38,6 +38,9 @@ public class DoctorService {
         return Optional.of(addedDoctor);
     }
 
+    /**
+     * login endpoint
+     */
     public Optional<?> authenticate(Doctor doctor) {
         Authentication authenticateDoctor =
                 authenticationManager.authenticate(
@@ -47,7 +50,9 @@ public class DoctorService {
                 );
 
         if(authenticateDoctor.isAuthenticated()) {
-            return Optional.of(jwtService.generateToken(doctor.getEmail()));
+            Doctor authDoctor = doctorRepository.findDoctorByEmail(doctor.getEmail());
+
+            return Optional.of(jwtService.generateToken(authDoctor.getEmail(), authDoctor.getRole().toString()));
         }
 
         return Optional.empty();

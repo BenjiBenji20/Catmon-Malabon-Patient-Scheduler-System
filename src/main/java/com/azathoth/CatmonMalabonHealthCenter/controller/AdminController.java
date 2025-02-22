@@ -1,7 +1,10 @@
 package com.azathoth.CatmonMalabonHealthCenter.controller;
 
 import com.azathoth.CatmonMalabonHealthCenter.model.Admin;
+import com.azathoth.CatmonMalabonHealthCenter.model.Doctor;
+import com.azathoth.CatmonMalabonHealthCenter.model.utils.UpdateDoctor;
 import com.azathoth.CatmonMalabonHealthCenter.service.AdminService;
+import com.azathoth.CatmonMalabonHealthCenter.service.DoctorService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -18,9 +21,11 @@ public class AdminController {
     private final Map<String, String> goodMessage = new HashMap<>();
 
     private final AdminService adminService;
+    private final DoctorService doctorService;
 
-    public AdminController(AdminService adminService) {
+    public AdminController(AdminService adminService, DoctorService doctorService) {
         this.adminService = adminService;
+        this.doctorService = doctorService;
 
         errorMessage.put("error", "");
         goodMessage.put("message", "");
@@ -87,8 +92,57 @@ public class AdminController {
         }
     }
 
-    @GetMapping("/private/hello")
-    public String greet() {
-        return "Hello world";
+    /**
+     * Uses a non-entity class for updating a doctor
+     * completeName, password, availableDays are updatable and not
+     * included the email because of db constraints. So in the frontend,
+     * the existing email will automatically include to pass in request body.
+     */
+    @PutMapping("/private/update-doctor")
+    public ResponseEntity<?> updateDoctor(@RequestBody UpdateDoctor doctor) {
+        try {
+            // check for empty or null fields to avoid sql injection
+            if(doctor.getNewCompleteName().trim().isEmpty() || doctor.getNewCompleteName() == null ||
+                doctor.getExistingEmail().trim().isEmpty() || doctor.getExistingEmail() == null ||
+                doctor.getNewPassword().trim().isEmpty() || doctor.getNewPassword() == null ||
+                doctor.getNewAvailableDays() == null
+            ) {
+                return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+            }
+
+            Optional<Doctor> updatedDoctor = adminService.updateDoctor(doctor);
+
+            goodMessage.replace("message", "Update successful");
+            errorMessage.replace("error", "Update failed");
+
+            return  updatedDoctor.isEmpty() ?
+                    new ResponseEntity<>(errorMessage, HttpStatus.NOT_ACCEPTABLE) :
+                    new ResponseEntity<>(goodMessage, HttpStatus.OK);
+        }
+        catch (Exception e) {
+            System.out.println("Error found: " + e.getMessage());
+            errorMessage.replace("error", "Invalid registration");
+            return new ResponseEntity<>(errorMessage, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    @DeleteMapping("/private/delete-doctor/{id}")
+    public ResponseEntity<?> deleteDoctor(@PathVariable Long id) {
+        try {
+            if(id == null) {
+                return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+            }
+
+            boolean deletedDoctor =  adminService.deleteDoctor(id);
+
+            return deletedDoctor ?
+                    new ResponseEntity<>(HttpStatus.NOT_FOUND) :
+                    new ResponseEntity<>(HttpStatus.OK);
+        }
+        catch (Exception e) {
+            System.out.println("Error found: " + e.getMessage());
+            errorMessage.replace("error", "Invalid request");
+            return new ResponseEntity<>(errorMessage, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
     }
 }
