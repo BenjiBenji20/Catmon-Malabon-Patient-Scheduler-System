@@ -18,4 +18,9 @@ public interface DoctorRepository extends JpaRepository<Doctor, Long> {
     List<Doctor> findDoctorsByAvailableDay(@Param("day")AvailableDay day);
 
     Doctor findDoctorByEmail(String email);
+
+    @Query("SELECT d from Doctor d WHERE " +
+            "LOWER(d.completeName) LIKE LOWER(CONCAT('%', :keyword, '%')) OR " +
+            "LOWER(d.email) LIKE LOWER(CONCAT('%', :keyword, '%'))")
+    List<Doctor> searchDoctor(String keyword);
 }

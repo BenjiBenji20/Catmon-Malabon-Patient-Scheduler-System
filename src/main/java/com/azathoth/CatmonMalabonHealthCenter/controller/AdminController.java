@@ -12,6 +12,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
@@ -149,10 +150,35 @@ public class AdminController {
     /**
      * SEARCH Doctor
      */
+    @GetMapping("/private/search-doctor{keyword}")
+    public ResponseEntity<?> searchDoctor(@PathVariable String keyword) {
+        List<Doctor> searchDoctor = adminService.searchDoctor(keyword);
+
+        return new ResponseEntity<>(searchDoctor, HttpStatus.OK);
+    }
+
+    /**
+     * Get all doctors
+     */
+    @GetMapping("/private/get-all-doctors")
+    public ResponseEntity<?> getAllDoctors() {
+        try {
+            Optional<List<Doctor>> allDoctors = adminService.getAllDoctors();
+
+            return allDoctors.isEmpty() ?
+                    new ResponseEntity<>(HttpStatus.NO_CONTENT) :
+                    new ResponseEntity<>(allDoctors, HttpStatus.OK);
+        }
+        catch (Exception e) {
+            System.out.println("Error found: " + e.getMessage());
+            errorMessage.replace("error", "Invalid registration");
+            return new ResponseEntity<>(errorMessage, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
 
     /**
      * Update patient
-     * Id is important because it is unique in all patient table row.
+     * ID is important because it is unique in all patient table row.
      * Update will be based on existing id so id cannot and should not be updated.
      */
     @PutMapping("/private/update-patient")
@@ -182,4 +208,55 @@ public class AdminController {
         }
     }
 
+    /**
+     * Delete patient
+     */
+    @DeleteMapping("/private/delete-patient/{id}")
+    public ResponseEntity<?> deletePatient(@PathVariable Long id) {
+        try {
+            if(id == null) {
+                return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+            }
+
+            boolean deletedPatient =  adminService.deletePatient(id);
+
+            return deletedPatient ?
+                    new ResponseEntity<>(HttpStatus.NOT_FOUND) :
+                    new ResponseEntity<>(HttpStatus.OK);
+        }
+        catch (Exception e) {
+            System.out.println("Error found: " + e.getMessage());
+            errorMessage.replace("error", "Invalid request");
+            return new ResponseEntity<>(errorMessage, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    /**
+     * Search Patient
+     */
+    @GetMapping("/private/search-patient{keyword}")
+    public ResponseEntity<?> searchPatient(@PathVariable String keyword) {
+        List<Patient> searchPatient = adminService.searchPatient(keyword);
+
+        return new ResponseEntity<>(searchPatient, HttpStatus.OK);
+    }
+
+    /**
+     * GET all patients
+     */
+    @GetMapping("/private/get-all-patients")
+    public ResponseEntity<?> getAllPatient() {
+        try {
+            Optional<List<Patient>> allPatients = adminService.getAllPatients();
+
+            return allPatients.isEmpty() ?
+                    new ResponseEntity<>(HttpStatus.NO_CONTENT) :
+                    new ResponseEntity<>(allPatients, HttpStatus.OK);
+        }
+        catch (Exception e) {
+            System.out.println("Error found: " + e.getMessage());
+            errorMessage.replace("error", "Invalid registration");
+            return new ResponseEntity<>(errorMessage, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
 }

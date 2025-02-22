@@ -15,6 +15,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -95,6 +96,23 @@ public class AdminService {
     }
 
     /**
+     * Search doctor
+     */
+    public List<Doctor> searchDoctor(String keyword) {
+        return doctorRepository.searchDoctor(keyword);
+    }
+
+    /**
+     * Get all doctors
+     */
+    public Optional<List<Doctor>> getAllDoctors() {
+        List<Doctor> allDoctors = doctorRepository.findAll();
+
+        return allDoctors.isEmpty() ?
+                Optional.empty() : Optional.of(allDoctors);
+    }
+
+    /**
      * patient requesting for update will be found using its id.
      */
     public Optional<Patient> updatePatient(UpdatePatient patient) {
@@ -112,5 +130,37 @@ public class AdminService {
         existingPatient.setAge(patient.getNewAge());
 
         return Optional.of(patientRepository.save(existingPatient));
+    }
+
+    /**
+     * Delete Patient
+     */
+    public boolean deletePatient(Long id) {
+        Optional<Patient> patient = patientRepository.findById(id);
+
+        if(patient.isEmpty()) {
+            return false;
+        }
+
+        patientRepository.deleteById(id);
+
+        return true;
+    }
+
+    /**
+     * Search Patient
+     */
+    public List<Patient> searchPatient(String keyword) {
+        return patientRepository.searchPatient(keyword);
+    }
+
+    /**
+     * Get all patients
+     */
+    public Optional<List<Patient>> getAllPatients() {
+        List<Patient> allPatients = patientRepository.findAll();
+
+        return allPatients.isEmpty() ?
+                Optional.empty() : Optional.of(allPatients);
     }
 }
