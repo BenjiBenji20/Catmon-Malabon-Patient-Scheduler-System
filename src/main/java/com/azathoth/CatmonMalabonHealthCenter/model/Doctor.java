@@ -1,5 +1,6 @@
 package com.azathoth.CatmonMalabonHealthCenter.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 
 import java.util.Arrays;
@@ -40,6 +41,7 @@ public class Doctor {
     private AvailableDay[] availableDays;
 
     @OneToMany(mappedBy = "doctor") // one doctor can hold many appointments
+    @JsonIgnore // ignore appointment record in json response
     private List<Appointment> appointment;
 
     @Enumerated(EnumType.STRING)

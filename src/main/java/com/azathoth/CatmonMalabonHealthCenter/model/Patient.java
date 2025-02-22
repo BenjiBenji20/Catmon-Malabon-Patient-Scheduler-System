@@ -1,5 +1,6 @@
 package com.azathoth.CatmonMalabonHealthCenter.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import org.hibernate.annotations.CreationTimestamp;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -39,6 +40,7 @@ public class Patient {
     private String verificationNumber;
 
     @OneToOne(mappedBy = "patient", cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonIgnore // ignore appointment record in json response
     private Appointment appointment;
 
     public Patient(Long id, Date dateAt, String completeName, int age, String gender,

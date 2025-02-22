@@ -6,7 +6,6 @@ import com.azathoth.CatmonMalabonHealthCenter.model.Patient;
 import com.azathoth.CatmonMalabonHealthCenter.model.utils.UpdateDoctor;
 import com.azathoth.CatmonMalabonHealthCenter.model.utils.UpdatePatient;
 import com.azathoth.CatmonMalabonHealthCenter.service.AdminService;
-import com.azathoth.CatmonMalabonHealthCenter.service.DoctorService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
