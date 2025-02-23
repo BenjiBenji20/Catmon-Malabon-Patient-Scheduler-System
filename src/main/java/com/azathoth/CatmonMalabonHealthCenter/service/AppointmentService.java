@@ -18,6 +18,13 @@ public class AppointmentService {
     }
 
     public boolean availableSchedule(LocalDate schedule) {
+        // compare date today vs passed date
+        LocalDate today = LocalDate.now();
+        boolean isDateFromPast = schedule.isBefore(today);
+        if(isDateFromPast) {
+            return false;
+        }
+
         // check in the db using repository the patient count
         long patientCount = appointmentRepository.countByScheduleDate(schedule);
 

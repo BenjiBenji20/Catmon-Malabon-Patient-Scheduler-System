@@ -68,6 +68,12 @@ public class PatientService {
         }
         // get patients selected schedule YYYY-MM-DD
         LocalDate patientScheduleDate = newPatient.getAppointment().getScheduleDate();
+        // date today as of patient registration
+        boolean isDateFromPast = compareDate(patientScheduleDate);
+        if(isDateFromPast) {
+            return Optional.empty();
+        }
+
         // convert the date into day ex. monday, tuesday...
         DayOfWeek patientSelectedDay = patientScheduleDate.getDayOfWeek();
         // convert the date into day ex. monday, tuesday... from enum
@@ -86,6 +92,12 @@ public class PatientService {
     private String getVerificationNumber() {
         // creates a random letter and number
         return UUID.randomUUID().toString();
+    }
+
+    private boolean compareDate(LocalDate dateSchedule) {
+        LocalDate today = LocalDate.now();
+
+        return dateSchedule.isBefore(today);
     }
 
 }
