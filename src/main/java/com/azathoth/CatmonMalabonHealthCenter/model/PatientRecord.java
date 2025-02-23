@@ -1,5 +1,6 @@
 package com.azathoth.CatmonMalabonHealthCenter.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 
 @Entity
@@ -20,7 +21,8 @@ public class PatientRecord {
 
     @OneToOne
     @JoinColumn(name = "appointment_id")
-    private final Appointment appointment;
+    @JsonIgnore
+    private Appointment appointment;
 
     public PatientRecord(Appointment appointment, boolean isAttended, String prescription, String diagnosis, Long id) {
         this.id = id;
@@ -29,6 +31,8 @@ public class PatientRecord {
         this.isAttended = isAttended;
         this.appointment = appointment;
     }
+
+    public PatientRecord() {}
 
     public Long getId() {
         return id;
@@ -64,6 +68,10 @@ public class PatientRecord {
 
     public Appointment getAppointment() {
         return appointment;
+    }
+
+    public void setAppointment(Appointment appointment) {
+        this.appointment = appointment;
     }
 
     @Override

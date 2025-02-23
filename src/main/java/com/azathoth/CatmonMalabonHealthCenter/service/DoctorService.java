@@ -4,6 +4,7 @@ import com.azathoth.CatmonMalabonHealthCenter.model.*;
 import com.azathoth.CatmonMalabonHealthCenter.model.utils.PatientDTO;
 import com.azathoth.CatmonMalabonHealthCenter.repository.AppointmentRepository;
 import com.azathoth.CatmonMalabonHealthCenter.repository.DoctorRepository;
+import com.azathoth.CatmonMalabonHealthCenter.repository.PatientRecordRepository;
 import com.azathoth.CatmonMalabonHealthCenter.repository.PatientRepository;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -23,9 +24,10 @@ public class DoctorService {
 
     private final AppointmentRepository appointmentRepository;
     private final PatientRepository patientRepository;
+    private final PatientRecordRepository patientRecordRepository;
 
     public DoctorService(DoctorRepository doctorRepository, PasswordEncoder passwordEncoder,
-                         AuthenticationManager authenticationManager, JwtService jwtService, AppointmentRepository appointmentRepository, PatientRepository patientRepository) {
+                         AuthenticationManager authenticationManager, JwtService jwtService, AppointmentRepository appointmentRepository, PatientRepository patientRepository, PatientRecordRepository patientRecordRepository) {
         this.doctorRepository = doctorRepository;
         this.passwordEncoder = passwordEncoder;
         this.authenticationManager = authenticationManager;
@@ -33,6 +35,7 @@ public class DoctorService {
 
         this.appointmentRepository = appointmentRepository;
         this.patientRepository = patientRepository;
+        this.patientRecordRepository = patientRecordRepository;
     }
 
     /**
@@ -137,5 +140,41 @@ public class DoctorService {
         dto.setScheduleDate(patient.getAppointment().getScheduleDate());
         dto.setStatus(patient.getAppointment().getStatus());
         return dto;
+    }
+
+    /**
+     * pass json value pair: attended:boolean, prescription, string, diagnosis: string
+     */
+    public Optional<PatientRecord> createPatientRecord(Long patientId, PatientRecord record) {
+        Patient patient = patientRepository.findPatientById(patientId);
+        if(patient == null) {
+            return Optional.empty();
+        }
+
+        Appointment appointment = patient.getAppointment();
+        if (appointment == null) {
+            return Optional.empty();
+        }
+
+        PatientRecord patientRecord = patientRecordRepository.findAppointmentById(patient.getAppointment().getId());
+        if(patientRecord == null) {
+            patientRecord = new PatientRecord(
+                appointment,
+                    record.isAttended(),
+                    record.getPrescription(),
+                    record.getDiagnosis(),
+                    null
+            );
+            // Set the bidirectional relationship
+            appointment.setPatientRecord(patientRecord);
+        }
+
+        patientRecord.setAttended(record.isAttended());
+        patientRecord.setDiagnosis(record.getDiagnosis());
+        patientRecord.setPrescription(record.getPrescription());
+
+        PatientRecord recorded = patientRecordRepository.save(patientRecord);
+
+        return Optional.of(recorded);
     }
 }

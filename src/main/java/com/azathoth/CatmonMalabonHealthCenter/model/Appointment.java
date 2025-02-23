@@ -87,6 +87,9 @@ public class Appointment {
 
     public void setPatientRecord(PatientRecord patientRecord) {
         this.patientRecord = patientRecord;
+        if(patientRecord == null) {
+            patientRecord.setAppointment(this);
+        }
     }
 
     @Override

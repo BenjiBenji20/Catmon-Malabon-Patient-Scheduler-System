@@ -2,6 +2,7 @@ package com.azathoth.CatmonMalabonHealthCenter.controller;
 
 import com.azathoth.CatmonMalabonHealthCenter.model.Doctor;
 import com.azathoth.CatmonMalabonHealthCenter.model.Patient;
+import com.azathoth.CatmonMalabonHealthCenter.model.PatientRecord;
 import com.azathoth.CatmonMalabonHealthCenter.model.Status;
 import com.azathoth.CatmonMalabonHealthCenter.model.utils.PatientDTO;
 import com.azathoth.CatmonMalabonHealthCenter.service.DoctorService;
@@ -133,6 +134,25 @@ public class DoctorController {
             return updatedPatient.isEmpty() ?
                     new ResponseEntity<>(errorMessage, HttpStatus.BAD_REQUEST) :
                     new ResponseEntity<>(updatedPatient, HttpStatus.OK);
+        }
+        catch (Exception e) {
+            System.out.println("Error found: " + e.getMessage());
+            errorMessage.replace("error", "Invalid request");
+            return new ResponseEntity<>(errorMessage, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    /**
+     * Create a patient record
+     */
+    @PostMapping("/private/patient-record{patientId}")
+    public ResponseEntity<?> createPatientRecord(@RequestParam Long patientId, @RequestBody PatientRecord record) {
+        try {
+            Optional<PatientRecord> patientRecord = doctorService.createPatientRecord(patientId, record);
+
+            return patientRecord.isEmpty() ?
+                    new ResponseEntity<>(HttpStatus.NO_CONTENT) :
+                    new ResponseEntity<>(patientRecord, HttpStatus.CREATED);
         }
         catch (Exception e) {
             System.out.println("Error found: " + e.getMessage());
