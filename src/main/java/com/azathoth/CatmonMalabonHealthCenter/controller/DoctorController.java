@@ -2,6 +2,7 @@ package com.azathoth.CatmonMalabonHealthCenter.controller;
 
 import com.azathoth.CatmonMalabonHealthCenter.model.Doctor;
 import com.azathoth.CatmonMalabonHealthCenter.model.Patient;
+import com.azathoth.CatmonMalabonHealthCenter.model.Status;
 import com.azathoth.CatmonMalabonHealthCenter.model.utils.PatientDTO;
 import com.azathoth.CatmonMalabonHealthCenter.service.DoctorService;
 import org.springframework.http.HttpStatus;
@@ -110,6 +111,28 @@ public class DoctorController {
             return allMyPatients.isEmpty() ?
                     new ResponseEntity<>(errorMessage, HttpStatus.NO_CONTENT) :
                     new ResponseEntity<>(allMyPatients, HttpStatus.OK);
+        }
+        catch (Exception e) {
+            System.out.println("Error found: " + e.getMessage());
+            errorMessage.replace("error", "Invalid request");
+            return new ResponseEntity<>(errorMessage, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    /**
+     * Update patient status
+     * patient id should be from getAllMyPatients() method
+     */
+    @PutMapping("/private/update-patient-status{patientId}{newStatus}")
+    public ResponseEntity<?> updatePatientStatus(@RequestParam Long patientId, @RequestParam Status newStatus) {
+        try {
+            Optional<PatientDTO> updatedPatient = doctorService.updatePatientStatus(patientId, newStatus);
+
+            errorMessage.replace("error", "Status is not available");
+
+            return updatedPatient.isEmpty() ?
+                    new ResponseEntity<>(errorMessage, HttpStatus.BAD_REQUEST) :
+                    new ResponseEntity<>(updatedPatient, HttpStatus.OK);
         }
         catch (Exception e) {
             System.out.println("Error found: " + e.getMessage());

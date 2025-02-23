@@ -1,9 +1,6 @@
 package com.azathoth.CatmonMalabonHealthCenter.service;
 
-import com.azathoth.CatmonMalabonHealthCenter.model.Appointment;
-import com.azathoth.CatmonMalabonHealthCenter.model.Doctor;
-import com.azathoth.CatmonMalabonHealthCenter.model.Patient;
-import com.azathoth.CatmonMalabonHealthCenter.model.Role;
+import com.azathoth.CatmonMalabonHealthCenter.model.*;
 import com.azathoth.CatmonMalabonHealthCenter.model.utils.PatientDTO;
 import com.azathoth.CatmonMalabonHealthCenter.repository.AppointmentRepository;
 import com.azathoth.CatmonMalabonHealthCenter.repository.DoctorRepository;
@@ -110,5 +107,35 @@ public class DoctorService {
         });
 
         return patientDTOS;
+    }
+
+    public Optional<PatientDTO> updatePatientStatus(Long patientId, Status newStatus) {
+        Patient patient = patientRepository.findPatientById(patientId);
+
+        if(patient == null) {
+            return Optional.empty();
+        }
+
+        patient.getAppointment().setStatus(newStatus);
+
+        Patient updatedPatient = patientRepository.save(patient);
+
+        PatientDTO patientDTO = convertToDTO(updatedPatient);
+
+        return Optional.of(patientDTO);
+    }
+
+    private PatientDTO convertToDTO(Patient patient) {
+        PatientDTO dto = new PatientDTO();
+        dto.setId(patient.getId());
+        dto.setCompleteName(patient.getCompleteName());
+        dto.setGender(patient.getGender());
+        dto.setAddress(patient.getAddress());
+        dto.setAge(patient.getAge());
+        dto.setContactNumber(patient.getContactNumber());
+        dto.setVerificationNumber(patient.getVerificationNumber());
+        dto.setScheduleDate(patient.getAppointment().getScheduleDate());
+        dto.setStatus(patient.getAppointment().getStatus());
+        return dto;
     }
 }
