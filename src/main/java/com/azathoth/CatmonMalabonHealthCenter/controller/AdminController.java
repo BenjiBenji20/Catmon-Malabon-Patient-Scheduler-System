@@ -3,6 +3,7 @@ package com.azathoth.CatmonMalabonHealthCenter.controller;
 import com.azathoth.CatmonMalabonHealthCenter.model.Admin;
 import com.azathoth.CatmonMalabonHealthCenter.model.Doctor;
 import com.azathoth.CatmonMalabonHealthCenter.model.Patient;
+import com.azathoth.CatmonMalabonHealthCenter.model.utils.PatientDTO;
 import com.azathoth.CatmonMalabonHealthCenter.model.utils.UpdateDoctor;
 import com.azathoth.CatmonMalabonHealthCenter.model.utils.UpdatePatient;
 import com.azathoth.CatmonMalabonHealthCenter.service.AdminService;
@@ -235,7 +236,7 @@ public class AdminController {
      */
     @GetMapping("/private/search-patient{keyword}")
     public ResponseEntity<?> searchPatient(@PathVariable String keyword) {
-        List<Patient> searchPatient = adminService.searchPatient(keyword);
+        List<PatientDTO> searchPatient = adminService.searchPatient(keyword);
 
         return new ResponseEntity<>(searchPatient, HttpStatus.OK);
     }
@@ -254,7 +255,7 @@ public class AdminController {
         }
         catch (Exception e) {
             System.out.println("Error found: " + e.getMessage());
-            errorMessage.replace("error", "Invalid registration");
+            errorMessage.replace("error", "Invalid request");
             return new ResponseEntity<>(errorMessage, HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }

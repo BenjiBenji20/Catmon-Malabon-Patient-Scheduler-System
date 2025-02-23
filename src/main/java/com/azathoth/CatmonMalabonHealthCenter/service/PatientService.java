@@ -55,12 +55,12 @@ public class PatientService {
         newPatient.setVerificationNumber(getVerificationNumber());
 
         // configured twilio commented for a moment :>
-        Twilio.init(twilioSID, twilioKey);
-        Message.creator(
-                new PhoneNumber("+63" + newPatient.getContactNumber()), // to
-                new PhoneNumber(myPhoneNumber), // from
-                "From Catmon Health Center this is your confirmation code: " + newPatient.getVerificationNumber() // body (message)
-        ).create();
+//        Twilio.init(twilioSID, twilioKey);
+//        Message.creator(
+//                new PhoneNumber("+63" + newPatient.getContactNumber()), // to
+//                new PhoneNumber(myPhoneNumber), // from
+//                "From Catmon Health Center this is your confirmation code: " + newPatient.getVerificationNumber() // body (message)
+//        ).create();
 
         // if patient doesn't have an appointment, then set an appointment
         if (newPatient.getAppointment() != null) {

@@ -4,6 +4,7 @@ import com.azathoth.CatmonMalabonHealthCenter.model.Admin;
 import com.azathoth.CatmonMalabonHealthCenter.model.Doctor;
 import com.azathoth.CatmonMalabonHealthCenter.model.Patient;
 import com.azathoth.CatmonMalabonHealthCenter.model.Role;
+import com.azathoth.CatmonMalabonHealthCenter.model.utils.PatientDTO;
 import com.azathoth.CatmonMalabonHealthCenter.model.utils.UpdateDoctor;
 import com.azathoth.CatmonMalabonHealthCenter.model.utils.UpdatePatient;
 import com.azathoth.CatmonMalabonHealthCenter.repository.AdminRepository;
@@ -17,6 +18,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 public class AdminService {
@@ -150,8 +152,25 @@ public class AdminService {
     /**
      * Search Patient
      */
-    public List<Patient> searchPatient(String keyword) {
-        return patientRepository.searchPatient(keyword);
+    public List<PatientDTO> searchPatient(String keyword) {
+        List<Patient> patients = patientRepository.searchPatient(keyword);
+        return patients.stream()
+                .map(this::convertToDTO)
+                .collect(Collectors.toList());
+    }
+
+    private PatientDTO convertToDTO(Patient patient) {
+        PatientDTO dto = new PatientDTO();
+        dto.setId(patient.getId());
+        dto.setCompleteName(patient.getCompleteName());
+        dto.setGender(patient.getGender());
+        dto.setAddress(patient.getAddress());
+        dto.setAge(patient.getAge());
+        dto.setContactNumber(patient.getContactNumber());
+        dto.setVerificationNumber(patient.getVerificationNumber());
+        dto.setScheduleDate(patient.getAppointment().getScheduleDate());
+        dto.setStatus(patient.getAppointment().getStatus());
+        return dto;
     }
 
     /**

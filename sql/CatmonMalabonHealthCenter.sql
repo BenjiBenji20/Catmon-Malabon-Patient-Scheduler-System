@@ -31,7 +31,7 @@ SELECT * FROM doctor_available_days;
 
 -- alter table patient drop foreign key appointment_id;
 
-SET FOREIGN_KEY_CHECKS = 1;
+-- SET FOREIGN_KEY_CHECKS = 1;
 
 
 

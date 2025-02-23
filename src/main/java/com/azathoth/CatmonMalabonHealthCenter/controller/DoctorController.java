@@ -1,16 +1,16 @@
 package com.azathoth.CatmonMalabonHealthCenter.controller;
 
 import com.azathoth.CatmonMalabonHealthCenter.model.Doctor;
+import com.azathoth.CatmonMalabonHealthCenter.model.Patient;
+import com.azathoth.CatmonMalabonHealthCenter.model.utils.PatientDTO;
 import com.azathoth.CatmonMalabonHealthCenter.service.DoctorService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
@@ -87,11 +87,33 @@ public class DoctorController {
 
             return  verifyDoctor.isEmpty() ?
                     new ResponseEntity<>(errorMessage, HttpStatus.UNAUTHORIZED) :
-                    new ResponseEntity<>(goodMessage, HttpStatus.OK);
+                    new ResponseEntity<>(verifyDoctor, HttpStatus.OK);
         }
         catch (Exception e) {
             System.out.println("Error found: " + e.getMessage());
             errorMessage.replace("error", "Invalid registration");
+            return new ResponseEntity<>(errorMessage, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    /**
+     * Get all my patients
+     * Signed in doctor should pass his id here
+     */
+    @GetMapping("/private/get-all-my-patients{myId}")
+    public ResponseEntity<?> getAllMyPatients(@RequestParam Long myId) {
+        try {
+            List<PatientDTO> allMyPatients = doctorService.getAllMyPatients(myId);
+
+            errorMessage.replace("error", "No content");
+
+            return allMyPatients.isEmpty() ?
+                    new ResponseEntity<>(errorMessage, HttpStatus.NO_CONTENT) :
+                    new ResponseEntity<>(allMyPatients, HttpStatus.OK);
+        }
+        catch (Exception e) {
+            System.out.println("Error found: " + e.getMessage());
+            errorMessage.replace("error", "Invalid request");
             return new ResponseEntity<>(errorMessage, HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
