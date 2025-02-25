@@ -41,7 +41,6 @@ public class Doctor {
     private AvailableDay[] availableDays;
 
     @OneToMany(mappedBy = "doctor") // one doctor can hold many appointments
-    @JsonIgnore // ignore appointment record in json response
     private List<Appointment> appointment;
 
     @Enumerated(EnumType.STRING)

@@ -4,6 +4,7 @@ import com.azathoth.CatmonMalabonHealthCenter.model.Admin;
 import com.azathoth.CatmonMalabonHealthCenter.model.Doctor;
 import com.azathoth.CatmonMalabonHealthCenter.model.Patient;
 import com.azathoth.CatmonMalabonHealthCenter.model.Role;
+import com.azathoth.CatmonMalabonHealthCenter.model.utils.DoctorDTO;
 import com.azathoth.CatmonMalabonHealthCenter.model.utils.PatientDTO;
 import com.azathoth.CatmonMalabonHealthCenter.model.utils.UpdateDoctor;
 import com.azathoth.CatmonMalabonHealthCenter.model.utils.UpdatePatient;
@@ -100,18 +101,33 @@ public class AdminService {
     /**
      * Search doctor
      */
-    public List<Doctor> searchDoctor(String keyword) {
-        return doctorRepository.searchDoctor(keyword);
+    public List<DoctorDTO> searchDoctor(String keyword) {
+        List<Doctor> doctors = doctorRepository.searchDoctor(keyword);
+        return doctors.stream()
+                .map(this::convertToDTO)
+                .collect(Collectors.toList());
+
+    }
+
+    private DoctorDTO convertToDTO(Doctor doctor) {
+        DoctorDTO doctorDTO = new DoctorDTO();
+
+        doctorDTO.setId(doctor.getId());
+        doctorDTO.setCompleteName(doctor.getCompleteName());
+        doctorDTO.setEmail(doctor.getEmail());
+        doctorDTO.setAvailableDays(doctor.getAvailableDays());
+
+        return doctorDTO;
     }
 
     /**
      * Get all doctors
      */
-    public Optional<List<Doctor>> getAllDoctors() {
-        List<Doctor> allDoctors = doctorRepository.findAll();
-
-        return allDoctors.isEmpty() ?
-                Optional.empty() : Optional.of(allDoctors);
+    public List<DoctorDTO> getAllDoctors() {
+        List<Doctor> doctors = doctorRepository.findAll();
+        return doctors.stream()
+                .map(this::convertToDTO)
+                .collect(Collectors.toList());
     }
 
     /**
@@ -176,10 +192,11 @@ public class AdminService {
     /**
      * Get all patients
      */
-    public Optional<List<Patient>> getAllPatients() {
-        List<Patient> allPatients = patientRepository.findAll();
+    public List<PatientDTO> getAllPatients() {
+        List<Patient> patients = patientRepository.findAll();
 
-        return allPatients.isEmpty() ?
-                Optional.empty() : Optional.of(allPatients);
+        return patients.stream()
+                .map(this::convertToDTO)
+                .collect(Collectors.toList());
     }
 }

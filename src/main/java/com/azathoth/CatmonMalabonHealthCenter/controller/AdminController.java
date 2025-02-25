@@ -3,6 +3,7 @@ package com.azathoth.CatmonMalabonHealthCenter.controller;
 import com.azathoth.CatmonMalabonHealthCenter.model.Admin;
 import com.azathoth.CatmonMalabonHealthCenter.model.Doctor;
 import com.azathoth.CatmonMalabonHealthCenter.model.Patient;
+import com.azathoth.CatmonMalabonHealthCenter.model.utils.DoctorDTO;
 import com.azathoth.CatmonMalabonHealthCenter.model.utils.PatientDTO;
 import com.azathoth.CatmonMalabonHealthCenter.model.utils.UpdateDoctor;
 import com.azathoth.CatmonMalabonHealthCenter.model.utils.UpdatePatient;
@@ -79,7 +80,6 @@ public class AdminController {
 
             Optional<?> authenticateAdmin = adminService.authenticate(admin);
 
-            goodMessage.replace("message", "Login successful");
             errorMessage.replace("error", "Invalid email or password");
 
             return  authenticateAdmin.isEmpty() ?
@@ -152,7 +152,7 @@ public class AdminController {
      */
     @GetMapping("/private/search-doctor{keyword}")
     public ResponseEntity<?> searchDoctor(@PathVariable String keyword) {
-        List<Doctor> searchDoctor = adminService.searchDoctor(keyword);
+        List<DoctorDTO> searchDoctor = adminService.searchDoctor(keyword);
 
         return new ResponseEntity<>(searchDoctor, HttpStatus.OK);
     }
@@ -163,7 +163,7 @@ public class AdminController {
     @GetMapping("/private/get-all-doctors")
     public ResponseEntity<?> getAllDoctors() {
         try {
-            Optional<List<Doctor>> allDoctors = adminService.getAllDoctors();
+            List<DoctorDTO> allDoctors = adminService.getAllDoctors();
 
             return allDoctors.isEmpty() ?
                     new ResponseEntity<>(HttpStatus.NO_CONTENT) :
@@ -247,7 +247,7 @@ public class AdminController {
     @GetMapping("/private/get-all-patients")
     public ResponseEntity<?> getAllPatient() {
         try {
-            Optional<List<Patient>> allPatients = adminService.getAllPatients();
+            List<PatientDTO> allPatients = adminService.getAllPatients();
 
             return allPatients.isEmpty() ?
                     new ResponseEntity<>(HttpStatus.NO_CONTENT) :
