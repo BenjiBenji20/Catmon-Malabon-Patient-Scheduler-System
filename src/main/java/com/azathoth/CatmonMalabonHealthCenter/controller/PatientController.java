@@ -7,7 +7,6 @@ import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDate;
@@ -15,7 +14,6 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 
-@Controller
 @RestController
 @RequestMapping("/api/patient")
 public class PatientController {

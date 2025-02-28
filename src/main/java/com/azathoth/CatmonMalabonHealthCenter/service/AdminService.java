@@ -1,9 +1,6 @@
 package com.azathoth.CatmonMalabonHealthCenter.service;
 
-import com.azathoth.CatmonMalabonHealthCenter.model.Admin;
-import com.azathoth.CatmonMalabonHealthCenter.model.Doctor;
-import com.azathoth.CatmonMalabonHealthCenter.model.Patient;
-import com.azathoth.CatmonMalabonHealthCenter.model.Role;
+import com.azathoth.CatmonMalabonHealthCenter.model.*;
 import com.azathoth.CatmonMalabonHealthCenter.model.utils.DoctorDTO;
 import com.azathoth.CatmonMalabonHealthCenter.model.utils.PatientDTO;
 import com.azathoth.CatmonMalabonHealthCenter.model.utils.UpdateDoctor;
@@ -198,5 +195,13 @@ public class AdminService {
         return patients.stream()
                 .map(this::convertToDTO)
                 .collect(Collectors.toList());
+    }
+
+    public Optional<List<PatientDTO>> filterPatient(String gender, Integer age, String status) {
+        List<Patient> filterResult = patientRepository.filterPatient(gender, age, status);
+
+        return Optional.of(filterResult.stream()
+                            .map(this::convertToDTO)
+                            .collect(Collectors.toList()));
     }
 }

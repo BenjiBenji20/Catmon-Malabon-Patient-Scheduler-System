@@ -3,6 +3,7 @@ package com.azathoth.CatmonMalabonHealthCenter.controller;
 import com.azathoth.CatmonMalabonHealthCenter.model.Admin;
 import com.azathoth.CatmonMalabonHealthCenter.model.Doctor;
 import com.azathoth.CatmonMalabonHealthCenter.model.Patient;
+import com.azathoth.CatmonMalabonHealthCenter.model.Status;
 import com.azathoth.CatmonMalabonHealthCenter.model.utils.DoctorDTO;
 import com.azathoth.CatmonMalabonHealthCenter.model.utils.PatientDTO;
 import com.azathoth.CatmonMalabonHealthCenter.model.utils.UpdateDoctor;
@@ -11,7 +12,6 @@ import com.azathoth.CatmonMalabonHealthCenter.service.AdminService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.HashMap;
@@ -20,7 +20,6 @@ import java.util.Map;
 import java.util.Optional;
 
 @RestController
-@Controller
 @RequestMapping("/api/admin")
 public class AdminController {
     // stores error and good message as object to response as json
@@ -142,10 +141,6 @@ public class AdminController {
     @DeleteMapping("/private/delete-doctor/{id}")
     public ResponseEntity<?> deleteDoctor(@PathVariable Long id) {
         try {
-            if(id == null) {
-                return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-            }
-
             boolean deletedDoctor =  adminService.deleteDoctor(id);
 
             // get all doctors to pass to broadcast to all websocket endpoint subscribers
@@ -235,10 +230,6 @@ public class AdminController {
     @DeleteMapping("/private/delete-patient/{id}")
     public ResponseEntity<?> deletePatient(@PathVariable Long id) {
         try {
-            if(id == null) {
-                return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-            }
-
             boolean deletedPatient =  adminService.deletePatient(id);
             List<PatientDTO> allPatients = adminService.getAllPatients();
             if(deletedPatient) {
@@ -277,6 +268,35 @@ public class AdminController {
             return allPatients.isEmpty() ?
                     new ResponseEntity<>(HttpStatus.NO_CONTENT) :
                     new ResponseEntity<>(allPatients, HttpStatus.OK);
+        }
+        catch (Exception e) {
+            System.out.println("Error found: " + e.getMessage());
+            errorMessage.replace("error", "Invalid request");
+            return new ResponseEntity<>(errorMessage, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    /**
+     * Filter table
+     * @RequestParam(required = false) makes the
+     * parameter binding flexible by not requiring each
+     * parameters to have value.
+     */
+    @GetMapping("/private/filter")
+    public ResponseEntity<?> filterPatient(
+            @RequestParam(required = false) String gender,
+            @RequestParam(required = false) Integer age,
+            @RequestParam(required = false) String status
+            ) {
+        try {
+            Optional<List<PatientDTO>> filterPatient = adminService.filterPatient(gender, age, status);
+
+            if(filterPatient.isPresent()) {
+                return new ResponseEntity<>(filterPatient, HttpStatus.FOUND);
+            }
+
+            return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                    .body(Map.of("empty", "No result"));
         }
         catch (Exception e) {
             System.out.println("Error found: " + e.getMessage());

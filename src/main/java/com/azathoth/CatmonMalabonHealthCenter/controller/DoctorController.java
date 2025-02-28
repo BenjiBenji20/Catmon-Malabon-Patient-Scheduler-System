@@ -1,7 +1,6 @@
 package com.azathoth.CatmonMalabonHealthCenter.controller;
 
 import com.azathoth.CatmonMalabonHealthCenter.model.Doctor;
-import com.azathoth.CatmonMalabonHealthCenter.model.Patient;
 import com.azathoth.CatmonMalabonHealthCenter.model.PatientRecord;
 import com.azathoth.CatmonMalabonHealthCenter.model.Status;
 import com.azathoth.CatmonMalabonHealthCenter.model.utils.PatientDTO;
@@ -9,7 +8,6 @@ import com.azathoth.CatmonMalabonHealthCenter.service.DoctorService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.HashMap;
@@ -18,7 +16,6 @@ import java.util.Map;
 import java.util.Optional;
 
 @RestController
-@Controller
 @RequestMapping("/api/doctor")
 public class DoctorController {
     // stores error and good message as object to response as json

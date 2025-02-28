@@ -16,6 +16,28 @@ SELECT * FROM admin;
 
 SELECT * FROM doctor_available_days;
 
+-- for filtering patient table converted into jpa query
+SELECT * 
+FROM patient 
+WHERE LOWER(patient.gender) = 'male' 
+   AND patient.age = 30
+   AND EXISTS (
+       SELECT 1 
+       FROM appointment 
+       WHERE appointment.patient_id = patient.id 
+         AND LOWER(appointment.patient_status) = 'ongoing'
+   );
+
+-- implementation #2 much flexible!
+SELECT p.gender, 
+	p.age, 
+	a.patient_status 
+FROM patient AS p 
+INNER JOIN appointment AS a
+WHERE p.gender = 'male' AND 
+p.age = 30 AND 
+a.patient_status = 'ongoing';
+
 -- SET FOREIGN_KEY_CHECKS = 0;
 
 -- DROP TABLE appointment;
