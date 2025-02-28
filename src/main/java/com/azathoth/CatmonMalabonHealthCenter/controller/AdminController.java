@@ -10,6 +10,8 @@ import com.azathoth.CatmonMalabonHealthCenter.model.utils.UpdatePatient;
 import com.azathoth.CatmonMalabonHealthCenter.service.AdminService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.messaging.simp.SimpMessagingTemplate;
+import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.HashMap;
@@ -18,6 +20,7 @@ import java.util.Map;
 import java.util.Optional;
 
 @RestController
+@Controller
 @RequestMapping("/api/admin")
 public class AdminController {
     // stores error and good message as object to response as json
@@ -25,9 +28,12 @@ public class AdminController {
     private final Map<String, String> goodMessage = new HashMap<>();
 
     private final AdminService adminService;
+    // for websocket enabling controller to subscribe
+    private final SimpMessagingTemplate messagingTemplate;
 
-    public AdminController(AdminService adminService) {
+    public AdminController(AdminService adminService, SimpMessagingTemplate messagingTemplate) {
         this.adminService = adminService;
+        this.messagingTemplate = messagingTemplate;
 
         errorMessage.put("error", "");
         goodMessage.put("message", "");
@@ -51,12 +57,15 @@ public class AdminController {
             // create admin acc
             Optional<Admin> createdAdmin = adminService.createAccount(admin);
 
-            goodMessage.replace("message", "Successful registration");
-            errorMessage.replace("error", "Invalid registration");
+            if(createdAdmin.isPresent()) {
+                // Broadcast the new admin to all WebSocket subscribers
+                messagingTemplate.convertAndSend("/topic/users", createdAdmin.get());
+                goodMessage.replace("message", "Successful registration");
+                return new ResponseEntity<>(goodMessage, HttpStatus.CREATED);
+            }
 
-            return createdAdmin.isEmpty() ?
-                    new ResponseEntity<>(errorMessage, HttpStatus.BAD_REQUEST) :
-                    new ResponseEntity<>(goodMessage, HttpStatus.CREATED);
+            errorMessage.replace("error", "Invalid registration");
+            return new ResponseEntity<>(errorMessage, HttpStatus.BAD_REQUEST);
         }
         catch (Exception e) {
             System.out.println("Error found: " + e.getMessage());
@@ -113,12 +122,15 @@ public class AdminController {
 
             Optional<Doctor> updatedDoctor = adminService.updateDoctor(doctor);
 
-            goodMessage.replace("message", "Update successful");
-            errorMessage.replace("error", "Update failed");
+            if(updatedDoctor.isPresent()) {
+                // Broadcast the updated doctor to all WebSocket subscribers
+                messagingTemplate.convertAndSend("/topic/users", updatedDoctor.get());
+                goodMessage.replace("message", "Update successful");
+                return new ResponseEntity<>(goodMessage, HttpStatus.OK);
+            }
 
-            return  updatedDoctor.isEmpty() ?
-                    new ResponseEntity<>(errorMessage, HttpStatus.NOT_ACCEPTABLE) :
-                    new ResponseEntity<>(goodMessage, HttpStatus.OK);
+            errorMessage.replace("error", "Update failed");
+            return new ResponseEntity<>(errorMessage, HttpStatus.NOT_ACCEPTABLE);
         }
         catch (Exception e) {
             System.out.println("Error found: " + e.getMessage());
@@ -136,9 +148,15 @@ public class AdminController {
 
             boolean deletedDoctor =  adminService.deleteDoctor(id);
 
-            return deletedDoctor ?
-                    new ResponseEntity<>(HttpStatus.NOT_FOUND) :
-                    new ResponseEntity<>(HttpStatus.OK);
+            // get all doctors to pass to broadcast to all websocket endpoint subscribers
+            List<DoctorDTO> getAllDoctor = adminService.getAllDoctors();
+
+            if(!getAllDoctor.isEmpty()) {
+                messagingTemplate.convertAndSend("/topic/users", getAllDoctor);
+                return new ResponseEntity<>(HttpStatus.OK);
+            }
+
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
         catch (Exception e) {
             System.out.println("Error found: " + e.getMessage());
@@ -150,8 +168,8 @@ public class AdminController {
     /**
      * SEARCH Doctor
      */
-    @GetMapping("/private/search-doctor{keyword}")
-    public ResponseEntity<?> searchDoctor(@PathVariable String keyword) {
+    @GetMapping("/private/search-doctor/{keyword}")
+    public ResponseEntity<?> searchDoctor(@RequestParam String keyword) {
         List<DoctorDTO> searchDoctor = adminService.searchDoctor(keyword);
 
         return new ResponseEntity<>(searchDoctor, HttpStatus.OK);
@@ -193,13 +211,16 @@ public class AdminController {
             }
 
             Optional<Patient> updatedPatient = adminService.updatePatient(patient);
+            if(updatedPatient.isPresent()) {
+                // Broadcast the updated patient to all WebSocket subscribers
+                messagingTemplate.convertAndSend("/topic/users", updatedPatient.get());
+                goodMessage.replace("message", "Update successful");
+                return new ResponseEntity<>(goodMessage, HttpStatus.OK);
+            }
 
-            goodMessage.replace("message", "Update successful");
             errorMessage.replace("error", "Update failed");
 
-            return  updatedPatient.isEmpty() ?
-                    new ResponseEntity<>(errorMessage, HttpStatus.NOT_ACCEPTABLE) :
-                    new ResponseEntity<>(goodMessage, HttpStatus.OK);
+            return new ResponseEntity<>(errorMessage, HttpStatus.NOT_ACCEPTABLE);
         }
         catch (Exception e) {
             System.out.println("Error found: " + e.getMessage());
@@ -219,10 +240,14 @@ public class AdminController {
             }
 
             boolean deletedPatient =  adminService.deletePatient(id);
+            List<PatientDTO> allPatients = adminService.getAllPatients();
+            if(deletedPatient) {
+                // Broadcast the deleted patient to all WebSocket subscribers
+                messagingTemplate.convertAndSend("/topic/users", allPatients);
+                return new ResponseEntity<>(HttpStatus.OK);
+            }
 
-            return deletedPatient ?
-                    new ResponseEntity<>(HttpStatus.NOT_FOUND) :
-                    new ResponseEntity<>(HttpStatus.OK);
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
         catch (Exception e) {
             System.out.println("Error found: " + e.getMessage());
@@ -234,8 +259,8 @@ public class AdminController {
     /**
      * Search Patient
      */
-    @GetMapping("/private/search-patient{keyword}")
-    public ResponseEntity<?> searchPatient(@PathVariable String keyword) {
+    @GetMapping("/private/search-patient/{keyword}")
+    public ResponseEntity<?> searchPatient(@RequestParam String keyword) {
         List<PatientDTO> searchPatient = adminService.searchPatient(keyword);
 
         return new ResponseEntity<>(searchPatient, HttpStatus.OK);

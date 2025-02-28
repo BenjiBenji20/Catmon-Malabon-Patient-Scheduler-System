@@ -8,6 +8,7 @@ import com.azathoth.CatmonMalabonHealthCenter.model.utils.PatientDTO;
 import com.azathoth.CatmonMalabonHealthCenter.service.DoctorService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
@@ -25,9 +26,12 @@ public class DoctorController {
     private final Map<String, String> goodMessage = new HashMap<>();
 
     private final DoctorService doctorService;
+    // for websocket enabling controller to subscribe
+    private final SimpMessagingTemplate messagingTemplate;
 
-    public DoctorController(DoctorService doctorService) {
+    public DoctorController(DoctorService doctorService, SimpMessagingTemplate messagingTemplate) {
         this.doctorService = doctorService;
+        this.messagingTemplate = messagingTemplate;
 
         errorMessage.put("error", "");
         goodMessage.put("message", "");
@@ -53,13 +57,15 @@ public class DoctorController {
 
             // register the new doctor
             Optional<Doctor> addedNewDoctor = doctorService.register(newDoctor);
+            if(addedNewDoctor.isPresent()) {
+                // Broadcast the new doctor to all WebSocket subscribers
+                messagingTemplate.convertAndSend("/topic/users", addedNewDoctor.get());
+                goodMessage.replace("message", "Successful registration");
+                return new ResponseEntity<>(goodMessage, HttpStatus.CREATED);
+            }
 
-            goodMessage.replace("message", "Successful registration");
             errorMessage.replace("error", "Invalid registration");
-
-            return addedNewDoctor.isEmpty() ?
-                    new ResponseEntity<>(errorMessage, HttpStatus.BAD_REQUEST) :
-                    new ResponseEntity<>(goodMessage, HttpStatus.CREATED);
+            return new ResponseEntity<>(errorMessage, HttpStatus.BAD_REQUEST);
         }
         catch (Exception e) {
             System.out.println("Error found: " + e.getMessage());
@@ -102,8 +108,8 @@ public class DoctorController {
      * Get all my patients
      * Signed in doctor should pass his id here
      */
-    @GetMapping("/private/get-all-my-patients{myId}")
-    public ResponseEntity<?> getAllMyPatients(@RequestParam Long myId) {
+    @GetMapping("/private/get-all-my-patients/{myId}")
+    public ResponseEntity<?> getAllMyPatients(@PathVariable Long myId) {
         try {
             List<PatientDTO> allMyPatients = doctorService.getAllMyPatients(myId);
 
@@ -124,16 +130,19 @@ public class DoctorController {
      * Update patient status
      * patient id should be from getAllMyPatients() method
      */
-    @PutMapping("/private/update-patient-status{patientId}{newStatus}")
-    public ResponseEntity<?> updatePatientStatus(@RequestParam Long patientId, @RequestParam Status newStatus) {
+    @PutMapping("/private/update-patient-status/{patientId}/{newStatus}")
+    public ResponseEntity<?> updatePatientStatus(@PathVariable Long patientId, @PathVariable Status newStatus) {
         try {
             Optional<PatientDTO> updatedPatient = doctorService.updatePatientStatus(patientId, newStatus);
 
-            errorMessage.replace("error", "Status is not available");
+            if(updatedPatient.isPresent()) {
+                // Broadcast the updated patient status to all WebSocket subscribers
+                messagingTemplate.convertAndSend("/topic/users", updatedPatient.get());
+                return new ResponseEntity<>(updatedPatient, HttpStatus.OK);
+            }
 
-            return updatedPatient.isEmpty() ?
-                    new ResponseEntity<>(errorMessage, HttpStatus.BAD_REQUEST) :
-                    new ResponseEntity<>(updatedPatient, HttpStatus.OK);
+            errorMessage.replace("error", "Status is not available");
+            return new ResponseEntity<>(errorMessage, HttpStatus.BAD_REQUEST);
         }
         catch (Exception e) {
             System.out.println("Error found: " + e.getMessage());
@@ -145,14 +154,17 @@ public class DoctorController {
     /**
      * Create a patient record
      */
-    @PostMapping("/private/patient-record{patientId}")
-    public ResponseEntity<?> createPatientRecord(@RequestParam Long patientId, @RequestBody PatientRecord record) {
+    @PostMapping("/private/patient-record/{patientId}")
+    public ResponseEntity<?> createPatientRecord(@PathVariable Long patientId, @RequestBody PatientRecord record) {
         try {
             Optional<PatientRecord> patientRecord = doctorService.createPatientRecord(patientId, record);
 
-            return patientRecord.isEmpty() ?
-                    new ResponseEntity<>(HttpStatus.NO_CONTENT) :
-                    new ResponseEntity<>(patientRecord, HttpStatus.CREATED);
+            if(patientRecord.isPresent()) {
+                messagingTemplate.convertAndSend("/topic/users", patientRecord.get());
+                return new ResponseEntity<>(patientRecord, HttpStatus.CREATED);
+            }
+
+            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
         }
         catch (Exception e) {
             System.out.println("Error found: " + e.getMessage());

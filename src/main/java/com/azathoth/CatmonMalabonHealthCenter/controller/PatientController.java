@@ -6,6 +6,7 @@ import com.azathoth.CatmonMalabonHealthCenter.service.PatientService;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
@@ -23,13 +24,17 @@ public class PatientController {
     private final PatientService patientService;
     private final AppointmentService appointmentService;
 
+    // for websocket enabling controller to subscribe
+    private final SimpMessagingTemplate messagingTemplate;
+
     // stores error and good message as object to response as json
     private final Map<String, String> errorMessage = new HashMap<>();
     private final Map<String, String> goodMessage = new HashMap<>();
 
-    public PatientController(PatientService patientService, AppointmentService appointmentService) {
+    public PatientController(PatientService patientService, AppointmentService appointmentService, SimpMessagingTemplate messagingTemplate) {
         this.patientService = patientService;
         this.appointmentService = appointmentService;
+        this.messagingTemplate = messagingTemplate;
 
         errorMessage.put("error", "");
         goodMessage.put("message", "");
@@ -89,12 +94,14 @@ public class PatientController {
             // pass new patient to service to validate it and save to the db
             Optional<Patient> addedNewPatient = patientService.registerPatient(newPatient);
 
-            goodMessage.replace("message", "Successful registration");
-            errorMessage.replace("error", "Invalid registration");
+            if(addedNewPatient.isPresent()) {
+                messagingTemplate.convertAndSend("/topic/users", addedNewPatient.get());
+                goodMessage.replace("message", "Successful registration");
+                return new ResponseEntity<>(goodMessage, HttpStatus.CREATED);
+            }
 
-            return addedNewPatient.isEmpty() ?
-                    new ResponseEntity<>(errorMessage, HttpStatus.BAD_REQUEST) :
-                    new ResponseEntity<>(goodMessage, HttpStatus.CREATED);
+            errorMessage.replace("error", "Invalid registration");
+            return new ResponseEntity<>(errorMessage, HttpStatus.BAD_REQUEST);
         }
         catch (Exception e) {
             System.out.println("Error found: " + e.getMessage());
