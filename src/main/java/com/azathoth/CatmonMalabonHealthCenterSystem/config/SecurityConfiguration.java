@@ -1,7 +1,7 @@
 package com.azathoth.CatmonMalabonHealthCenterSystem.config;
 
-import com.azathoth.CatmonMalabonHealthCenter.service.CustomUserDetailService;
-import com.azathoth.CatmonMalabonHealthCenter.service.JwtService;
+import com.azathoth.CatmonMalabonHealthCenterSystem.service.CustomUserDetailService;
+import com.azathoth.CatmonMalabonHealthCenterSystem.service.JwtService;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
