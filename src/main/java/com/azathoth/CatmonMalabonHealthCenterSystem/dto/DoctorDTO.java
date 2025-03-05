@@ -19,7 +19,7 @@ public class DoctorDTO {
     @Email(message = "Please use an email")
     private String email;
 
-    @NotBlank(message = "Specify your available days")
+    @NotBlank(message = "Specify your available day/s")
     private AvailableDay[] availableDays;
 
     public DoctorDTO(long id, String completeName, String email, AvailableDay[] availableDays) {
