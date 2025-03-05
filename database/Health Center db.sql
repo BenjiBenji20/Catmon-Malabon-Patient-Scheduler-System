@@ -7,3 +7,11 @@ SHOW TABLEs;
 SELECT * FROM patient;
 
 SELECT * FROM pending_doctor;
+
+SELECT * FROM admin;
+
+SELECT * FROM doctor;
+
+SELECT * FROM doctor_available_days;
+
+SELECT * FROM appointment;

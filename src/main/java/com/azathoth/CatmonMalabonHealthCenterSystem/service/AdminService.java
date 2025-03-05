@@ -1,14 +1,19 @@
 package com.azathoth.CatmonMalabonHealthCenterSystem.service;
 
 import com.azathoth.CatmonMalabonHealthCenterSystem.controller.AdminController;
+import com.azathoth.CatmonMalabonHealthCenterSystem.model.Admin;
 import com.azathoth.CatmonMalabonHealthCenterSystem.model.Doctor;
 import com.azathoth.CatmonMalabonHealthCenterSystem.model.PendingDoctor;
+import com.azathoth.CatmonMalabonHealthCenterSystem.repository.AdminRepository;
 import com.azathoth.CatmonMalabonHealthCenterSystem.repository.DoctorRepository;
 import com.azathoth.CatmonMalabonHealthCenterSystem.repository.PendingDoctorRepository;
 import com.azathoth.CatmonMalabonHealthCenterSystem.utils.Role;
+import jakarta.validation.Valid;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.parameters.P;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -21,16 +26,28 @@ public class AdminService {
 
     private final PendingDoctorRepository pendingDoctorRepository;
     private final DoctorRepository doctorRepository;
+    private final AdminRepository adminRepository;
 
     private static final Logger logger = LoggerFactory.getLogger(AdminService.class);
+    private final PasswordEncoder encoder;
     private final AuthenticationManager authenticationManager;
     private final JwtService jwtService;
 
-    public AdminService(PendingDoctorRepository pendingDoctorRepository, DoctorRepository doctorRepository, AuthenticationManager authenticationManager, JwtService jwtService) {
+    public AdminService(PendingDoctorRepository pendingDoctorRepository, DoctorRepository doctorRepository, AdminRepository adminRepository, PasswordEncoder encoder, AuthenticationManager authenticationManager, JwtService jwtService) {
         this.pendingDoctorRepository = pendingDoctorRepository;
         this.doctorRepository = doctorRepository;
+        this.adminRepository = adminRepository;
+        this.encoder = encoder;
         this.authenticationManager = authenticationManager;
         this.jwtService = jwtService;
+    }
+
+    public Optional<Admin> createAccount(@Valid Admin admin) {
+        admin.setRole(Role.ADMIN);
+        admin.setPassword(encoder.encode(admin.getPassword()));
+
+        // save created admin
+        return Optional.of(adminRepository.save(admin));
     }
 
     public Optional<Doctor> acceptDoctorRequest(Long requestId) {
@@ -49,7 +66,9 @@ public class AdminService {
                 newDoctor.setRole(Role.DOCTOR); // assign a role
                 // save a new doctor
                 Doctor addedDoctor = doctorRepository.save(newDoctor);
-
+                // delete the newly added doctor from pending table
+                pendingDoctorRepository.delete(pendingDoctor);
+                // pass doctor obj as response to be use by websocket channel
                 return Optional.of(addedDoctor);
             }
 
@@ -59,5 +78,22 @@ public class AdminService {
             logger.error("Pending doctor is not available by id: {}", notFound.getMessage());
             return Optional.empty();
         }
+    }
+
+    public Optional<?> authenticate(Admin admin) {
+        Authentication authenticateAdmin =
+                authenticationManager.authenticate(
+                        new UsernamePasswordAuthenticationToken(
+                                admin.getEmail(), admin.getPassword()
+                        )
+                );
+
+        if(authenticateAdmin.isAuthenticated()) {
+            Admin authAdmin = adminRepository.findAdminByEmail(admin.getEmail());
+
+            return Optional.of(jwtService.generateToken(authAdmin.getEmail(), authAdmin.getRole().toString()));
+        }
+
+        return Optional.empty();
     }
 }

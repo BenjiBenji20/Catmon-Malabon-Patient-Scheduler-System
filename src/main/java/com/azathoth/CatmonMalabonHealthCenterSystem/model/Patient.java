@@ -34,7 +34,6 @@ public class Patient {
     @Column(name = "complete_address", length = 255, nullable = false)
     private String address;
 
-    @NotNull(message = "Age cannot be null")
     @Min(value = 0, message = "Age must be a positive number")
     @Column(length = 3, nullable = false)
     private int age;

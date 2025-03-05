@@ -1,5 +1,6 @@
 package com.azathoth.CatmonMalabonHealthCenterSystem.service;
 
+import com.azathoth.CatmonMalabonHealthCenterSystem.dto.PatientDTO;
 import com.azathoth.CatmonMalabonHealthCenterSystem.model.Doctor;
 import com.azathoth.CatmonMalabonHealthCenterSystem.model.Patient;
 import com.azathoth.CatmonMalabonHealthCenterSystem.repository.DoctorRepository;
@@ -9,6 +10,8 @@ import com.twilio.Twilio;
 import com.twilio.rest.api.v2010.account.Message;
 import com.twilio.type.PhoneNumber;
 import jakarta.validation.Valid;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
@@ -31,6 +34,7 @@ public class PatientService {
     // dependencies injected via constructor
     private final PatientRepository patientRepository;
     private final DoctorRepository doctorRepository;
+    private static final Logger logger = LoggerFactory.getLogger(PatientService.class);
 
     public PatientService(PatientRepository patientRepository, DoctorRepository doctorRepository) {
         this.patientRepository = patientRepository;
@@ -51,47 +55,63 @@ public class PatientService {
      * 5th, save the patient to the database using repository
      *
      */
-    public Optional<Patient> registerPatient(@Valid Patient newPatient) {
-        try {
-            // create a verification number to the new added patient
-            newPatient.setVerificationNumber(getVerificationNumber());
+        public Optional<PatientDTO> registerPatient(@Valid Patient newPatient) {
+            try {
+                // create a verification number to the new added patient
+                newPatient.setVerificationNumber(getVerificationNumber());
 
-            // configured twilio commented for a moment :>
-//            Twilio.init(twilioSID, twilioKey);
-//            Message.creator(
-//                    new PhoneNumber("+63" + newPatient.getContactNumber()), // to
-//                    new PhoneNumber(myPhoneNumber), // from
-//                    "From Catmon Health Center this is your confirmation code: " + newPatient.getVerificationNumber() // body (message)
-//            ).create();
+                // configured twilio commented for a moment :>
+    //            Twilio.init(twilioSID, twilioKey);
+    //            Message.creator(
+    //                    new PhoneNumber("+63" + newPatient.getContactNumber()), // to
+    //                    new PhoneNumber(myPhoneNumber), // from
+    //                    "From Catmon Health Center this is your confirmation code: " + newPatient.getVerificationNumber() // body (message)
+    //            ).create();
 
-            // if patient doesn't have an appointment, then set an appointment
-            if (newPatient.getAppointment() != null) {
-                newPatient.getAppointment().setPatient(newPatient);
+                // if patient doesn't have an appointment, then set an appointment
+                if (newPatient.getAppointment() != null) {
+                    newPatient.getAppointment().setPatient(newPatient);
+                }
+                // get patients selected schedule YYYY-MM-DD
+                LocalDate patientScheduleDate = newPatient.getAppointment().getScheduleDate();
+                // date today as of patient registration
+                boolean isDateFromPast = compareDate(patientScheduleDate);
+                if(isDateFromPast) {
+                    return Optional.empty();
+                }
+
+                // convert the date into day ex. monday, tuesday...
+                DayOfWeek patientSelectedDay = patientScheduleDate.getDayOfWeek();
+                // convert the date into day ex. monday, tuesday... from enum
+                AvailableDay doctorScheduleDay = AvailableDay.valueOf(patientSelectedDay.toString());
+                // find doctors with the same schedule with patient
+                List<Doctor> availableDoctors = doctorRepository.findDoctorsByAvailableDay(doctorScheduleDay);
+                // If no doctors are available, return an error
+                if (availableDoctors.isEmpty()) {
+                    logger.warn("No doctors available on the selected day: {}", doctorScheduleDay);
+                    return Optional.empty(); // Or throw a custom exception
+                }
+
+                // Assign the first available doctor to the appointment
+                newPatient.getAppointment().setDoctor(availableDoctors.getFirst());
+
+                // Save the patient to the database
+                Patient addedPatient = patientRepository.save(newPatient);
+
+                // convert to dto
+                PatientDTO patientDTO = new PatientDTO();
+
+                return Optional.of(patientDTO.convertToDTO(addedPatient));
             }
-            // get patients selected schedule YYYY-MM-DD
-            LocalDate patientScheduleDate = newPatient.getAppointment().getScheduleDate();
-            // date today as of patient registration
-            boolean isDateFromPast = compareDate(patientScheduleDate);
-            if(isDateFromPast) {
+            catch (NullPointerException e) {
+                logger.error("NullPointerException occurred: {}", e.getMessage());
                 return Optional.empty();
             }
-
-            // convert the date into day ex. monday, tuesday...
-            DayOfWeek patientSelectedDay = patientScheduleDate.getDayOfWeek();
-            // convert the date into day ex. monday, tuesday... from enum
-            AvailableDay doctorScheduleDay = AvailableDay.valueOf(patientSelectedDay.toString());
-            // find doctors with the same schedule with patient
-            List<Doctor> availableDoctors = doctorRepository.findDoctorsByAvailableDay(doctorScheduleDay);
-            if(!availableDoctors.isEmpty()) {
-                newPatient.getAppointment().setDoctor(availableDoctors.getFirst()); // save the first available doctor to the newly created patient
+            catch (Exception e) {
+                logger.error("Unexpected error occurred: {}", e.getMessage());
+                return Optional.empty();
             }
-            Patient addedPatient = patientRepository.save(newPatient); // save patient to the db
-            return Optional.of(addedPatient);
         }
-        catch (NullPointerException e) {
-            return Optional.empty();
-        }
-    }
 
     private String getVerificationNumber() {
         // creates a random letter and number

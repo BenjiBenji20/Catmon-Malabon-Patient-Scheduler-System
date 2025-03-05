@@ -1,5 +1,6 @@
 package com.azathoth.CatmonMalabonHealthCenterSystem.controller;
 
+import com.azathoth.CatmonMalabonHealthCenterSystem.dto.PatientDTO;
 import com.azathoth.CatmonMalabonHealthCenterSystem.model.Patient;
 import com.azathoth.CatmonMalabonHealthCenterSystem.service.AppointmentService;
 import com.azathoth.CatmonMalabonHealthCenterSystem.service.PatientService;
@@ -68,7 +69,7 @@ public class PatientController {
             }
 
             // pass new patient to service to validate it and save to the db
-            Optional<Patient> addedNewPatient = patientService.registerPatient(newPatient);
+            Optional<PatientDTO> addedNewPatient = patientService.registerPatient(newPatient);
 
             if(addedNewPatient.isPresent()) {
                 // Broadcast the new doctor to all WebSocket /patients subscribers

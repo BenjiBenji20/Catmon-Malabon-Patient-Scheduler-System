@@ -2,6 +2,10 @@ package com.azathoth.CatmonMalabonHealthCenterSystem.model;
 
 import com.azathoth.CatmonMalabonHealthCenterSystem.utils.Role;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Pattern;
+import jakarta.validation.constraints.Size;
 
 @Entity
 @Table(name = "admin",
@@ -15,12 +19,20 @@ public class Admin {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @NotBlank(message = "Admin name cannot be empty")
+    @Size(min = 2, max = 255, message = "Admin name must be between 2-255 characters")
+    @Pattern(regexp = "^\\p{L}+[\\p{L}\\p{Z}\\p{P}]{0,}", message = "Admin name cannot contain special characters or spaces")
     @Column(name = "admin_name", length = 255, nullable = false)
     private String adminName;
 
+    @NotBlank(message = "Email cannot be empty")
+    @Size(min = 2, max = 255, message = "Email must be between 100 characters")
+    @Email(message = "Please use an email")
     @Column(name = "email_address", nullable = false)
     private String email;
 
+    @NotBlank(message = "Please provide a password")
+    @Size(min = 8, max = 255, message = "Please provide a strong password")
     @Column(length = 255, nullable = false)
     private String password;
 

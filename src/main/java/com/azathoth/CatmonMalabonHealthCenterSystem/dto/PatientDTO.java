@@ -1,5 +1,6 @@
 package com.azathoth.CatmonMalabonHealthCenterSystem.dto;
 
+import com.azathoth.CatmonMalabonHealthCenterSystem.model.Patient;
 import com.azathoth.CatmonMalabonHealthCenterSystem.utils.Status;
 import jakarta.validation.constraints.*;
 
@@ -107,5 +108,19 @@ public class PatientDTO {
 
     public void setStatus(Status status) {
         this.status = status;
+    }
+
+    public PatientDTO convertToDTO(Patient patient) {
+        PatientDTO patientDTO = new PatientDTO();
+        patientDTO.setId(patient.getId());
+        patientDTO.setCompleteName(patient.getCompleteName());
+        patientDTO.setAge(patient.getAge());
+        patientDTO.setGender(patient.getGender());
+        patientDTO.setContactNumber(patient.getContactNumber());
+        patientDTO.setAddress(patient.getAddress());
+        patientDTO.setVerificationNumber(patient.getVerificationNumber());
+        patientDTO.setScheduleDate(patient.getAppointment().getScheduleDate());
+        patientDTO.setStatus(patient.getAppointment().getStatus());
+        return patientDTO;
     }
 }
