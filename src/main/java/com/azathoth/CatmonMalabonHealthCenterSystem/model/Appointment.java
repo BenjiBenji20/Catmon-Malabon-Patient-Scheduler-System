@@ -2,6 +2,9 @@ package com.azathoth.CatmonMalabonHealthCenterSystem.model;
 
 import com.azathoth.CatmonMalabonHealthCenterSystem.utils.Status;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.Future;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 
 import java.time.LocalDate;
 
@@ -12,9 +15,12 @@ public class Appointment {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @NotNull(message = "Schedule date cannot be null")
+    @Future(message = "Date must be in future")
     @Column(name = "schedule_date", nullable = false)
     private LocalDate scheduleDate;
 
+    @NotBlank(message = "Please provide your status")
     @Enumerated(EnumType.STRING)
     @Column(name = "patient_status", nullable = false)
     private Status status;

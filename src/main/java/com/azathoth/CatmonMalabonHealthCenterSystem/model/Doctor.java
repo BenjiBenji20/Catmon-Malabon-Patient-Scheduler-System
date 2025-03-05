@@ -1,6 +1,7 @@
 package com.azathoth.CatmonMalabonHealthCenterSystem.model;
 
 import com.azathoth.CatmonMalabonHealthCenterSystem.utils.AvailableDay;
+import com.azathoth.CatmonMalabonHealthCenterSystem.utils.Role;
 import jakarta.persistence.*;
 
 import java.util.Arrays;

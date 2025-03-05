@@ -1,6 +1,7 @@
 package com.azathoth.CatmonMalabonHealthCenterSystem.model;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.*;
 import org.hibernate.annotations.CreationTimestamp;
 
 import java.util.Date;
@@ -17,20 +18,29 @@ public class Patient {
     @Column(name = "created_at", updatable = false)
     private Date dateAt;
 
-    @Column(name = "complete_name",
-            length = 255, nullable = false
-    )
+    @NotBlank(message = "Complete name cannot be empty")
+    @Size(min = 2, max = 255, message = "Complete name must be between 2-255 characters")
+    @Pattern(regexp = "^\\p{L}+[\\p{L}\\p{Z}\\p{P}]{0,}", message = "Complete name cannot contain special characters")
+    @Column(name = "complete_name", length = 255, nullable = false)
     private String completeName;
 
+    @NotBlank(message = "Gender cannot be empty")
+    @Size(min = 1, max = 10, message = "Gender must be 1-10 characters")
     @Column(nullable = false)
     private String gender;
 
+    @NotBlank(message = "Address cannot be empty")
+    @Size(max = 255)
     @Column(name = "complete_address", length = 255, nullable = false)
     private String address;
 
+    @NotNull(message = "Age cannot be null")
+    @Min(value = 0, message = "Age must be a positive number")
     @Column(length = 3, nullable = false)
     private int age;
 
+    @NotBlank(message = "Please provide your contact number")
+    @Size(max = 13)
     @Column(name = "contact_no", length = 12, nullable = false)
     private String contactNumber;
 
