@@ -57,7 +57,7 @@ public class Doctor {
         this.role = role;
     }
 
-    protected Doctor() {}
+    public Doctor() {}
 
     public Long getId() {
         return id;
