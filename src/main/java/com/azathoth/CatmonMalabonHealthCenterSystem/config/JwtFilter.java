@@ -1,7 +1,7 @@
 package com.azathoth.CatmonMalabonHealthCenterSystem.config;
 
-import com.azathoth.CatmonMalabonHealthCenter.service.CustomUserDetailService;
-import com.azathoth.CatmonMalabonHealthCenter.service.JwtService;
+import com.azathoth.CatmonMalabonHealthCenterSystem.service.CustomUserDetailService;
+import com.azathoth.CatmonMalabonHealthCenterSystem.service.JwtService;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
