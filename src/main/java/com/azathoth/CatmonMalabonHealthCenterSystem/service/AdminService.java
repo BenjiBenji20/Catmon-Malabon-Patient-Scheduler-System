@@ -22,7 +22,9 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.HttpClientErrorException;
 
+import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 public class AdminService {
@@ -101,6 +103,9 @@ public class AdminService {
         }
     }
 
+    /**
+     * update doctor endpoint
+     */
     public UpdateDoctorDTO updateDoctor(Long doctorExistingId, UpdateDoctorDTO doctorDTO) {
         Doctor doctor = doctorRepository.findById(doctorExistingId)
                 .orElseThrow(() -> new ResourceNotFoundException("Doctor not found with id: " + doctorExistingId));
@@ -118,5 +123,49 @@ public class AdminService {
                 updatedDoctor.getPassword(),
                 updatedDoctor.getAvailableDays()
         );
+    }
+
+    /**
+     * delete doctor endpoint
+     */
+    public Optional<?> deleteDoctor(Long id) {
+        Doctor doctor = doctorRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Doctor not found with id: " + id));
+
+        // delete the doctor
+        doctorRepository.deleteById(id);
+
+        return Optional.of(true);
+    }
+
+    private DoctorDTO convertToDTO(Doctor doctor) {
+        DoctorDTO doctorDTO = new DoctorDTO();
+
+        doctorDTO.setId(doctor.getId());
+        doctorDTO.setCompleteName(doctor.getCompleteName());
+        doctorDTO.setEmail(doctor.getEmail());
+        doctorDTO.setAvailableDays(doctor.getAvailableDays());
+
+        return doctorDTO;
+    }
+
+    /**
+     * Get all doctors
+     */
+    public List<DoctorDTO> getAllDoctors() {
+        List<Doctor> doctors = doctorRepository.findAll();
+        return doctors.stream()
+                .map(this::convertToDTO)
+                .collect(Collectors.toList());
+    }
+
+    /**
+     * SEARCH doctor
+     */
+    public List<DoctorDTO> searchDoctor(String keyword) {
+        List<Doctor> doctors = doctorRepository.searchDoctor(keyword);
+        return doctors.stream()
+                .map(this::convertToDTO)
+                .collect(Collectors.toList());
     }
 }

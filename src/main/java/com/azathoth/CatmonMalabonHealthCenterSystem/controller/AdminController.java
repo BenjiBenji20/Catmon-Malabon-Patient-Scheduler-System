@@ -12,10 +12,12 @@ import jakarta.validation.Valid;
 import org.hibernate.exception.DataException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
@@ -122,6 +124,46 @@ public class AdminController {
         catch (Exception e) {
             logger.error("Error occurred updating doctor: {}", e.getMessage());
             return ResponseEntity.internalServerError().body(Map.of("error", "Server error"));
+        }
+    }
+
+    /**
+     * DELETE Doctor
+     */
+    @DeleteMapping("/private/delete-doctor/{id}")
+    public ResponseEntity<?> deleteDoctor(@PathVariable Long id) {
+        try {
+            Optional<?> deletedDoctor =  adminService.deleteDoctor(id);
+            List<DoctorDTO> getAllDoctor = adminService.getAllDoctors();
+
+            if(!getAllDoctor.isEmpty()) {
+                messagingTemplate.convertAndSend("/topic/doctors", getAllDoctor);
+                return ResponseEntity.ok().body(Map.of("message", "Delete successfully"));
+            }
+
+            return ResponseEntity.notFound().build();
+        }
+        catch (ResourceNotFoundException e) {
+            return ResponseEntity.notFound().build();
+        }
+        catch (Exception e) {
+            logger.error("Doctor not found by id: {}", e.getMessage());
+            return ResponseEntity.internalServerError().body(Map.of("error", "Server error"));
+        }
+    }
+
+    /**
+     * SEARCH Doctor
+     */
+    @GetMapping("/private/search-doctor")
+    public ResponseEntity<?> searchDoctor(@RequestParam String keyword) {
+        try {
+            logger.info("Searching for doctors with keyword: {}", keyword);
+            List<DoctorDTO> searchDoctor = adminService.searchDoctor(keyword);
+            return ResponseEntity.ok().body(searchDoctor);
+        } catch (Exception ex) {
+            logger.error("Error searching for doctors: ", ex);
+            return ResponseEntity.internalServerError().body("Server Error");
         }
     }
 }
