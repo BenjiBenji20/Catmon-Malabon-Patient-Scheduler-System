@@ -19,6 +19,9 @@ public class DoctorAuthenticationDTO {
         this.password = password;
     }
 
+    public DoctorAuthenticationDTO() {
+    }
+
     public String getEmail() {
         return email;
     }
