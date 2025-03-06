@@ -4,12 +4,14 @@ import com.azathoth.CatmonMalabonHealthCenterSystem.dto.DoctorAuthenticationDTO;
 import com.azathoth.CatmonMalabonHealthCenterSystem.dto.PatientDTO;
 import com.azathoth.CatmonMalabonHealthCenterSystem.exception.ResourceNotFoundException;
 import com.azathoth.CatmonMalabonHealthCenterSystem.service.DoctorService;
+import com.azathoth.CatmonMalabonHealthCenterSystem.utils.Status;
 import jakarta.validation.Valid;
 import org.hibernate.exception.DataException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -21,12 +23,14 @@ import java.util.Optional;
 public class DoctorController {
 
     private final DoctorService doctorService;
+
+    private final SimpMessagingTemplate messagingTemplate;
     private static final Logger logger = LoggerFactory.getLogger(DoctorController.class);
 
-    public DoctorController(DoctorService doctorService) {
+    public DoctorController(DoctorService doctorService, SimpMessagingTemplate messagingTemplate) {
         this.doctorService = doctorService;
+        this.messagingTemplate = messagingTemplate;
     }
-
 
     /**
      * authenticate doctor credentials
@@ -70,6 +74,32 @@ public class DoctorController {
         }
         catch (Exception e) {
             logger.error("Error fetching patients by id: {}", myId, e);
+            return ResponseEntity.internalServerError().body(Map.of("error", "Server error"));
+        }
+    }
+
+    /**
+     * Update patient status
+     * patient id should be from getAllMyPatients() method
+     */
+    @PutMapping("/private/update-patient-status/{patientId}/{newStatus}")
+    public ResponseEntity<?> updatePatientStatus(@PathVariable Long patientId, @PathVariable Status newStatus) {
+        try {
+            Optional<PatientDTO> updatedPatient = doctorService.updatePatientStatus(patientId, newStatus);
+
+            if(updatedPatient.isPresent()) {
+                // Broadcast the updated patient status to all WebSocket /patients subscribers
+                messagingTemplate.convertAndSend("/topic/patients", updatedPatient.get());
+
+                // return the updated patient
+                return ResponseEntity.ok().body(updatedPatient);
+            }
+
+            // return not found response if there's no patient matching by patientId
+            return  ResponseEntity.notFound().build();
+        }
+        catch (Exception e) {
+            logger.error("Error occurred updating patient status: {}", e.getMessage());
             return ResponseEntity.internalServerError().body(Map.of("error", "Server error"));
         }
     }

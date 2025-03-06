@@ -2,12 +2,14 @@ package com.azathoth.CatmonMalabonHealthCenterSystem.service;
 
 import com.azathoth.CatmonMalabonHealthCenterSystem.dto.DoctorAuthenticationDTO;
 import com.azathoth.CatmonMalabonHealthCenterSystem.dto.PatientDTO;
+import com.azathoth.CatmonMalabonHealthCenterSystem.exception.ResourceNotFoundException;
 import com.azathoth.CatmonMalabonHealthCenterSystem.model.Appointment;
 import com.azathoth.CatmonMalabonHealthCenterSystem.model.Doctor;
 import com.azathoth.CatmonMalabonHealthCenterSystem.model.Patient;
 import com.azathoth.CatmonMalabonHealthCenterSystem.repository.AppointmentRepository;
 import com.azathoth.CatmonMalabonHealthCenterSystem.repository.DoctorRepository;
 import com.azathoth.CatmonMalabonHealthCenterSystem.repository.PatientRepository;
+import com.azathoth.CatmonMalabonHealthCenterSystem.utils.Status;
 import jakarta.validation.Valid;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -36,6 +38,9 @@ public class DoctorService {
         this.jwtService = jwtService;
     }
 
+    /**
+     * login endpoint
+     */
     public Optional<?> authenticateDoctor(@Valid DoctorAuthenticationDTO doctorDto) {
         Authentication authenticateDoctor =
                 authenticationManager.authenticate(
@@ -54,6 +59,9 @@ public class DoctorService {
 
     }
 
+    /**
+     * Signed in doctor should pass his id here
+     */
     public List<PatientDTO> getAllMyPatients(Long myId) {
         // get all the appointments for the doctor
         List<Appointment> appointments  = appointmentRepository.findByDoctorId(myId);
@@ -92,5 +100,33 @@ public class DoctorService {
         });
 
         return patientDTOS;
+    }
+
+
+    public Optional<PatientDTO> updatePatientStatus(Long patientId, Status newStatus) {
+        Patient patient = patientRepository.findById(patientId)
+                .orElseThrow(() -> new ResourceNotFoundException("Patient is not found by id: " + patientId));
+
+        patient.getAppointment().setStatus(newStatus);
+
+        Patient updatedPatient = patientRepository.save(patient);
+
+        PatientDTO patientDTO = convertToDTO(updatedPatient);
+
+        return Optional.of(patientDTO);
+    }
+
+    private PatientDTO convertToDTO(Patient patient) {
+        PatientDTO dto = new PatientDTO();
+        dto.setId(patient.getId());
+        dto.setCompleteName(patient.getCompleteName());
+        dto.setGender(patient.getGender());
+        dto.setAddress(patient.getAddress());
+        dto.setAge(patient.getAge());
+        dto.setContactNumber(patient.getContactNumber());
+        dto.setVerificationNumber(patient.getVerificationNumber());
+        dto.setScheduleDate(patient.getAppointment().getScheduleDate());
+        dto.setStatus(patient.getAppointment().getStatus());
+        return dto;
     }
 }
