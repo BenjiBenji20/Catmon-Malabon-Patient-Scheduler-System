@@ -1,6 +1,8 @@
 package com.azathoth.CatmonMalabonHealthCenterSystem.service;
 
 import com.azathoth.CatmonMalabonHealthCenterSystem.controller.AdminController;
+import com.azathoth.CatmonMalabonHealthCenterSystem.dto.AdminAuthenticationDTO;
+import com.azathoth.CatmonMalabonHealthCenterSystem.dto.AdminDTO;
 import com.azathoth.CatmonMalabonHealthCenterSystem.model.Admin;
 import com.azathoth.CatmonMalabonHealthCenterSystem.model.Doctor;
 import com.azathoth.CatmonMalabonHealthCenterSystem.model.PendingDoctor;
@@ -42,12 +44,30 @@ public class AdminService {
         this.jwtService = jwtService;
     }
 
-    public Optional<Admin> createAccount(@Valid Admin admin) {
-        admin.setRole(Role.ADMIN);
+    public Optional<Admin> createAccount(@Valid AdminDTO adminDTO) {
+        Admin admin = adminDTO.convertToAdminEntity(adminDTO);
+
         admin.setPassword(encoder.encode(admin.getPassword()));
 
         // save created admin
         return Optional.of(adminRepository.save(admin));
+    }
+
+    public Optional<?> authenticate(@Valid AdminAuthenticationDTO adminAuthenticationDTO) {
+        Authentication authenticateAdmin =
+                authenticationManager.authenticate(
+                        new UsernamePasswordAuthenticationToken(
+                                adminAuthenticationDTO.getEmail(), adminAuthenticationDTO.getPassword()
+                        )
+                );
+
+        if(authenticateAdmin.isAuthenticated()) {
+            Admin authAdmin = adminRepository.findAdminByEmail(adminAuthenticationDTO.getEmail());
+
+            return Optional.of(jwtService.generateToken(authAdmin.getEmail(), authAdmin.getRole().toString()));
+        }
+
+        return Optional.empty();
     }
 
     public Optional<Doctor> acceptDoctorRequest(Long requestId) {
@@ -78,22 +98,5 @@ public class AdminService {
             logger.error("Pending doctor is not available by id: {}", notFound.getMessage());
             return Optional.empty();
         }
-    }
-
-    public Optional<?> authenticate(Admin admin) {
-        Authentication authenticateAdmin =
-                authenticationManager.authenticate(
-                        new UsernamePasswordAuthenticationToken(
-                                admin.getEmail(), admin.getPassword()
-                        )
-                );
-
-        if(authenticateAdmin.isAuthenticated()) {
-            Admin authAdmin = adminRepository.findAdminByEmail(admin.getEmail());
-
-            return Optional.of(jwtService.generateToken(authAdmin.getEmail(), authAdmin.getRole().toString()));
-        }
-
-        return Optional.empty();
     }
 }

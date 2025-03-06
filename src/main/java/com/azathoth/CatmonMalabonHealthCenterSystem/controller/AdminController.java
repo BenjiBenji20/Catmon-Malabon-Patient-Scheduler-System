@@ -1,5 +1,7 @@
 package com.azathoth.CatmonMalabonHealthCenterSystem.controller;
 
+import com.azathoth.CatmonMalabonHealthCenterSystem.dto.AdminAuthenticationDTO;
+import com.azathoth.CatmonMalabonHealthCenterSystem.dto.AdminDTO;
 import com.azathoth.CatmonMalabonHealthCenterSystem.model.Admin;
 import com.azathoth.CatmonMalabonHealthCenterSystem.model.Doctor;
 import com.azathoth.CatmonMalabonHealthCenterSystem.service.AdminService;
@@ -32,7 +34,7 @@ public class AdminController {
      * required fields for the body: adminName, email and password
      */
     @PostMapping("/public/create")
-    public ResponseEntity<?> createAccount(@Valid @RequestBody Admin admin) {
+    public ResponseEntity<?> createAccount(@Valid @RequestBody AdminDTO admin) {
         try {
             Optional<Admin> newAdmin = adminService.createAccount(admin);
 
@@ -54,9 +56,9 @@ public class AdminController {
      * authenticate admin credentials
      */
     @PostMapping("/public/auth")
-    public ResponseEntity<?> authenticate(@RequestBody Admin admin) {
+    public ResponseEntity<?> authenticate(@Valid @RequestBody AdminAuthenticationDTO adminAuthenticationDTO) {
         try {
-            Optional<?> authenticateAdmin = adminService.authenticate(admin);
+            Optional<?> authenticateAdmin = adminService.authenticate(adminAuthenticationDTO);
 
             if(authenticateAdmin.isPresent()) {
                 return ResponseEntity.ok().body(authenticateAdmin);
