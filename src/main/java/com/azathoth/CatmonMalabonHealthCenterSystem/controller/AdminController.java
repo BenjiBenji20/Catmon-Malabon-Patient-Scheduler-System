@@ -1,9 +1,6 @@
 package com.azathoth.CatmonMalabonHealthCenterSystem.controller;
 
-import com.azathoth.CatmonMalabonHealthCenterSystem.dto.AdminAuthenticationDTO;
-import com.azathoth.CatmonMalabonHealthCenterSystem.dto.AdminDTO;
-import com.azathoth.CatmonMalabonHealthCenterSystem.dto.DoctorDTO;
-import com.azathoth.CatmonMalabonHealthCenterSystem.dto.UpdateDoctorDTO;
+import com.azathoth.CatmonMalabonHealthCenterSystem.dto.*;
 import com.azathoth.CatmonMalabonHealthCenterSystem.exception.ResourceNotFoundException;
 import com.azathoth.CatmonMalabonHealthCenterSystem.model.Admin;
 import com.azathoth.CatmonMalabonHealthCenterSystem.model.Doctor;
@@ -182,6 +179,30 @@ public class AdminController {
         }
         catch (ResourceNotFoundException e) {
             logger.error("No doctor is available: {}", e.getMessage());
+            return ResponseEntity.notFound().build();
+        }
+        catch (Exception e) {
+            return ResponseEntity.internalServerError().body(Map.of("error", "Server error"));
+        }
+    }
+
+    /**
+     * Update patient
+     * ID is important because it is unique in all patient table row.
+     * Update will be based on existing id so id cannot and should not be updated.
+     */
+    @PutMapping("/private/update-patient/{id}")
+    public ResponseEntity<?> updatePatient(@PathVariable Long id, @RequestBody UpdatePatientDTO patient) {
+        try {
+            UpdatePatientDTO updatedPatient = adminService.updatePatient(id, patient);
+
+            // Broadcast the updated patient to all WebSocket subscribers
+            messagingTemplate.convertAndSend("/topic/users", updatedPatient);
+
+            return ResponseEntity.ok().body(Map.of("message", "Update successful"));
+        }
+        catch (ResourceNotFoundException e) {
+            logger.error("Error occurred updating patient: {}", e.getMessage());
             return ResponseEntity.notFound().build();
         }
         catch (Exception e) {

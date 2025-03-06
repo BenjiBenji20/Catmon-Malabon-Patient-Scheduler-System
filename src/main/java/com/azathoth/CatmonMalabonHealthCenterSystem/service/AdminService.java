@@ -1,15 +1,14 @@
 package com.azathoth.CatmonMalabonHealthCenterSystem.service;
 
-import com.azathoth.CatmonMalabonHealthCenterSystem.dto.AdminAuthenticationDTO;
-import com.azathoth.CatmonMalabonHealthCenterSystem.dto.AdminDTO;
-import com.azathoth.CatmonMalabonHealthCenterSystem.dto.DoctorDTO;
-import com.azathoth.CatmonMalabonHealthCenterSystem.dto.UpdateDoctorDTO;
+import com.azathoth.CatmonMalabonHealthCenterSystem.dto.*;
 import com.azathoth.CatmonMalabonHealthCenterSystem.exception.ResourceNotFoundException;
 import com.azathoth.CatmonMalabonHealthCenterSystem.model.Admin;
 import com.azathoth.CatmonMalabonHealthCenterSystem.model.Doctor;
+import com.azathoth.CatmonMalabonHealthCenterSystem.model.Patient;
 import com.azathoth.CatmonMalabonHealthCenterSystem.model.PendingDoctor;
 import com.azathoth.CatmonMalabonHealthCenterSystem.repository.AdminRepository;
 import com.azathoth.CatmonMalabonHealthCenterSystem.repository.DoctorRepository;
+import com.azathoth.CatmonMalabonHealthCenterSystem.repository.PatientRepository;
 import com.azathoth.CatmonMalabonHealthCenterSystem.repository.PendingDoctorRepository;
 import com.azathoth.CatmonMalabonHealthCenterSystem.utils.Role;
 import jakarta.validation.Valid;
@@ -32,16 +31,18 @@ public class AdminService {
     private final PendingDoctorRepository pendingDoctorRepository;
     private final DoctorRepository doctorRepository;
     private final AdminRepository adminRepository;
+    private final PatientRepository patientRepository;
 
     private static final Logger logger = LoggerFactory.getLogger(AdminService.class);
     private final PasswordEncoder encoder;
     private final AuthenticationManager authenticationManager;
     private final JwtService jwtService;
 
-    public AdminService(PendingDoctorRepository pendingDoctorRepository, DoctorRepository doctorRepository, AdminRepository adminRepository, PasswordEncoder encoder, AuthenticationManager authenticationManager, JwtService jwtService) {
+    public AdminService(PendingDoctorRepository pendingDoctorRepository, DoctorRepository doctorRepository, AdminRepository adminRepository, PatientRepository patientRepository, PasswordEncoder encoder, AuthenticationManager authenticationManager, JwtService jwtService) {
         this.pendingDoctorRepository = pendingDoctorRepository;
         this.doctorRepository = doctorRepository;
         this.adminRepository = adminRepository;
+        this.patientRepository = patientRepository;
         this.encoder = encoder;
         this.authenticationManager = authenticationManager;
         this.jwtService = jwtService;
@@ -115,13 +116,13 @@ public class AdminService {
         doctor.setPassword(encoder.encode(doctorDTO.getNewPassword()));
         doctor.setAvailableDays(doctorDTO.getNewAvailableDays());
 
-        Doctor updatedDoctor = doctorRepository.save(doctor);
+        doctorRepository.save(doctor);
 
         // Convert back to DTO before returning
         return new UpdateDoctorDTO(
-                updatedDoctor.getCompleteName(),
-                updatedDoctor.getPassword(),
-                updatedDoctor.getAvailableDays()
+                doctor.getCompleteName(),
+                doctor.getPassword(),
+                doctor.getAvailableDays()
         );
     }
 
@@ -167,5 +168,26 @@ public class AdminService {
         return doctors.stream()
                 .map(this::convertToDTO)
                 .collect(Collectors.toList());
+    }
+
+    public UpdatePatientDTO updatePatient(Long id, UpdatePatientDTO patient) {
+        Patient patientToBeUpdate = patientRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Patient not found with id: " + id));
+
+        // Map fields from DTO to Entity
+        patientToBeUpdate.setCompleteName(patient.getNewCompleteName());
+        patientToBeUpdate.setGender(patient.getNewGender());
+        patientToBeUpdate.setAddress(patient.getNewAddress());
+        patientToBeUpdate.setAge(patient.getNewAge());
+
+        patientRepository.save(patientToBeUpdate);
+
+        // Convert back to DTO before returning
+        return new UpdatePatientDTO(
+                patientToBeUpdate.getCompleteName(),
+                patientToBeUpdate.getGender(),
+                patientToBeUpdate.getAddress(),
+                patientToBeUpdate.getAge()
+        );
     }
 }
