@@ -129,14 +129,12 @@ public class AdminService {
     /**
      * delete doctor endpoint
      */
-    public Optional<?> deleteDoctor(Long id) {
+    public void deleteDoctor(Long id) {
         Doctor doctor = doctorRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Doctor not found with id: " + id));
 
         // delete the doctor
         doctorRepository.deleteById(id);
-
-        return Optional.of(true);
     }
 
     private DoctorDTO convertToDTO(Doctor doctor) {

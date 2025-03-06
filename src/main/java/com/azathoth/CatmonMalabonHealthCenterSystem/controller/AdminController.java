@@ -131,23 +131,24 @@ public class AdminController {
     @DeleteMapping("/private/delete-doctor/{id}")
     public ResponseEntity<?> deleteDoctor(@PathVariable Long id) {
         try {
-            Optional<?> deletedDoctor =  adminService.deleteDoctor(id);
+            // delete the doctor
+            adminService.deleteDoctor(id);
+
+            // fetch all the doctors
             List<DoctorDTO> getAllDoctor = adminService.getAllDoctors();
 
-            if(deletedDoctor.isPresent()) {
-                // Broadcast the deleted doctor to all WebSocket subscribers
-                messagingTemplate.convertAndSend("/topic/doctors", getAllDoctor);
-                return ResponseEntity.ok().body(Map.of("message", "Delete successfully"));
-            }
+            // Broadcast the deleted doctor to all WebSocket subscribers
+            messagingTemplate.convertAndSend("/topic/doctors", getAllDoctor);
 
-            return ResponseEntity.notFound().build();
+            return ResponseEntity.ok().body(Map.of("message", "Delete successfully"));
         }
         catch (ResourceNotFoundException e) {
-            return ResponseEntity.notFound().build();
+            logger.error("Doctor not found by id: {}", id, e);
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(Map.of("error", "Doctor not found with id: " + id));
         }
         catch (Exception e) {
-            logger.error("Doctor not found by id: {}", e.getMessage());
-            return ResponseEntity.internalServerError().body(Map.of("error", "Server error"));
+            logger.error("Error deleting patient with id: {}", id, e);
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(Map.of("error", "An error occurred while deleting the doctor"));
         }
     }
 
@@ -175,7 +176,7 @@ public class AdminController {
             List<DoctorDTO> allDoctors = adminService.getAllDoctors();
 
             return allDoctors.isEmpty() ?
-                    ResponseEntity.noContent().build():
+                    ResponseEntity.noContent().build() :
                     ResponseEntity.ok().body(allDoctors);
         }
         catch (ResourceNotFoundException e) {
@@ -235,6 +236,27 @@ public class AdminController {
         catch (Exception e) {
             logger.error("Error deleting patient with id: {}", id, e);
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(Map.of("error", "An error occurred while deleting the patient"));
+        }
+    }
+
+    /**
+     * GET all patients
+     */
+    @GetMapping("/private/get-all-patients")
+    public ResponseEntity<?> getAllPatient() {
+        try {
+            List<PatientDTO> allPatients = adminService.getAllPatients();
+
+            return allPatients.isEmpty() ?
+                    ResponseEntity.noContent().build() :
+                    ResponseEntity.ok().body(allPatients);
+        }
+        catch (ResourceNotFoundException e) {
+            logger.error("No patient is available: {}", e.getMessage());
+            return ResponseEntity.notFound().build();
+        }
+        catch (Exception e) {
+            return ResponseEntity.internalServerError().body(Map.of("error", "Server error"));
         }
     }
 }
