@@ -225,4 +225,12 @@ public class AdminService {
         // Delete the patient
         patientRepository.deleteById(id);
     }
+
+    public Optional<List<PatientDTO>> filterPatient(String gender, Integer age, String status) {
+        List<Patient> filterResult = patientRepository.filterPatient(gender, age, status);
+
+        return Optional.of(filterResult.stream()
+                .map(this::convertToDTO)
+                .collect(Collectors.toList()));
+    }
 }

@@ -259,4 +259,31 @@ public class AdminController {
             return ResponseEntity.internalServerError().body(Map.of("error", "Server error"));
         }
     }
+
+    /**
+     * Filter table
+     * @RequestParam(required = false) makes the
+     * parameter binding flexible by not requiring each
+     * parameter to have value.
+     */
+    @GetMapping("/private/filter")
+    public ResponseEntity<?> filterPatient(
+            @RequestParam(required = false) String gender,
+            @RequestParam(required = false) Integer age,
+            @RequestParam(required = false) String status
+    ) {
+        try {
+            Optional<List<PatientDTO>> filterPatient = adminService.filterPatient(gender, age, status);
+
+            return filterPatient.isEmpty() ?
+                    ResponseEntity.noContent().build() :
+                    ResponseEntity.ok().body(filterPatient);
+        }
+        catch (ResourceNotFoundException e) {
+            return ResponseEntity.notFound().build();
+        }
+        catch (Exception e) {
+            return ResponseEntity.internalServerError().body(Map.of("error", "Server error"));
+        }
+    }
 }
