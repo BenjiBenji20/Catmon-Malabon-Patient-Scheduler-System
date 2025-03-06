@@ -134,7 +134,8 @@ public class AdminController {
             Optional<?> deletedDoctor =  adminService.deleteDoctor(id);
             List<DoctorDTO> getAllDoctor = adminService.getAllDoctors();
 
-            if(!getAllDoctor.isEmpty()) {
+            if(deletedDoctor.isPresent()) {
+                // Broadcast the deleted doctor to all WebSocket subscribers
                 messagingTemplate.convertAndSend("/topic/doctors", getAllDoctor);
                 return ResponseEntity.ok().body(Map.of("message", "Delete successfully"));
             }
@@ -197,7 +198,7 @@ public class AdminController {
             UpdatePatientDTO updatedPatient = adminService.updatePatient(id, patient);
 
             // Broadcast the updated patient to all WebSocket subscribers
-            messagingTemplate.convertAndSend("/topic/users", updatedPatient);
+            messagingTemplate.convertAndSend("/topic/patients", updatedPatient);
 
             return ResponseEntity.ok().body(Map.of("message", "Update successful"));
         }
@@ -207,6 +208,33 @@ public class AdminController {
         }
         catch (Exception e) {
             return ResponseEntity.internalServerError().body(Map.of("error", "Server error"));
+        }
+    }
+
+    /**
+     * Delete patient by ID
+     */
+    @DeleteMapping("/private/delete-patient/{id}")
+    public ResponseEntity<?> deletePatient(@PathVariable Long id) {
+        try {
+            // Delete the patient
+            adminService.deletePatient(id);
+
+            // Fetch all remaining patients after deletion
+            List<PatientDTO> getAllPatients = adminService.getAllPatients();
+
+            // Broadcast the updated list of patients to all WebSocket subscribers
+            messagingTemplate.convertAndSend("/topic/patients", getAllPatients);
+
+            return ResponseEntity.ok().body(Map.of("message", "Patient deleted successfully"));
+        }
+        catch (ResourceNotFoundException e) {
+            logger.error("Patient not found by id: {}", id, e);
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(Map.of("error", "Patient not found with id: " + id));
+        }
+        catch (Exception e) {
+            logger.error("Error deleting patient with id: {}", id, e);
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(Map.of("error", "An error occurred while deleting the patient"));
         }
     }
 }
