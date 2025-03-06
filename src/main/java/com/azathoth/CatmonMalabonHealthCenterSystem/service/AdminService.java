@@ -150,20 +150,20 @@ public class AdminService {
     }
 
     /**
-     * Get all doctors
+     * SEARCH doctor
      */
-    public List<DoctorDTO> getAllDoctors() {
-        List<Doctor> doctors = doctorRepository.findAll();
+    public List<DoctorDTO> searchDoctor(String keyword) {
+        List<Doctor> doctors = doctorRepository.searchDoctor(keyword);
         return doctors.stream()
                 .map(this::convertToDTO)
                 .collect(Collectors.toList());
     }
 
     /**
-     * SEARCH doctor
+     * Get all doctors
      */
-    public List<DoctorDTO> searchDoctor(String keyword) {
-        List<Doctor> doctors = doctorRepository.searchDoctor(keyword);
+    public List<DoctorDTO> getAllDoctors() {
+        List<Doctor> doctors = doctorRepository.findAll();
         return doctors.stream()
                 .map(this::convertToDTO)
                 .collect(Collectors.toList());

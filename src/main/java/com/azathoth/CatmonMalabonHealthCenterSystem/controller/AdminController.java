@@ -16,6 +16,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.resource.NoResourceFoundException;
 
 import java.util.List;
 import java.util.Map;
@@ -164,6 +165,27 @@ public class AdminController {
         } catch (Exception ex) {
             logger.error("Error searching for doctors: ", ex);
             return ResponseEntity.internalServerError().body("Server Error");
+        }
+    }
+
+    /**
+     * Get all doctors
+     */
+    @GetMapping("/private/get-all-doctors")
+    public ResponseEntity<?> getAllDoctors() {
+        try {
+            List<DoctorDTO> allDoctors = adminService.getAllDoctors();
+
+            return allDoctors.isEmpty() ?
+                    ResponseEntity.noContent().build():
+                    ResponseEntity.ok().body(allDoctors);
+        }
+        catch (ResourceNotFoundException e) {
+            logger.error("No doctor is available: {}", e.getMessage());
+            return ResponseEntity.notFound().build();
+        }
+        catch (Exception e) {
+            return ResponseEntity.internalServerError().body(Map.of("error", "Server error"));
         }
     }
 }
