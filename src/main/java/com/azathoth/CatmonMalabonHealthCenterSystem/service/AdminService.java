@@ -1,8 +1,10 @@
 package com.azathoth.CatmonMalabonHealthCenterSystem.service;
 
-import com.azathoth.CatmonMalabonHealthCenterSystem.controller.AdminController;
 import com.azathoth.CatmonMalabonHealthCenterSystem.dto.AdminAuthenticationDTO;
 import com.azathoth.CatmonMalabonHealthCenterSystem.dto.AdminDTO;
+import com.azathoth.CatmonMalabonHealthCenterSystem.dto.DoctorDTO;
+import com.azathoth.CatmonMalabonHealthCenterSystem.dto.UpdateDoctorDTO;
+import com.azathoth.CatmonMalabonHealthCenterSystem.exception.ResourceNotFoundException;
 import com.azathoth.CatmonMalabonHealthCenterSystem.model.Admin;
 import com.azathoth.CatmonMalabonHealthCenterSystem.model.Doctor;
 import com.azathoth.CatmonMalabonHealthCenterSystem.model.PendingDoctor;
@@ -16,7 +18,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.parameters.P;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.HttpClientErrorException;
@@ -98,5 +99,24 @@ public class AdminService {
             logger.error("Pending doctor is not available by id: {}", notFound.getMessage());
             return Optional.empty();
         }
+    }
+
+    public UpdateDoctorDTO updateDoctor(Long doctorExistingId, UpdateDoctorDTO doctorDTO) {
+        Doctor doctor = doctorRepository.findById(doctorExistingId)
+                .orElseThrow(() -> new ResourceNotFoundException("Doctor not found with id: " + doctorExistingId));
+
+        // Map fields from DTO to Entity
+        doctor.setCompleteName(doctorDTO.getNewCompleteName());
+        doctor.setPassword(encoder.encode(doctorDTO.getNewPassword()));
+        doctor.setAvailableDays(doctorDTO.getNewAvailableDays());
+
+        Doctor updatedDoctor = doctorRepository.save(doctor);
+
+        // Convert back to DTO before returning
+        return new UpdateDoctorDTO(
+                updatedDoctor.getCompleteName(),
+                updatedDoctor.getPassword(),
+                updatedDoctor.getAvailableDays()
+        );
     }
 }

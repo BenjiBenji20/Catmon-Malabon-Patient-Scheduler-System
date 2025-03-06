@@ -1,10 +1,7 @@
 package com.azathoth.CatmonMalabonHealthCenterSystem.dto;
 
 import com.azathoth.CatmonMalabonHealthCenterSystem.utils.AvailableDay;
-import jakarta.validation.constraints.Email;
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.Pattern;
-import jakarta.validation.constraints.Size;
+import jakarta.validation.constraints.*;
 
 public class DoctorDTO {
     private long id;
@@ -19,7 +16,7 @@ public class DoctorDTO {
     @Email(message = "Please use an email")
     private String email;
 
-    @NotBlank(message = "Specify your available day/s")
+    @NotEmpty(message = "Specify your available day/s")
     private AvailableDay[] availableDays;
 
     public DoctorDTO(long id, String completeName, String email, AvailableDay[] availableDays) {
