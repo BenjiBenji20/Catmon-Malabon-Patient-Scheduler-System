@@ -6,8 +6,10 @@ import com.azathoth.CatmonMalabonHealthCenterSystem.exception.ResourceNotFoundEx
 import com.azathoth.CatmonMalabonHealthCenterSystem.model.Appointment;
 import com.azathoth.CatmonMalabonHealthCenterSystem.model.Doctor;
 import com.azathoth.CatmonMalabonHealthCenterSystem.model.Patient;
+import com.azathoth.CatmonMalabonHealthCenterSystem.model.PatientRecord;
 import com.azathoth.CatmonMalabonHealthCenterSystem.repository.AppointmentRepository;
 import com.azathoth.CatmonMalabonHealthCenterSystem.repository.DoctorRepository;
+import com.azathoth.CatmonMalabonHealthCenterSystem.repository.PatientRecordRepository;
 import com.azathoth.CatmonMalabonHealthCenterSystem.repository.PatientRepository;
 import com.azathoth.CatmonMalabonHealthCenterSystem.utils.Status;
 import jakarta.validation.Valid;
@@ -26,14 +28,16 @@ public class DoctorService {
     private final DoctorRepository doctorRepository;
     private final AppointmentRepository appointmentRepository;
     private final PatientRepository patientRepository;
+    private final PatientRecordRepository patientRecordRepository;
 
     private final AuthenticationManager authenticationManager;
     private final JwtService jwtService;
 
-    public DoctorService(DoctorRepository doctorRepository, AppointmentRepository appointmentRepository, PatientRepository patientRepository, AuthenticationManager authenticationManager, JwtService jwtService) {
+    public DoctorService(DoctorRepository doctorRepository, AppointmentRepository appointmentRepository, PatientRepository patientRepository, PatientRecordRepository patientRecordRepository, AuthenticationManager authenticationManager, JwtService jwtService) {
         this.doctorRepository = doctorRepository;
         this.appointmentRepository = appointmentRepository;
         this.patientRepository = patientRepository;
+        this.patientRecordRepository = patientRecordRepository;
         this.authenticationManager = authenticationManager;
         this.jwtService = jwtService;
     }
@@ -128,5 +132,40 @@ public class DoctorService {
         dto.setScheduleDate(patient.getAppointment().getScheduleDate());
         dto.setStatus(patient.getAppointment().getStatus());
         return dto;
+    }
+
+    /**
+     * pass json value pair: attended:boolean, prescription, string, diagnosis: string
+     */
+    public Optional<PatientRecord> createPatientRecord(Long patientId, PatientRecord record) {
+        Patient patient = patientRepository.findById(patientId)
+                .orElseThrow(() -> new ResourceNotFoundException("Patient is not found by id: " + patientId));
+
+        Appointment appointment = patient.getAppointment();
+
+        if (appointment == null) {
+            return Optional.empty();
+        }
+
+        PatientRecord patientRecord = patientRecordRepository.findAppointmentById(patient.getAppointment().getId());
+        if(patientRecord == null) {
+            patientRecord = new PatientRecord(
+                    appointment,
+                    record.isAttended(),
+                    record.getPrescription(),
+                    record.getDiagnosis(),
+                    null
+            );
+            // Set the bidirectional relationship
+            appointment.setPatientRecord(patientRecord);
+        }
+
+        patientRecord.setAttended(record.isAttended());
+        patientRecord.setDiagnosis(record.getDiagnosis());
+        patientRecord.setPrescription(record.getPrescription());
+
+        PatientRecord recorded = patientRecordRepository.save(patientRecord);
+
+        return Optional.of(recorded);
     }
 }

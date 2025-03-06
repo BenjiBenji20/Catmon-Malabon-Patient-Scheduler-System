@@ -3,6 +3,7 @@ package com.azathoth.CatmonMalabonHealthCenterSystem.controller;
 import com.azathoth.CatmonMalabonHealthCenterSystem.dto.DoctorAuthenticationDTO;
 import com.azathoth.CatmonMalabonHealthCenterSystem.dto.PatientDTO;
 import com.azathoth.CatmonMalabonHealthCenterSystem.exception.ResourceNotFoundException;
+import com.azathoth.CatmonMalabonHealthCenterSystem.model.PatientRecord;
 import com.azathoth.CatmonMalabonHealthCenterSystem.service.DoctorService;
 import com.azathoth.CatmonMalabonHealthCenterSystem.utils.Status;
 import jakarta.validation.Valid;
@@ -101,6 +102,29 @@ public class DoctorController {
         catch (Exception e) {
             logger.error("Error occurred updating patient status: {}", e.getMessage());
             return ResponseEntity.internalServerError().body(Map.of("error", "Server error"));
+        }
+    }
+
+    /**
+     * Create a patient record
+     */
+    @PostMapping("/private/patient-record/{patientId}")
+    public ResponseEntity<?> createPatientRecord(@PathVariable Long patientId, @RequestBody PatientRecord record) {
+        try {
+            Optional<PatientRecord> patientRecord = doctorService.createPatientRecord(patientId, record);
+
+            if(patientRecord.isPresent()) {
+                // Broadcast the new patient record to all WebSocket /records subscribers
+                messagingTemplate.convertAndSend("/topic/records", patientRecord.get());
+                return ResponseEntity.ok().body(patientRecord);
+            }
+
+            // return not found response if there's no patient matching by patientId
+            return  ResponseEntity.notFound().build();
+        }
+        catch (Exception e) {
+            logger.error("An error occurred creating patient record: {}", e.getMessage());
+            return ResponseEntity.internalServerError().body(Map.of("error", "An error occurred creating patient record"));
         }
     }
 }
