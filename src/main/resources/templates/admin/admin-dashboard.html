@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin Dash Board</title>
+  <!--Bootstrap Link-->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css"> 
+</head>
+  <body>
+    <div class="wrapper">
+      <aside class="left-panel">
+        <i class="bi bi-layout-sidebar-reverse" data-bs-toggle="offcanvas" data-bs-target="#offcanvasScrolling" aria-controls="offcanvasScrolling" title="open side panel"></i> <!--OPEN SIDE CANVAS/PANEL-->
+        <div class="offcanvas offcanvas-start" data-bs-scroll="true" data-bs-backdrop="false" tabindex="-1" id="offcanvasScrolling" aria-labelledby="offcanvasScrollingLabel">
+          <div class="offcanvas-header admin-profile-container">
+            <i class="bi bi-person-circle"></i>
+            <span id="admin-name-js">Admin name</span>
+            <!--CLOSE SIDE CANVAS/PANEL BUTTON-->
+            <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+          </div>
+          <div class="line-dash"></div>
+
+          <div class="co-admin-list">
+            <a data-bs-toggle="collapse" href="#admin-list-collapse" role="button" aria-expanded="false" aria-controls="admin-list-collapse">Co-admins</a>
+            <div class="row">
+              <div class="col">
+                <div class="collapse multi-collapse" id="admin-list-collapse">
+                  <div class="card card-body">
+                    <ul class="list-group list-group-flush">
+                      <li class="list-group-item" data-set-="admin-id">Admin 1</li>
+                    </ul>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="line-dash"></div>
+
+          <div class="doctors-list">
+            <a data-bs-toggle="collapse" href="#doctors-list-collapse" role="button" aria-expanded="false" aria-controls="doctors-list-collapse">Available Doctors</a>
+            <div class="row">
+              <div class="col">
+                <div class="collapse multi-collapse" id="doctors-list-collapse">
+                  <div class="card card-body">
+                    <ul class="list-group list-group-flush">
+                      <li class="list-group-item" data-set-="doctor-id">Doctor 1</li>
+                    </ul>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="line-dash"></div>
+
+          <div class="pending-doctors-list">
+            <a data-bs-toggle="collapse" href="#pending-doctors-list-collapse" role="button" aria-expanded="false" aria-controls="pending-doctors-list-collapse">Pending Doctors</a>
+            <div class="row">
+              <div class="col">
+                <div class="collapse multi-collapse" id="pending-doctors-list-collapse">
+                  <div class="card card-body">
+                    <ul class="list-group list-group-flush">
+                      <li class="list-group-item" data-set-="pending-doctor-id">Pending Doctor 1</li>
+                    </ul>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </aside>
+
+      <main class="right-panel">
+        <nav class="-right-panel-header">
+          <ul class="nav">
+            <li class="nav-item">
+              <a href="#patients-profile-tab">
+                <i class="bi bi-person-arms-up"></i>
+                Patient's Profile
+              </a>
+            </li>
+            <li class="nav-item">
+              <a href="#appointment-list-tab">
+                <i class="bi bi-hospital"></i>
+                Appointment List
+              </a>
+            </li>
+          </ul>
+        </nav>
+
+        <section class="health-center-logo">
+          <img src="../../static/images/catmonlogo.png" alt="Health center logo">
+          <h2>
+            Catmon Super Health Center
+          </h2>
+        </section>
+
+        <section class="table-data">
+          <div class="table-controllers">
+            <fieldset>
+              <!-- SEARCH INPUT -->
+              <form class="d-flex" role="search" id="table-search-js">
+                <i class="bi bi-search"></i>
+                <input class="form-control me-2" type="search" placeholder="Search Patient" aria-label="Search">
+              </form>
+
+              <!-- FILTER BUTTON -->
+              <div class="bi bi-filter-square">
+                Filter
+                <form role="table-filter" id="table-filter-js">
+                  <input type="text" id="filter-gender" placeholder="Filter by gender">
+                  <input type="number" id="filter-age" placeholder="Filter by age">
+                  <input type="text" id="filter-status" placeholder="Filter by status eg. DONE">
+                </form>
+              </div>
+
+              <!-- DELETE ROWS -->
+              <button type="button" class="btn btn-danger">
+                <i class="bi bi-trash3"></i>
+                Delete
+              </button>
+            </fieldset>
+          </div>
+
+
+          <table class="table table-hover">
+            <thead class="patient-profile-table-head-js">
+              <tr>
+                <th>ID</th>
+                <th>Email Address</th>
+                <th>Complete Name</th>
+                <th>Home Address</th>
+                <th>Gender</th>
+                <th>Age</th>
+                <th>Status</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>1</td>
+                <td>john.doe@email.com</td>
+                <td>John Doe</td>
+                <td>123 Main st. Manila</td>
+                <td>Male</td>
+                <td>29</td>
+                <td>PENDING</td>
+                <td>
+                  <input type="checkbox" id="select-patient-data">
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </section>
+      </main>
+      
+    </div>
+
+    <!-- Bootstrap link -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+
+    <!-- JS LINK -->
+    <script type="module" src="../../static/javascripts/admin/controller/admin-dash-board-controller.js"></script>
+  </body>
+</html>

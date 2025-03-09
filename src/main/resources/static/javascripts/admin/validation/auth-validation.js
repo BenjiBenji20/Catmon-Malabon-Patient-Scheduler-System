@@ -1,5 +1,5 @@
 // Listen for the form submission event
-document.getElementById("form-login").addEventListener("submit", (event) => {
+document.getElementById("login-form").addEventListener("submit", (event) => {
   event.preventDefault();  // Prevent form submission
 
   // Get values from the input fields

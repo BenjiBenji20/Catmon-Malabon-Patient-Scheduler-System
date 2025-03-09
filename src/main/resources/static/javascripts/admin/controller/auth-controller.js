@@ -1,31 +1,32 @@
-import { adminAuthenticationView } from "../view/auth-view.js";
 import { AdminServiceAPI } from "../service/admin-service.js";
 
 /**
  * Login form submit button event
  */
-export function authenticationFormController() {
-  document.getElementById("form-login").addEventListener('submit', async(e) => {
-    e.preventDefault(); // prevent login without inputing all fields
+  // add event to track the login form fields
+  const loginForm = document.getElementById("login-form");
+  loginForm.addEventListener('submit', async(e) => {
+  e.preventDefault(); // prevent login without inputing all fields
 
-    // collects all admin inputs
-    const adminCredentials = {
-      email: document.getElementById("email").value,
-      password: document.getElementById("password").value
-    };
+  // collects all admin inputs
+  const adminCredentials = {
+    email: document.getElementById("email").value,
+    password: document.getElementById("password").value
+  };
 
-    try {
-      const result = await AdminServiceAPI.authAdminService(adminCredentials);
+  try {
+    const response = await AdminServiceAPI.authenticateAdmin(adminCredentials);
 
-      console.log('In controller: ', result);
-    } 
-    catch (error) {
-      console.error('Error login the admin', error);
-      throw error;
+    // if authentication failed, stay on the same page and sends a response
+    if(response.error) {
+      document.querySelector('.message').innerHTML = response.error;
+      return;
     }
-  });
-}
-
-const containerElement = document.querySelector('.container');
-containerElement.innerHTML = adminAuthenticationView();
-authenticationFormController(); // Call after rendering
+    
+    window.location.href = 'admin-dashboard.html';
+  } 
+  catch (error) {
+    console.error('Error login the admin', error);
+    throw error;
+  }
+});
