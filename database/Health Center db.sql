@@ -12,6 +12,8 @@ SELECT * FROM admin;
 
 SELECT * FROM doctor;
 
+SELECT * FROM patient_record;
+
 SELECT * FROM doctor_available_days;
 
 SELECT * FROM appointment;

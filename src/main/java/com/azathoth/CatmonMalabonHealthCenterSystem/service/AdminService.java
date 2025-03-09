@@ -17,6 +17,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.HttpClientErrorException;
@@ -58,20 +59,25 @@ public class AdminService {
     }
 
     public Optional<?> authenticate(@Valid AdminAuthenticationDTO adminAuthenticationDTO) {
-        Authentication authenticateAdmin =
-                authenticationManager.authenticate(
-                        new UsernamePasswordAuthenticationToken(
-                                adminAuthenticationDTO.getEmail(), adminAuthenticationDTO.getPassword()
-                        )
-                );
+        try {
+            Authentication authenticateAdmin =
+                    authenticationManager.authenticate(
+                            new UsernamePasswordAuthenticationToken(
+                                    adminAuthenticationDTO.getEmail(), adminAuthenticationDTO.getPassword()
+                            )
+                    );
 
-        if(authenticateAdmin.isAuthenticated()) {
-            Admin authAdmin = adminRepository.findAdminByEmail(adminAuthenticationDTO.getEmail());
+            if(authenticateAdmin.isAuthenticated()) {
+                Admin authAdmin = adminRepository.findAdminByEmail(adminAuthenticationDTO.getEmail());
 
-            return Optional.of(jwtService.generateToken(authAdmin.getEmail(), authAdmin.getRole().toString()));
+                return Optional.of(jwtService.generateToken(authAdmin.getEmail(), authAdmin.getRole().toString()));
+            }
+
+            return Optional.empty();
         }
-
-        return Optional.empty();
+        catch (AuthenticationException e) {
+            return Optional.empty();
+        }
     }
 
     public Optional<Doctor> acceptDoctorRequest(Long requestId) {

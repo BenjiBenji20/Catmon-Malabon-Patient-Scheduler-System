@@ -6,12 +6,12 @@ import jakarta.validation.constraints.Size;
 
 public class AdminAuthenticationDTO {
     @NotBlank(message = "Email cannot be empty")
-    @Size(min = 2, max = 255, message = "Email must be between 100 characters")
+    @Size(min = 2, max = 255, message = "Invalid email or password")
     @Email(message = "Please use an email")
     private String email;
 
     @NotBlank(message = "Please provide a password")
-    @Size(min = 8, max = 255, message = "Please provide a strong password")
+    @Size(min = 8, max = 255, message = "Invalid email or password")
     private String password;
 
     public AdminAuthenticationDTO(String email, String password) {

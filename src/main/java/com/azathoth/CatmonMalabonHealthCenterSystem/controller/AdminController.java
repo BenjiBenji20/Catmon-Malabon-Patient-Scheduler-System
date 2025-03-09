@@ -12,8 +12,8 @@ import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
+import org.springframework.security.core.AuthenticationException;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.servlet.resource.NoResourceFoundException;
 
 import java.util.List;
 import java.util.Map;
@@ -21,6 +21,7 @@ import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/admin")
+@CrossOrigin(origins = "http://127.0.0.1:5500")
 public class AdminController {
     private final AdminService adminService;
     private static final Logger logger = LoggerFactory.getLogger(AdminController.class);
@@ -62,11 +63,9 @@ public class AdminController {
         try {
             Optional<?> authenticateAdmin = adminService.authenticate(adminAuthenticationDTO);
 
-            if(authenticateAdmin.isPresent()) {
-                return ResponseEntity.ok().body(authenticateAdmin);
-            }
-
-            return ResponseEntity.badRequest().body(Map.of("error", "Invalid email or password"));
+            return authenticateAdmin.isEmpty() ?
+                    ResponseEntity.badRequest().body(Map.of("error", "Invalid email or password")):
+                    ResponseEntity.ok().body(authenticateAdmin);
         }
         catch (DataException dataException) {
             logger.error("Admin does not exist by id: {}", dataException.getMessage());
