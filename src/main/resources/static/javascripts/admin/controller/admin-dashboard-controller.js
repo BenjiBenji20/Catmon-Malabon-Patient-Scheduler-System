@@ -1,6 +1,22 @@
 import { AdminServiceAPI } from "../service/admin-service.js";
 
-//loadDoctorsList();
+export async function loadAdminProfile() {
+  try {
+    // get the loaded data from service
+    const data = await AdminServiceAPI.getAdminProfile();
+
+    // if error happens
+    if(data.error) {
+      document.querySelector('#admin-name-js').innerHTML = data.error;
+      return;
+    }
+
+    return data;
+  } catch (error) {
+    console.error('Error fetching data', error);
+    throw error;
+  }
+}
 
 export async function loadAdminList() {
   try {

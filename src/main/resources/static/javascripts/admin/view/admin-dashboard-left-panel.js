@@ -1,8 +1,54 @@
-import { loadDoctorsList, loadPendingDoctorsList, loadAdminList } from '../controller/admin-dashboard-controller.js';
+import { loadDoctorsList, loadPendingDoctorsList, loadAdminList,
+  loadAdminProfile
+ } from '../controller/admin-dashboard-controller.js';
 
-displayAdminList() // display to render all admins
+displayAdminProfile(); // display to render admin profile
+displayAdminList(); // display to render all admins
 displayDoctorList(); // display to render all doctors
 displayPendingDoctorList(); // display to render all pending doctors
+
+/**
+ * Render admin profile
+ * admin name, admin email
+ */
+async function displayAdminProfile() {
+  try {
+    const adminData = await loadAdminProfile();
+
+    // get admin profile element
+    const adminProfileElement = document.querySelector('.admin-name-js');
+
+    // validate data
+    if(adminData.error) {
+      adminProfileElement.innerHTML = adminData.error;
+      return;
+    }
+
+    // get the profile container
+    const profileContainer = document.querySelector('.profile-container');
+
+    // render data and append to html element using .innerHTML
+    profileContainer.innerHTML = `
+        <div class="profile-container">
+            <div class="offcanvas-header admin-profile-container">
+              <i class="bi bi-person-circle"></i>
+              <div id="admin-name-js">
+                ${adminData.adminName}
+              </div>
+              <!--CLOSE SIDE CANVAS/PANEL BUTTON-->
+              <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+            </div>
+            <div id="admin-email-js">
+              ${adminData.email}
+            </div>
+          </div>
+      `;
+  } catch (error) {
+    console.error('Error displaying doctors list:', error);
+    document.querySelector('#admin-name-js').innerHTML = 'Failed to load doctors list.';
+    document.querySelector('#admin-email-js').innerHTML = 'Failed to load doctors list.';
+  }
+}
 
 /**
  * Render admin list

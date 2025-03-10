@@ -36,6 +36,12 @@ public class AdminDTO {
         this.role = role;
     }
 
+    public AdminDTO(Long id, String adminName, String email) {
+        this.id = id;
+        this.adminName = adminName;
+        this.email = email;
+    }
+
     public AdminDTO() {
     }
 

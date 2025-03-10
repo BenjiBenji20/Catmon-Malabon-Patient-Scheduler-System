@@ -75,6 +75,31 @@ public class AdminController {
     }
 
     /**
+     * GET admin profile (get the current profile of logged admin)
+     * used the header to extract admin data using jwt token.
+     */
+    @GetMapping("/private/get-admin-profile")
+    public ResponseEntity<?> getAdminProfile(@RequestHeader("Authorization") String authHeader) {
+        try {
+            // Extract token from header
+            String token = authHeader.replace("Bearer ", "");
+
+            // extract admin profile
+            Optional<AdminDTO> adminProfile = adminService.getAdminProfile(token);
+
+            return adminProfile.isEmpty() ?
+                    ResponseEntity.notFound().build() :
+                    ResponseEntity.ok(adminProfile);
+        }
+        catch (DataException dataException) {
+            return ResponseEntity.internalServerError().body(Map.of("error", "Admin not found"));
+        }
+        catch (Exception e) {
+            return ResponseEntity.internalServerError().body(Map.of("error", "Server error"));
+        }
+    }
+
+    /**
      * GET all co-admins stored in database
      */
     @GetMapping("/private/get-all-co-admins")

@@ -36,9 +36,39 @@ export class AdminServiceAPI {
   static token = AdminServiceAPI.tokenJson ? JSON.parse(AdminServiceAPI.tokenJson) : null;
 
   /**
+   * Fetch logged admin profile using the token
+   */
+  static async getAdminProfile() {
+    try {
+      // validate parsed token. If token is null, redirect to login
+      validateParsedToken(this.token);
+
+      // use the token to fetch the admin profile using the backend's api
+      const response = await fetch("http://localhost:8002/api/admin/private/get-admin-profile", {
+        method: 'GET',
+        headers: {
+          'Authorization' : `Bearer ${this.token}`,
+          'Content-Type' : 'application/json'
+        },
+      });
+
+      if(!response.ok) {
+        const errorData = await response.json();
+        return { error: errorData.error || 'Cannot fetch data' };
+      }
+
+      // if response isn't null, send the response to the controller
+      return response.json(); 
+
+    } catch (error) {
+      console.error("Error fetching data", error);
+      return { error: "Cannot fetch data." };
+    }
+  }
+
+  /**
    * Fetch all admins from db using the token
    */
-
   static async getAllAdmins() {
     try {
       // validate parsed token. If token is null, redirect to login

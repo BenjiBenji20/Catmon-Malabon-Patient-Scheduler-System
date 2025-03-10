@@ -80,6 +80,34 @@ public class AdminService {
         }
     }
 
+    /**
+     * The admin entity has enforced the unique email from all its records.
+     * The admin email is extracted using jwtService.extractEmail() method.
+     * This will take a jwt token and using this, it will extract its claims (email)
+     * And using this extracted email, we can find the admin from db.
+     */
+    public Optional<AdminDTO> getAdminProfile(String token) {
+        try {
+            // extract admin email from the token
+            String email = jwtService.extractEmail(token);
+
+            // find the admin from db using its email
+            Admin adminProfile = adminRepository.findAdminByEmail(email);
+
+            // return empty object if admin does not found
+            if(adminProfile == null) {
+                return Optional.empty();
+            }
+
+            return Optional.of(adminProfile)
+                    .map(this::convertToAdminDTO);
+        }
+        catch (HttpClientErrorException.NotFound notFound) {
+            logger.error("Admin does not found by email: {}", jwtService.extractEmail(token));
+            return Optional.empty();
+        }
+    }
+
     public List<AdminDTO> getAllCoAdmins() {
         List<Admin> coAdmins = adminRepository.findAll();
 
