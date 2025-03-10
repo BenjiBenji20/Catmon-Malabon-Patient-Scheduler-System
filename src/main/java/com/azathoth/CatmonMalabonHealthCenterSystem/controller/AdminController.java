@@ -74,6 +74,27 @@ public class AdminController {
         }
     }
 
+    /**
+     * GET all co-admins stored in database
+     */
+    @GetMapping("/private/get-all-co-admins")
+    public ResponseEntity<?> getAllCoAdmins() {
+        try {
+            List<AdminDTO> allCoAdmins = adminService.getAllCoAdmins();
+
+            return allCoAdmins.isEmpty() ?
+                    ResponseEntity.noContent().build() :
+                    ResponseEntity.ok().body(allCoAdmins);
+        }
+        catch (ResourceNotFoundException e) {
+            logger.error("No co admin is available: {}", e.getMessage());
+            return ResponseEntity.notFound().build();
+        }
+        catch (Exception e) {
+            return ResponseEntity.internalServerError().body(Map.of("error", "Server error"));
+        }
+    }
+
 
     @PostMapping("/private/accept-doctor-request/{requestId}")
     public ResponseEntity<?> acceptDoctorRequest(@PathVariable Long requestId) {

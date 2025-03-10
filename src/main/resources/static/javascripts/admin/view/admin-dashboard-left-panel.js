@@ -1,7 +1,41 @@
-import { loadDoctorsList, loadPendingDoctorsList } from '../controller/admin-dashboard-controller.js';
+import { loadDoctorsList, loadPendingDoctorsList, loadAdminList } from '../controller/admin-dashboard-controller.js';
 
+displayAdminList() // display to render all admins
 displayDoctorList(); // display to render all doctors
-displayPendingDoctorList();
+displayPendingDoctorList(); // display to render all pending doctors
+
+/**
+ * Render admin list
+ */
+async function displayAdminList() {
+  try {
+    const adminListData = await loadAdminList();
+
+    // get admin list and ul element
+    const adminListElement = document.querySelector('.co-admin-list ul');
+
+    // validate data
+    if(adminListData.error) {
+      document.querySelector('.co-admin-list').innerHTML = adminListData.error;
+      return;
+    }
+
+    adminListElement.innerHTML = ''; // clear existing content
+
+    // loop through the data and append each element with object
+    adminListData.forEach(admin => {
+      adminListElement.innerHTML += `
+        <li class="list-group-item" data-set-="admin-id" data-admin-id="${admin.id}">
+          ID: ${admin.id} : ${admin.adminName}
+        </li>
+      `;
+    });
+
+  } catch (error) {
+    console.error('Error displaying doctors list:', error);
+    document.querySelector('#admin-list-collapse').innerHTML = 'Failed to load doctors list.';
+  }
+}
 
 /**
  * Render doctor list
@@ -22,29 +56,14 @@ async function displayDoctorList() {
 
     // loop through the data and append each object
     doctorListData.forEach(doctor => {
-      let listItem = document.createElement('li');
-      listItem.classList.add('list-group-item', 'doctor-data-cell', 'd-flex', 'justify-content-between', 'align-items-center');
-      listItem.setAttribute('data-doctor-id', doctor.id);
-
-      // create text content
-      let doctorInfo = document.createElement('span');
-      doctorInfo.textContent = `ID: ${doctor.id} Name: ${doctor.completeName}`;
-
-      // Create Delete Button
-      let deleteButton = document.createElement('button');
-      deleteButton.classList.add('btn', 'btn-danger', 'btn-sm', 'ms-2');
-      deleteButton.textContent = 'Delete';
-      deleteButton.setAttribute('data-doctor-id', doctor.id);
-      deleteButton.onclick = () => deleteDoctor(doctor.id);
-
-      // create div to contain delete button
-      let buttonContainer = document.createElement('div');
-      buttonContainer.appendChild(deleteButton);
-      
-      listItem.appendChild(doctorInfo);
-      listItem.appendChild(buttonContainer);
-
-      doctorList.appendChild(listItem);
+      doctorList.innerHTML += `
+        <li class="list-group-item doctor-data-cell d-flex justify-content-between align-items-center" data-doctor-id="${doctor.id}">
+          <span>ID: ${doctor.id} : ${doctor.completeName}</span>
+          <div>
+            <button class="btn btn-danger btn-sm ms-2" data-doctor-id="${doctor.id}" onclick="deleteDoctor(${doctor.id})">Delete</button>
+          </div>
+        </li>
+      `;
     });
   } 
   catch (error) {
@@ -72,39 +91,15 @@ async function displayPendingDoctorList() {
 
     // Loop through the data and append each object as a new <li>
     pendingDoctorListData.forEach(pendingDoctor => {
-      let listItem = document.createElement('li');
-      listItem.classList.add('list-group-item', 'pending-doctor-data-cell', 'd-flex', 'justify-content-between', 'align-items-center');
-      listItem.setAttribute('data-pending-doctor-id', pendingDoctor.id);
-      
-      // Create text content
-      let doctorInfo = document.createElement('span');
-      doctorInfo.textContent = `ID: ${pendingDoctor.id} Name: ${pendingDoctor.completeName}`;
-
-      // Create Accept Button
-      let acceptButton = document.createElement('button');
-      acceptButton.classList.add('btn', 'btn-primary', 'btn-sm');
-      acceptButton.textContent = 'Accept';
-      acceptButton.setAttribute('data-pending-doctor-id', pendingDoctor.id);
-      acceptButton.onclick = () => acceptPendingDoctor(pendingDoctor.id);
-
-      // Create Delete Button
-      let deleteButton = document.createElement('button');
-      deleteButton.classList.add('btn', 'btn-danger', 'btn-sm', 'ms-2');
-      deleteButton.textContent = 'Delete';
-      deleteButton.setAttribute('data-pending-doctor-id', pendingDoctor.id);
-      deleteButton.onclick = () => deletePendingDoctor(pendingDoctor.id);
-
-      // Create a button container
-      let buttonContainer = document.createElement('div');
-      buttonContainer.appendChild(acceptButton);
-      buttonContainer.appendChild(deleteButton);
-
-      // Append elements to list item
-      listItem.appendChild(doctorInfo);
-      listItem.appendChild(buttonContainer);
-
-      // Append list item to the container
-      pendingDoctorListContainer.appendChild(listItem);
+      pendingDoctorListContainer.innerHTML += `
+        <li class="list-group-item pending-doctor-data-cell d-flex justify-content-between align-items-center" data-pending-doctor-id="${pendingDoctor.id}">
+          <span>ID: ${pendingDoctor.id} : ${pendingDoctor.completeName}</span>
+          <div>
+            <button class="btn btn-primary btn-sm" onclick="acceptPendingDoctor(${pendingDoctor.id})">Accept</button>
+            <button class="btn btn-danger btn-sm ms-2" onclick="deletePendingDoctor(${pendingDoctor.id})">Delete</button>
+          </div>
+        </li>
+      `;
     });
   } 
   catch (error) {

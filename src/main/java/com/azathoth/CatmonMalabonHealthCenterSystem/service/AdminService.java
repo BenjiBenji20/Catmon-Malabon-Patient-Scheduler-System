@@ -80,6 +80,14 @@ public class AdminService {
         }
     }
 
+    public List<AdminDTO> getAllCoAdmins() {
+        List<Admin> coAdmins = adminRepository.findAll();
+
+        return coAdmins.stream()
+                .map(this::convertToAdminDTO)
+                .collect(Collectors.toList());
+    }
+
     public Optional<Doctor> acceptDoctorRequest(Long requestId) {
         try {
             Optional<PendingDoctor> requestingDoctor = pendingDoctorRepository.findById(requestId);
@@ -143,17 +151,6 @@ public class AdminService {
         doctorRepository.deleteById(id);
     }
 
-    private DoctorDTO convertToDoctorDTO(Doctor doctor) {
-        DoctorDTO doctorDTO = new DoctorDTO();
-
-        doctorDTO.setId(doctor.getId());
-        doctorDTO.setCompleteName(doctor.getCompleteName());
-        doctorDTO.setEmail(doctor.getEmail());
-        doctorDTO.setAvailableDays(doctor.getAvailableDays());
-
-        return doctorDTO;
-    }
-
     /**
      * SEARCH doctor
      */
@@ -195,20 +192,6 @@ public class AdminService {
         );
     }
 
-    private PatientDTO convertToPatientDTO(Patient patient) {
-        PatientDTO dto = new PatientDTO();
-        dto.setId(patient.getId());
-        dto.setCompleteName(patient.getCompleteName());
-        dto.setGender(patient.getGender());
-        dto.setAddress(patient.getAddress());
-        dto.setAge(patient.getAge());
-        dto.setContactNumber(patient.getContactNumber());
-        dto.setVerificationNumber(patient.getVerificationNumber());
-        dto.setScheduleDate(patient.getAppointment().getScheduleDate());
-        dto.setStatus(patient.getAppointment().getStatus());
-        return dto;
-    }
-
     /**
      * Get all patients
      */
@@ -246,6 +229,41 @@ public class AdminService {
         return pendingDoctors.stream()
                 .map(this::convertToPendingDoctorDTO)
                 .collect(Collectors.toList());
+    }
+
+    private AdminDTO convertToAdminDTO(Admin admin) {
+        AdminDTO adminDTO = new AdminDTO();
+
+        adminDTO.setId(admin.getId());
+        adminDTO.setAdminName(admin.getAdminName());
+        adminDTO.setEmail(admin.getEmail());
+
+        return adminDTO;
+    }
+
+    private DoctorDTO convertToDoctorDTO(Doctor doctor) {
+        DoctorDTO doctorDTO = new DoctorDTO();
+
+        doctorDTO.setId(doctor.getId());
+        doctorDTO.setCompleteName(doctor.getCompleteName());
+        doctorDTO.setEmail(doctor.getEmail());
+        doctorDTO.setAvailableDays(doctor.getAvailableDays());
+
+        return doctorDTO;
+    }
+
+    private PatientDTO convertToPatientDTO(Patient patient) {
+        PatientDTO dto = new PatientDTO();
+        dto.setId(patient.getId());
+        dto.setCompleteName(patient.getCompleteName());
+        dto.setGender(patient.getGender());
+        dto.setAddress(patient.getAddress());
+        dto.setAge(patient.getAge());
+        dto.setContactNumber(patient.getContactNumber());
+        dto.setVerificationNumber(patient.getVerificationNumber());
+        dto.setScheduleDate(patient.getAppointment().getScheduleDate());
+        dto.setStatus(patient.getAppointment().getStatus());
+        return dto;
     }
 
     private PendingDoctorDTO convertToPendingDoctorDTO(PendingDoctor pendingDoctor) {

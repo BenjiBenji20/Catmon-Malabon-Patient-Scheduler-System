@@ -36,6 +36,9 @@ public class AdminDTO {
         this.role = role;
     }
 
+    public AdminDTO() {
+    }
+
     public Long getId() {
         return id;
     }
