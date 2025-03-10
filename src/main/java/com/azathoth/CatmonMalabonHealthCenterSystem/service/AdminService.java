@@ -143,7 +143,7 @@ public class AdminService {
         doctorRepository.deleteById(id);
     }
 
-    private DoctorDTO convertToDTO(Doctor doctor) {
+    private DoctorDTO convertToDoctorDTO(Doctor doctor) {
         DoctorDTO doctorDTO = new DoctorDTO();
 
         doctorDTO.setId(doctor.getId());
@@ -160,7 +160,7 @@ public class AdminService {
     public List<DoctorDTO> searchDoctor(String keyword) {
         List<Doctor> doctors = doctorRepository.searchDoctor(keyword);
         return doctors.stream()
-                .map(this::convertToDTO)
+                .map(this::convertToDoctorDTO)
                 .collect(Collectors.toList());
     }
 
@@ -170,7 +170,7 @@ public class AdminService {
     public List<DoctorDTO> getAllDoctors() {
         List<Doctor> doctors = doctorRepository.findAll();
         return doctors.stream()
-                .map(this::convertToDTO)
+                .map(this::convertToDoctorDTO)
                 .collect(Collectors.toList());
     }
 
@@ -195,7 +195,7 @@ public class AdminService {
         );
     }
 
-    private PatientDTO convertToDTO(Patient patient) {
+    private PatientDTO convertToPatientDTO(Patient patient) {
         PatientDTO dto = new PatientDTO();
         dto.setId(patient.getId());
         dto.setCompleteName(patient.getCompleteName());
@@ -216,7 +216,7 @@ public class AdminService {
         List<Patient> patients = patientRepository.findAll();
 
         return patients.stream()
-                .map(this::convertToDTO)
+                .map(this::convertToPatientDTO)
                 .collect(Collectors.toList());
     }
 
@@ -236,7 +236,24 @@ public class AdminService {
         List<Patient> filterResult = patientRepository.filterPatient(gender, age, status);
 
         return Optional.of(filterResult.stream()
-                .map(this::convertToDTO)
+                .map(this::convertToPatientDTO)
                 .collect(Collectors.toList()));
+    }
+
+    public List<PendingDoctorDTO> getAllPendingDoctors() {
+        List<PendingDoctor> pendingDoctors = pendingDoctorRepository.findAll();
+
+        return pendingDoctors.stream()
+                .map(this::convertToPendingDoctorDTO)
+                .collect(Collectors.toList());
+    }
+
+    private PendingDoctorDTO convertToPendingDoctorDTO(PendingDoctor pendingDoctor) {
+        PendingDoctorDTO pendingDoctorDTO = new PendingDoctorDTO();
+        pendingDoctorDTO.setId(pendingDoctor.getId());
+        pendingDoctorDTO.setCompleteName(pendingDoctor.getCompleteName());
+        pendingDoctorDTO.setEmail(pendingDoctor.getEmail());
+
+        return pendingDoctorDTO;
     }
 }

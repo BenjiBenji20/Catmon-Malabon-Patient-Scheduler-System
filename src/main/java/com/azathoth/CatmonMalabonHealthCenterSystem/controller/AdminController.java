@@ -186,6 +186,27 @@ public class AdminController {
     }
 
     /**
+     * GET all pending doctors
+     */
+    @GetMapping("/private/get-all-pending-doctors")
+    public ResponseEntity<?> getAllPendingDoctors() {
+        try {
+            List<PendingDoctorDTO> allPendingDoctors = adminService.getAllPendingDoctors();
+
+            return allPendingDoctors.isEmpty() ?
+                    ResponseEntity.noContent().build() :
+                    ResponseEntity.ok().body(allPendingDoctors);
+        }
+        catch (ResourceNotFoundException e) {
+            logger.error("No pending doctor is available: {}", e.getMessage());
+            return ResponseEntity.notFound().build();
+        }
+        catch (Exception e) {
+            return ResponseEntity.internalServerError().body(Map.of("error", "Server error"));
+        }
+    }
+
+    /**
      * Update patient
      * ID is important because it is unique in all patient table row.
      * Update will be based on existing id so id cannot and should not be updated.

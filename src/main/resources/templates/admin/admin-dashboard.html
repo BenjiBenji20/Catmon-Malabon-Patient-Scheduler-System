@@ -39,15 +39,15 @@
           <div class="line-dash"></div>
 
           <div class="doctors-list">
-             <!-- GENERATED IN JS: admin-dashboard-left-panel.js -->
-
             <a data-bs-toggle="collapse" class="doctors-list-collapse" href="#doctors-list-collapse" role="button" aria-expanded="false" aria-controls="doctors-list-collapse">Available Doctors</a>
             <div class="row">
               <div class="col">
                 <div class="collapse multi-collapse" id="doctors-list-collapse">
                   <div class="card card-body">
                     <ul class="list-group list-group-flush">
-                      <li class="list-group-item">Doctor 1</li>
+                      <li class="list-group-item doctor-data-cell" data-doctor-id="${doctor.id}">
+                        <!-- LIST GENERATED IN JS admin-dashboard-left-panel.js-->
+                      </li>
                     </ul>
                   </div>
                 </div>
@@ -64,7 +64,9 @@
                 <div class="collapse multi-collapse" id="pending-doctors-list-collapse">
                   <div class="card card-body">
                     <ul class="list-group list-group-flush">
-                      <li class="list-group-item" data-set-="pending-doctor-id">Pending Doctor 1</li>
+                      <li class="list-group-item pending-doctor-data-cell" data-pending-doctor-id="${pendingDoctor.id}">
+                        <!-- LIST GENERATED IN JS admin-dashboard-left-panel.js-->
+                      </li>
                     </ul>
                   </div>
                 </div>
