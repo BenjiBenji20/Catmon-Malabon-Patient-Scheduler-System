@@ -18,14 +18,13 @@ public class JwtService {
     private String secretKey;
 
     public String generateToken(String email, String role) {
-
         return Jwts.builder()
                 .issuer("Azathoth")
                 .claim("role", "ROLE_" + role)
                 .subject(email)
                 .issuedAt(new Date(System.currentTimeMillis()))
                 .expiration(new Date(System.currentTimeMillis() + 7 * 24 * 60 * 60 * 1000)) // 7 days
-                .signWith(getKey())
+                .signWith(getKey(), Jwts.SIG.HS256)
                 .compact();
     }
 
@@ -47,6 +46,7 @@ public class JwtService {
     private Claims extractAllClaims(String token) {
         return Jwts.parser()
                 .verifyWith(getKey())
+                .clockSkewSeconds(60) // Allow 60 seconds of clock skew
                 .build()
                 .parseSignedClaims(token)
                 .getPayload();
