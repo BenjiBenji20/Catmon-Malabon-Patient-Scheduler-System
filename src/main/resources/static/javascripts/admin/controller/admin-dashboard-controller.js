@@ -105,7 +105,10 @@ export async function loadPatientsList() {
 
     // if error happens
     if(data.error) {
-      document.querySelector('.patient-profile-table').innerHTML = data.error;
+      const tableBody = document.querySelector('tbody td');
+      tableBody.classList.add('display-error-message');
+
+      tableBody.innerHTML = data.error;
       return;
     }
 

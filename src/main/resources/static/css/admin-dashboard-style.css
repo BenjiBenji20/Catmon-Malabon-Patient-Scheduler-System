@@ -125,3 +125,11 @@
   padding: 20px;
 }
 
+.display-error-message td{ /*This is table body*/
+  height: 30vh;
+  text-align: center; 
+  vertical-align: middle; 
+  width: 100%;
+  font-size: 18px;
+  font-weight: bold;
+}

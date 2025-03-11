@@ -2,14 +2,8 @@ package com.azathoth.CatmonMalabonHealthCenterSystem.service;
 
 import com.azathoth.CatmonMalabonHealthCenterSystem.dto.*;
 import com.azathoth.CatmonMalabonHealthCenterSystem.exception.ResourceNotFoundException;
-import com.azathoth.CatmonMalabonHealthCenterSystem.model.Admin;
-import com.azathoth.CatmonMalabonHealthCenterSystem.model.Doctor;
-import com.azathoth.CatmonMalabonHealthCenterSystem.model.Patient;
-import com.azathoth.CatmonMalabonHealthCenterSystem.model.PendingDoctor;
-import com.azathoth.CatmonMalabonHealthCenterSystem.repository.AdminRepository;
-import com.azathoth.CatmonMalabonHealthCenterSystem.repository.DoctorRepository;
-import com.azathoth.CatmonMalabonHealthCenterSystem.repository.PatientRepository;
-import com.azathoth.CatmonMalabonHealthCenterSystem.repository.PendingDoctorRepository;
+import com.azathoth.CatmonMalabonHealthCenterSystem.model.*;
+import com.azathoth.CatmonMalabonHealthCenterSystem.repository.*;
 import com.azathoth.CatmonMalabonHealthCenterSystem.utils.Role;
 import jakarta.validation.Valid;
 import org.slf4j.Logger;
@@ -33,17 +27,19 @@ public class AdminService {
     private final DoctorRepository doctorRepository;
     private final AdminRepository adminRepository;
     private final PatientRepository patientRepository;
+    private final AppointmentRepository appointmentRepository;
 
     private static final Logger logger = LoggerFactory.getLogger(AdminService.class);
     private final PasswordEncoder encoder;
     private final AuthenticationManager authenticationManager;
     private final JwtService jwtService;
 
-    public AdminService(PendingDoctorRepository pendingDoctorRepository, DoctorRepository doctorRepository, AdminRepository adminRepository, PatientRepository patientRepository, PasswordEncoder encoder, AuthenticationManager authenticationManager, JwtService jwtService) {
+    public AdminService(PendingDoctorRepository pendingDoctorRepository, DoctorRepository doctorRepository, AdminRepository adminRepository, PatientRepository patientRepository, AppointmentRepository appointmentRepository, PasswordEncoder encoder, AuthenticationManager authenticationManager, JwtService jwtService) {
         this.pendingDoctorRepository = pendingDoctorRepository;
         this.doctorRepository = doctorRepository;
         this.adminRepository = adminRepository;
         this.patientRepository = patientRepository;
+        this.appointmentRepository = appointmentRepository;
         this.encoder = encoder;
         this.authenticationManager = authenticationManager;
         this.jwtService = jwtService;
@@ -259,6 +255,9 @@ public class AdminService {
         patientRepository.deleteById(id);
     }
 
+    /**
+     * TABLE CONTROLLER TO FILTER PATIENT TABLE
+     */
     public Optional<List<PatientDTO>> filterPatient(String gender, Integer age, String status) {
         List<Patient> filterResult = patientRepository.filterPatient(gender, age, status);
 
@@ -267,11 +266,25 @@ public class AdminService {
                 .collect(Collectors.toList()));
     }
 
+    /**
+     * Get all pending doctor record from db
+     */
     public List<PendingDoctorDTO> getAllPendingDoctors() {
         List<PendingDoctor> pendingDoctors = pendingDoctorRepository.findAll();
 
         return pendingDoctors.stream()
                 .map(this::convertToPendingDoctorDTO)
+                .collect(Collectors.toList());
+    }
+
+    /**
+     * Get all appointment record from db
+     */
+    public List<AppointmentDTO> getAllAppointments() {
+        List<Appointment> appointments = appointmentRepository.findAll();
+
+        return appointments.stream()
+                .map(this::convertToAppointmentDTO)
                 .collect(Collectors.toList());
     }
 
@@ -317,5 +330,18 @@ public class AdminService {
         pendingDoctorDTO.setEmail(pendingDoctor.getEmail());
 
         return pendingDoctorDTO;
+    }
+
+    private AppointmentDTO convertToAppointmentDTO(Appointment appointment) {
+        AppointmentDTO dto = new AppointmentDTO();
+        dto.setId(appointment.getId());
+        dto.setScheduleDate(appointment.getScheduleDate());
+        dto.setPatientId(appointment.getPatient().getId());
+        dto.setPatientName(appointment.getPatient().getCompleteName());
+        dto.setDoctorId(appointment.getDoctor().getId());
+        dto.setDoctorName(appointment.getDoctor().getCompleteName());
+        dto.setStatus(appointment.getStatus());
+
+        return dto;
     }
 }

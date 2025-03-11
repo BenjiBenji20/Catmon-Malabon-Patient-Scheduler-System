@@ -370,4 +370,24 @@ public class AdminController {
             return ResponseEntity.internalServerError().body(Map.of("error", "Server error"));
         }
     }
+
+    /**
+     * GET appointment list
+     */
+    @GetMapping("/private/get-all-appointments")
+    public ResponseEntity<?> getAllAppointments() {
+        try {
+            List<AppointmentDTO> appointmentList = adminService.getAllAppointments();
+
+            return appointmentList.isEmpty() ?
+                    ResponseEntity.noContent().build() :
+                    ResponseEntity.ok(appointmentList);
+        }
+        catch (ResourceNotFoundException e) {
+            return ResponseEntity.notFound().build();
+        }
+        catch (Exception e) {
+            return ResponseEntity.internalServerError().body(Map.of("error", "Error to fetch appointment list."));
+        }
+    }
 }

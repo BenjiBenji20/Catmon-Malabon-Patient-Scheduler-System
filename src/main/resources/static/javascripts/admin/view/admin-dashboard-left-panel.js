@@ -256,7 +256,10 @@ async function displayPatientTable() {
     const tableDataElement = document.querySelector('.patient-profile-table tbody');
 
     if(patientListData.error) {
-      document.querySelector('.patient-profile-table').innerHTML = data.error;
+      const tableBody = document.querySelector('tbody');
+      tableBody.classList.add('display-error-message');
+
+      tableBody.innerHTML = data.error;
       return;
     }
 
@@ -285,6 +288,9 @@ async function displayPatientTable() {
     });
   } catch (error) {
     console.error('Error displaying patients list:', error);
-    document.querySelector('.patient-profile-table').innerHTML = 'Failed to load patient list.'
+    const tableBody = document.querySelector('tbody');
+      tableBody.classList.add('display-error-message');
+
+      tableBody.innerHTML = data.error;
   }
 }
