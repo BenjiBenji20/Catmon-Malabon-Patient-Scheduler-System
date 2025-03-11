@@ -1,5 +1,5 @@
 import { loadDoctorsList, loadPendingDoctorsList, loadAdminList,
-  loadAdminProfile
+  loadAdminProfile, acceptPendingDoctor, deletePendingDoctor
  } from '../controller/admin-dashboard-controller.js';
 
 displayAdminProfile(); // display to render admin profile
@@ -106,7 +106,7 @@ async function displayDoctorList() {
         <li class="list-group-item doctor-data-cell d-flex justify-content-between align-items-center" data-doctor-id="${doctor.id}">
           <span>ID: ${doctor.id} : ${doctor.completeName}</span>
           <div>
-            <button class="btn btn-danger btn-sm ms-2" data-doctor-id="${doctor.id}" onclick="deleteDoctor(${doctor.id})">Delete</button>
+            <button class="btn btn-warning btn-sm ms-2" data-doctor-id="${doctor.id}" onclick="deleteDoctor(${doctor.id})">Delete</button>
           </div>
         </li>
       `;
@@ -137,15 +137,33 @@ async function displayPendingDoctorList() {
 
     // Loop through the data and append each object as a new <li>
     pendingDoctorListData.forEach(pendingDoctor => {
-      pendingDoctorListContainer.innerHTML += `
-        <li class="list-group-item pending-doctor-data-cell d-flex justify-content-between align-items-center" data-pending-doctor-id="${pendingDoctor.id}">
-          <span>ID: ${pendingDoctor.id} : ${pendingDoctor.completeName}</span>
-          <div>
-            <button class="btn btn-primary btn-sm" onclick="acceptPendingDoctor(${pendingDoctor.id})">Accept</button>
-            <button class="btn btn-danger btn-sm ms-2" onclick="deletePendingDoctor(${pendingDoctor.id})">Delete</button>
-          </div>
-        </li>
+      const listItem = document.createElement('li');
+      listItem.className = 'list-group-item pending-doctor-data-cell d-flex justify-content-between align-items-center';
+      listItem.dataset.pendingDoctorId = pendingDoctor.id;
+
+      listItem.innerHTML = `
+        <span>ID: ${pendingDoctor.id} : ${pendingDoctor.completeName}</span>
+        <div>
+          <button class="btn btn-primary btn-sm accept-pending-doctor-button">Accept</button>
+          <button class="btn btn-danger btn-sm ms-2 delete-pending-doctor-button">Delete</button>
+        </div>
       `;
+
+      // create an event for the button
+      const acceptButton = listItem.querySelector('.accept-pending-doctor-button');
+      const deleteButton = listItem.querySelector('.delete-pending-doctor-button');
+
+
+      // add an on click event
+      acceptButton.addEventListener('click', () => {
+        acceptPendingDoctorButton(pendingDoctor.id);
+      });
+
+      deleteButton.addEventListener('click', () => {
+        deletePendingDoctorButton(pendingDoctor.id);
+      });
+
+      pendingDoctorListContainer.appendChild(listItem);
     });
   } 
   catch (error) {
@@ -153,3 +171,77 @@ async function displayPendingDoctorList() {
     document.querySelector('#pending-doctors-list-collapse').innerHTML = 'Failed to load pending doctors list.';
   }
 };
+
+/**
+ * Accept pending doctor using its id. Extracted id using data attributes
+ */
+async function acceptPendingDoctorButton(id) {
+  const message = document.querySelector('.message-js');
+  try {
+    // get the result
+    const result = await acceptPendingDoctor(id);
+
+    // if result has error
+    if(result.error) {
+      message.innerHTML = result.error;
+
+      // remove the message after 2 seconds
+      setTimeout(() => {
+        message.innerHTML = '';
+      }, 2000);
+
+      return;
+    }
+
+    // display sucess message
+    message.innerHTML = result.message;
+    // remove the message after 2 seconds
+    setTimeout(() => {
+      message.innerHTML = '';
+    }, 2000);
+
+    // rerender the list again
+    displayDoctorList();
+    displayPendingDoctorList();
+  } catch (error) {
+    console.error('Error request for pending doctor:', error);
+    message.innerHTML = 'Failed to grant request.';
+  }
+} 
+
+/**
+ * Accept pending doctor using its id. Extracted id using data attributes
+ */
+async function deletePendingDoctorButton(id) {
+  const message = document.querySelector('.message-js');
+  try {
+    // get the result
+    const result = await deletePendingDoctor(id);
+
+    // if result has error
+    if(result.error) {
+      message.innerHTML = result.error;
+
+      // remove the message after 2 seconds
+      setTimeout(() => {
+        message.innerHTML = '';
+      }, 2000);
+
+      return;
+    }
+
+    // display sucess message
+    message.innerHTML = result.message;
+    // remove the message after 2 seconds
+    setTimeout(() => {
+      message.innerHTML = '';
+    }, 2000);
+
+    // rerender the list again
+    displayDoctorList();
+    displayPendingDoctorList();
+  } catch (error) {
+    console.error('Error request for pending doctor:', error);
+    message.innerHTML = 'Failed to grant request.';
+  }
+} 

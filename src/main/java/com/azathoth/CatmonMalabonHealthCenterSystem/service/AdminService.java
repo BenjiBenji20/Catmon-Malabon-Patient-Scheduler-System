@@ -146,6 +146,22 @@ public class AdminService {
         }
     }
 
+    public boolean deleteDoctorRequest(Long id) {
+        try {
+            Optional<PendingDoctor> requestingDoctor = pendingDoctorRepository.findById(id);
+
+            if(requestingDoctor.isPresent()) {
+                pendingDoctorRepository.delete(requestingDoctor.get());
+                return true;
+            }
+
+            return false;
+        }
+        catch (HttpClientErrorException.NotFound notFound) {
+            return false;
+        }
+    }
+
     /**
      * update doctor endpoint
      */

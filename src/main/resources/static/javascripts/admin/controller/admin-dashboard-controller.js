@@ -73,3 +73,27 @@ export async function loadPendingDoctorsList() {
     throw error;
   }
 }
+
+export async function acceptPendingDoctor(id) { 
+  try {
+    // pass id to the service
+    const response = await AdminServiceAPI.acceptPendingDoctor(id);
+
+    return response;
+  } catch (error) {
+    console.error('Error fetching data', error);
+    throw error;
+  }
+}
+
+export async function deletePendingDoctor(id) { 
+  try {
+    // pass id to the service
+    const response = await AdminServiceAPI.deletePendingDoctor(id);
+
+    return response;
+  } catch (error) {
+    console.error('Error fetching data', error);
+    throw error;
+  }
+}

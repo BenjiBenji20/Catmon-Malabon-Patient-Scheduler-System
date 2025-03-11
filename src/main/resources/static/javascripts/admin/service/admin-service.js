@@ -157,4 +157,66 @@ export class AdminServiceAPI {
       return { error: "Something went wrong. Please try again." };
     }
   }
+
+  /**
+   * Accept doctor's pending request
+   */
+  static async acceptPendingDoctor(id) {
+    try {
+      // validate parsed token. If token is null, redirect to login
+      validateParsedToken(this.token);
+
+      // pass a post request using the backend's api
+      const response = await fetch(`http://localhost:8002/api/admin/private/accept-doctor-request/${id}`, {
+        method: 'POST',
+        headers: {
+          'Authorization' : `Bearer ${this.token}`,
+          'Content-Type' : 'application/json'
+        },
+      });
+
+      // validate the response
+      if(!response.ok) {
+        const errorData = await response.json();
+        return { error: errorData.error || 'Cannot grant request' };
+      }
+
+      // if response doesn't have error, send the response to the controller
+      return response.json(); 
+    } catch (error) {
+      console.error("Error fetching data", error);
+      return { error: "Something went wrong. Please try again." };
+    }
+  }
+
+  /**
+   * Accept doctor's pending request
+   */
+  static async deletePendingDoctor(id) {
+    try {
+      // validate parsed token. If token is null, redirect to login
+      validateParsedToken(this.token);
+
+      // pass a post request using the backend's api
+      const response = await fetch(`http://localhost:8002/api/admin/private/delete-doctor-request/${id}`, {
+        method: 'DELETE',
+        headers: {
+          'Authorization' : `Bearer ${this.token}`,
+          'Content-Type' : 'application/json'
+        },
+      });
+
+      // validate the response
+      if(!response.ok) {
+        const errorData = await response.json();
+        return { error: errorData.error || 'Cannot grant request' };
+      }
+
+      // if response doesn't have error, send the response to the controller
+      return response.json(); 
+    } catch (error) {
+      console.error("Error fetching data", error);
+      return { error: "Something went wrong. Please try again." };
+    }
+  }
 } 

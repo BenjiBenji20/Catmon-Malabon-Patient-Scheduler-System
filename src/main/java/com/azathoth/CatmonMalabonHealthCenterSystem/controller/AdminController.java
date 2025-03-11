@@ -120,7 +120,10 @@ public class AdminController {
         }
     }
 
-
+    /**
+     * Name and email should be unique against doctor entity or else,
+     * it wont be accepted
+     */
     @PostMapping("/private/accept-doctor-request/{requestId}")
     public ResponseEntity<?> acceptDoctorRequest(@PathVariable Long requestId) {
         try {
@@ -136,6 +139,23 @@ public class AdminController {
         }
         catch (DataException dataException) {
             logger.error("Pending doctor not found by id: {}", dataException.getMessage());
+            return ResponseEntity.internalServerError().body(Map.of("error", "Error database"));
+        }
+        catch (Exception e) {
+            return ResponseEntity.internalServerError().body(Map.of("error", "Server error"));
+        }
+    }
+
+    @DeleteMapping("/private/delete-doctor-request/{id}")
+    public ResponseEntity<?> deleteDoctorRequest(@PathVariable Long id) {
+        try {
+            boolean isDoctorDeleted = adminService.deleteDoctorRequest(id);
+
+            return isDoctorDeleted ?
+                    ResponseEntity.ok().body(Map.of("message", "Deleted successfully")) :
+                    ResponseEntity.notFound().build();
+        }
+        catch (DataException dataException) {
             return ResponseEntity.internalServerError().body(Map.of("error", "Error database"));
         }
         catch (Exception e) {
