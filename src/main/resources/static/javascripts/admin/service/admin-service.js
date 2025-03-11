@@ -247,17 +247,17 @@ export class AdminServiceAPI {
     } 
     catch (error) {
       console.error("Error fetching data", error);
-      return { error: "Something went wrong. Please try again." };
+      return { error: "Cannot fetch patient records." };
     }
   }
 
-  static async getAllPatientAppointment() {
+  static async getAllAppointments() {
     try {
       // validate parsed token. If token is null, redirect to login
       validateParsedToken(this.token);
 
       // use the token to fetch all the doctors using the backend's api
-      const response = await fetch("http://localhost:8002/api/admin/private/get-all-patients", {
+      const response = await fetch("http://localhost:8002/api/admin/private/get-all-appointments", {
         method: 'GET',
         headers: {
           'Authorization' : `Bearer ${this.token}`,
@@ -275,7 +275,7 @@ export class AdminServiceAPI {
     } 
     catch (error) {
       console.error("Error fetching data", error);
-      return { error: "Something went wrong. Please try again." };
+      return { error: "Cannot fetch appointment records." };
     }
   }
 } 

@@ -33,7 +33,7 @@
 .offcanvas {
   margin-right: 10px;
   overflow-y: auto;
-  overflow-x: auto;
+  overflow-x: hidden;
 }
 
 /*

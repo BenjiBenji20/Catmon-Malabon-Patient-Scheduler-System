@@ -118,3 +118,24 @@ export async function loadPatientsList() {
     throw error;
   }
 }
+
+export async function loadAppointmentsList() {
+  try {
+    // get the loaded data from service
+    const data = await AdminServiceAPI.getAllAppointments();
+
+    // if error happens
+    if(data.error) {
+      const tableBody = document.querySelector('tbody td');
+      tableBody.classList.add('display-error-message');
+
+      tableBody.innerHTML = data.error;
+      return;
+    }
+
+    return data;
+  } catch (error) {
+    console.error('Error fetching data', error);
+    throw error;
+  }
+}
