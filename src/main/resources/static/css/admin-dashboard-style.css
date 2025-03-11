@@ -33,4 +33,20 @@
 .offcanvas {
   margin-right: 10px;
   overflow-y: auto;
+  overflow-x: auto;
 }
+
+/*
+  Hidden initially
+*/
+/* Initially hidden */
+.table-appointment-data-hidden {
+  display: none;
+}
+
+.table-appointment-data-hidden,
+.table-patient-profile-data {
+  transform: translateY(10px);
+  transition: opacity 0.3s ease-in-out, transform 0.3s ease-in-out;
+}
+
