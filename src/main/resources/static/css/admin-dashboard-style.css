@@ -1,0 +1,36 @@
+.container-fluid {
+  padding: 10px;
+}
+
+.right-panel {
+  transition: margin-left 0.3s ease-in-out, width 0.3s ease-in-out;
+  width: calc(100% - 51px); /* Default width with only icon */
+  margin-left: 30px; /* Default margin for the collapsed state */
+}
+
+/* RESPONSIVE CONTENT */
+.with-offcanvas {
+  width: calc(90% - 250px); /* Adjust width when offcanvas is open */
+  margin-left: 400px; /* Shift main panel to accommodate offcanvas */
+}
+
+@media (max-width: 768px) {
+  .right-panel {
+    width: 100%;
+    margin-left: 0;
+  }
+
+  .with-offcanvas {
+    width: 100%;
+    margin-left: 0; /* On small screens, main content should not shift */
+  }
+}
+
+.left-panel {
+  height: 0px;
+}
+
+.offcanvas {
+  margin-right: 10px;
+  overflow-y: auto;
+}

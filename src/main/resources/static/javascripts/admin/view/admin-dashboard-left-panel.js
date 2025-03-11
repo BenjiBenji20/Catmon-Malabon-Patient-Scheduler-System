@@ -45,8 +45,8 @@ async function displayAdminProfile() {
       `;
   } catch (error) {
     console.error('Error displaying doctors list:', error);
-    document.querySelector('#admin-name-js').innerHTML = 'Failed to load doctors list.';
-    document.querySelector('#admin-email-js').innerHTML = 'Failed to load doctors list.';
+    document.querySelector('#admin-name-js').innerHTML = 'Failed to load admin info';
+    document.querySelector('#admin-email-js').innerHTML = 'Failed to load admin info';
   }
 }
 
