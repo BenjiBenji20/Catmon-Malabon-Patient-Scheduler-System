@@ -97,3 +97,31 @@
 .collapse-link:hover {
   background-color: #A1E3F9;
 }
+
+.table {
+  width: 100%;
+  border-collapse: collapse; /* Prevents double borders */
+}
+
+.table thead {
+  height: 50px;
+  width: 100%;
+}
+
+.table thead th {
+  padding: 10px;
+  background: transparent;
+  padding: 20px;
+
+}
+
+.table thead tr {
+  border-radius: 20px;
+  background: #f7f7f7;
+  box-shadow: rgb(191, 196, 201) 6px 6px 12px 0px inset, rgba(208, 208, 208, 0.5) -3px -3px 6px 1px inset;
+}
+
+.table tbody tr td {
+  padding: 20px;
+}
+

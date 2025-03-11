@@ -1,11 +1,13 @@
 import { loadDoctorsList, loadPendingDoctorsList, loadAdminList,
-  loadAdminProfile, acceptPendingDoctor, deletePendingDoctor
+  loadAdminProfile, acceptPendingDoctor, deletePendingDoctor,
+  loadPatientsList
  } from '../controller/admin-dashboard-controller.js';
 
 displayAdminProfile(); // display to render admin profile
 displayAdminList(); // display to render all admins
 displayDoctorList(); // display to render all doctors
 displayPendingDoctorList(); // display to render all pending doctors
+displayPatientTable(); // display to render all patients data
 
 /**
  * Render admin profile
@@ -242,3 +244,47 @@ async function deletePendingDoctorButton(id) {
     message.innerHTML = 'Failed to grant request.';
   }
 } 
+
+/**
+ * Render all patients fetch from the db
+ */
+async function displayPatientTable() {
+  try {
+    const patientListData = await loadPatientsList();
+
+    // get table and table body to render patient data
+    const tableDataElement = document.querySelector('.patient-profile-table tbody');
+
+    if(patientListData.error) {
+      document.querySelector('.patient-profile-table').innerHTML = data.error;
+      return;
+    }
+
+    // clear existing content
+    tableDataElement.innerHTML = '';
+
+    // loop through the data and append each tab;e data (td) to the table
+    patientListData.forEach(patient => {
+      // create table row element to handle each table data
+      const row = document.createElement('tr');
+
+      row.innerHTML = `
+        <td>${patient.id}</td>
+        <td>${patient.completeName}</td>
+        <td>${patient.gender}</td>
+        <td>${patient.age}</td>
+        <td>+63 ${patient.contactNumber}</td>
+        <td>${patient.verificationNumber}</td>
+        <td>${patient.status}</td>
+        <td>
+          <input type="checkbox" data-patient-id="${patient.id}">
+        </td>
+      `;
+
+      tableDataElement.appendChild(row);
+    });
+  } catch (error) {
+    console.error('Error displaying patients list:', error);
+    document.querySelector('.patient-profile-table').innerHTML = 'Failed to load patient list.'
+  }
+}

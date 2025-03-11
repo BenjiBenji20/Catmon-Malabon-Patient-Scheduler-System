@@ -142,7 +142,7 @@ public class AdminController {
             return ResponseEntity.internalServerError().body(Map.of("error", "Error database"));
         }
         catch (Exception e) {
-            return ResponseEntity.internalServerError().body(Map.of("error", "Server error"));
+            return ResponseEntity.internalServerError().body(Map.of("error", "Cannot accept request. Unique object issue."));
         }
     }
 

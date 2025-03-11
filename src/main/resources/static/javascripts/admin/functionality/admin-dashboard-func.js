@@ -49,13 +49,13 @@ document.addEventListener("DOMContentLoaded", function () {
   });
 
   // switch caret when click
-  const carretElement = document.querySelector('.bi bi-caret-down');
-  carretElement.addEventListener('click', () => {
-    if (carretElement.classList.contains('bi bi-caret-down')) {
-      carretElement.classList.replace('bi bi-caret-down', 'bi bi-caret-up');
-    } else {
-      carretElement.classList.replace('bi bi-caret-up', 'bi bi-caret-down');
-    }
-  });
+  // const carretElement = document.querySelector('.bi bi-caret-down');
+  // carretElement.addEventListener('click', () => {
+  //   if (carretElement.classList.contains('bi bi-caret-down')) {
+  //     carretElement.classList.replace('bi bi-caret-down', 'bi bi-caret-up');
+  //   } else {
+  //     carretElement.classList.replace('bi bi-caret-up', 'bi bi-caret-down');
+  //   }
+  // });
 });
 

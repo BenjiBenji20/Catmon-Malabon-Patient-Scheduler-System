@@ -97,3 +97,21 @@ export async function deletePendingDoctor(id) {
     throw error;
   }
 }
+
+export async function loadPatientsList() {
+  try {
+    // get the loaded data from service
+    const data = await AdminServiceAPI.getAllPatients();
+
+    // if error happens
+    if(data.error) {
+      document.querySelector('.patient-profile-table').innerHTML = data.error;
+      return;
+    }
+
+    return data;
+  } catch (error) {
+    console.error('Error fetching data', error);
+    throw error;
+  }
+}

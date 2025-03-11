@@ -152,17 +152,17 @@
             </fieldset>
           </div>
 
-
-          <table class="table table-hover">
+          <table class="table patient-profile-table table-hover">
             <thead class="patient-profile-table-head-js">
               <tr>
                 <th>ID</th>
-                <th>Email Address</th>
                 <th>Complete Name</th>
-                <th>Home Address</th>
                 <th>Gender</th>
                 <th>Age</th>
+                <th>Contact Number</th>
+                <th>Verification Code</th>
                 <th>Status</th>
+                <th></th>
               </tr>
             </thead>
             <tbody>
@@ -175,7 +175,7 @@
                 <td>29</td>
                 <td>PENDING</td>
                 <td>
-                  <input type="checkbox" id="select-patient-data">
+                  <input type="checkbox" data-patient-id="${patient.id}">
                 </td>
               </tr>
             </tbody>
@@ -221,6 +221,7 @@
                 <th>Appointment Date</th>
                 <th>Patient's Name</th>
                 <th>Status</th>
+                <th></th>
               </tr>
             </thead>
             <tbody>
