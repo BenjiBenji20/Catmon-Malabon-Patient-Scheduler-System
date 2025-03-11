@@ -35,11 +35,9 @@ async function displayAdminProfile() {
               <div id="admin-name-js">
                 ${adminData.adminName}
               </div>
-              <!--CLOSE SIDE CANVAS/PANEL BUTTON-->
-              <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
             </div>
             <div id="admin-email-js">
-              ${adminData.email}
+              Email: ${adminData.email}
             </div>
           </div>
       `;

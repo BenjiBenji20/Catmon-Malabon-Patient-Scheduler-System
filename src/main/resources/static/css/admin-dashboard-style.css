@@ -50,3 +50,44 @@
   transition: opacity 0.3s ease-in-out, transform 0.3s ease-in-out;
 }
 
+.profile-container {
+  color: #4040a1;
+  font-weight: 600;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+}
+
+#admin-email-js {
+  width: 100%;
+  padding-left: 50px;
+  margin-bottom: 20px;
+}
+
+.admin-profile-container {
+  padding: 0;
+  font-size: 1.2rem;
+  width: 100%;
+}
+
+.bi-person-circle {
+  font-size: 3rem;
+  line-height: 1;
+  margin-right: 5px;
+}
+
+.co-admin-list, .doctors-list, .pending-doctors-list {
+  height: fit-content;
+  padding: 20px;
+}
+
+/* .co-admin-list:hover, .doctors-list:hover, .pending-doctors-list:hover {
+  background-color: #A1E3F9;
+} */
+
+.co-admin-list a, .doctors-list a, .pending-doctors-list a {
+  text-decoration: none;
+  font-size: 1rem;
+  color: #4040a1;
+  font-weight: 500;
+}

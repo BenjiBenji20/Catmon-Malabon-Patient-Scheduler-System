@@ -15,14 +15,14 @@
       <aside class="left-panel">
         <i class="bi bi-layout-sidebar-reverse" data-bs-toggle="offcanvas" data-bs-target="#offcanvasScrolling" aria-controls="offcanvasScrolling" title="open side panel"></i> <!--OPEN SIDE CANVAS/PANEL-->
         <div class="offcanvas offcanvas-start" data-bs-scroll="true" data-bs-backdrop="false" tabindex="-1" id="offcanvasScrolling" aria-labelledby="offcanvasScrollingLabel">
+          <!--CLOSE SIDE CANVAS/PANEL BUTTON-->
+          <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close" title="close" style="position: relative; left: 360px; top: 10px;"></button>
           <div class="profile-container">
-            <div class="offcanvas-header admin-profile-container">
+            <div class="offcanvas-header admin-profile-container" style="padding: 0;">
               <i class="bi bi-person-circle"></i>
               <div id="admin-name-js">
                 <!-- LIST GENERATED IN JS admin-dashboard-left-panel.js-->
               </div>
-              <!--CLOSE SIDE CANVAS/PANEL BUTTON-->
-              <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
             </div>
             <div id="admin-email-js">
               <!-- LIST GENERATED IN JS admin-dashboard-left-panel.js-->
@@ -31,7 +31,10 @@
           <div class="line-dash"></div>
 
           <div class="co-admin-list">
-            <a data-bs-toggle="collapse" href="#admin-list-collapse" role="button" aria-expanded="false" aria-controls="admin-list-collapse">Co-admins</a>
+            <a data-bs-toggle="collapse" href="#admin-list-collapse" role="button" aria-expanded="false" aria-controls="admin-list-collapse">
+              Co-admins
+              <i class="bi bi-caret-down"></i>
+            </a>
             <div class="row">
               <div class="col">
                 <div class="collapse multi-collapse" id="admin-list-collapse">
@@ -48,7 +51,10 @@
           <div class="line-dash"></div>
 
           <div class="doctors-list">
-            <a data-bs-toggle="collapse" class="doctors-list-collapse" href="#doctors-list-collapse" role="button" aria-expanded="false" aria-controls="doctors-list-collapse">Available Doctors</a>
+            <a data-bs-toggle="collapse" class="doctors-list-collapse" href="#doctors-list-collapse" role="button" aria-expanded="false" aria-controls="doctors-list-collapse">
+              Available Doctors
+              <i class="bi bi-caret-down"></i>
+            </a>
             <div class="row">
               <div class="col">
                 <div class="collapse multi-collapse" id="doctors-list-collapse">
@@ -67,7 +73,10 @@
           <div class="line-dash"></div>
 
           <div class="pending-doctors-list">
-            <a data-bs-toggle="collapse" href="#pending-doctors-list-collapse" role="button" aria-expanded="false" aria-controls="pending-doctors-list-collapse">Pending Doctors</a>
+            <a data-bs-toggle="collapse" href="#pending-doctors-list-collapse" role="button" aria-expanded="false" aria-controls="pending-doctors-list-collapse">
+              Pending Doctors
+              <i class="bi bi-caret-down"></i>
+            </a>
             <div class="row">
               <div class="col">
                 <div class="collapse multi-collapse" id="pending-doctors-list-collapse">
