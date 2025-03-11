@@ -33,12 +33,11 @@ async function displayAdminProfile() {
             <div class="offcanvas-header admin-profile-container">
               <i class="bi bi-person-circle"></i>
               <div id="admin-name-js">
-                ${adminData.adminName}
+                Name: ${adminData.adminName} <br>
+                Email: ${adminData.email}
               </div>
             </div>
-            <div id="admin-email-js">
-              Email: ${adminData.email}
-            </div>
+            
           </div>
       `;
   } catch (error) {
