@@ -1,6 +1,6 @@
 import { loadDoctorsList, loadPendingDoctorsList, loadAdminList,
   loadAdminProfile, acceptPendingDoctor, deletePendingDoctor,
-  loadPatientsList, loadAppointmentsList
+  loadPatientsList, loadAppointmentsList, loadFilterPatient
  } from '../controller/admin-dashboard-controller.js';
 
 displayAdminProfile(); // display to render admin profile
@@ -9,6 +9,7 @@ displayDoctorList(); // display to render all doctors
 displayPendingDoctorList(); // display to render all pending doctors
 displayPatientTable(); // display to render all patients data
 displayAppointmentTable(); // display to render all appoitnmetns data
+displayFilteredPatients();
 
 /**
  * Render admin profile
@@ -184,10 +185,13 @@ async function acceptPendingDoctorButton(id) {
     // if result has error
     if(result.error) {
       message.innerHTML = result.error;
+      message.style.border = '2px solid #ef5350';
+      message.style.backgroundColor = '#e57373';
 
       // remove the message after 2 seconds
       setTimeout(() => {
         message.innerHTML = '';
+        message.style.border = '2px solid #ffff';
       }, 2000);
 
       return;
@@ -195,9 +199,12 @@ async function acceptPendingDoctorButton(id) {
 
     // display sucess message
     message.innerHTML = result.message;
+    message.style.border = '2px solid #2d912d';
+    message.style.backgroundColor = '#3dc13c';
     // remove the message after 2 seconds
     setTimeout(() => {
       message.innerHTML = '';
+      message.style.border = '2px solid #ffff';
     }, 2000);
 
     // rerender the list again
@@ -250,12 +257,9 @@ async function deletePendingDoctorButton(id) {
  * Render all patients fetched from the api
  */
 async function displayPatientTable() {
-  // extract data from controller
-  const patientListData = await loadPatientsList();
-
   try {
-    // get table and table body to render patient data
-    const tableDataElement = document.querySelector('.patient-profile-table tbody');
+    // extract data from controller
+    const patientListData = await loadPatientsList();
 
     if(patientListData.error) {
       const tableBody = document.querySelector('tbody');
@@ -265,35 +269,14 @@ async function displayPatientTable() {
       return;
     }
 
-    // clear existing content
-    tableDataElement.innerHTML = '';
-
-    // loop through the data and append each tab;e data (td) to the table
-    patientListData.forEach(patient => {
-      // create table row element to handle each table data
-      const row = document.createElement('tr');
-
-      row.innerHTML = `
-        <td>${patient.id}</td>
-        <td>${patient.completeName}</td>
-        <td>${patient.gender}</td>
-        <td>${patient.age}</td>
-        <td>+63 ${patient.contactNumber}</td>
-        <td>${patient.verificationNumber}</td>
-        <td>${patient.status}</td>
-        <td>
-          <input type="checkbox" data-patient-id="${patient.id}">
-        </td>
-      `;
-
-      tableDataElement.appendChild(row);
-    });
+    // call function to render filtered patient data
+    renderPatientTable(patientListData);
   } catch (error) {
     console.error('Error displaying patients list:', error);
     const tableBody = document.querySelector('tbody');
-      tableBody.classList.add('display-error-message');
+    tableBody.classList.add('display-error-message');
 
-      tableBody.innerHTML = 'Cannot fetch patient records';
+    tableBody.innerHTML = 'Cannot fetch patient records';
   }
 }
 
@@ -301,12 +284,9 @@ async function displayPatientTable() {
  * Render all appointments fetched from api
  */
 async function displayAppointmentTable() {
-  // extract data from controller
-  const appointmentListData = await loadAppointmentsList();
-
   try {
-    // get table and table body to render patient data
-    const tableDataElement = document.querySelector('.appointment-table tbody');
+    // extract data from controller
+    const appointmentListData = await loadAppointmentsList();
 
     // validate data
     if(appointmentListData.error) {
@@ -317,29 +297,8 @@ async function displayAppointmentTable() {
       return;
     }
 
-    // clear existing content
-    tableDataElement.innerHTML = '';
-
-    // loop through the data and append each tab;e data (td) to the table
-    appointmentListData.forEach(appointment => {
-      // create table row element to handle each table data
-      const row = document.createElement('tr');
-
-      row.innerHTML = `
-        <td>${appointment.id}</td>
-        <td>${appointment.scheduleDate}</td>
-        <td>${appointment.patientId}</td>
-        <td>${appointment.patientName}</td>
-        <td>${appointment.doctorId}</td>
-        <td>${appointment.doctorName}</td>
-        <td>${appointment.status}</td>
-        <td>
-          <input type="checkbox" data-appointment-id="${appointment.id}">
-        </td>
-      `;
-
-      tableDataElement.appendChild(row);
-    });
+    // call function to render appointment table
+    renderAppointmentTable(appointmentListData);
   } catch (error) {
     console.error('Error displaying patients list:', error);
     const tableBody = document.querySelector('tbody td');
@@ -348,3 +307,118 @@ async function displayAppointmentTable() {
       tableBody.innerHTML = 'Cannot fetch appointment records';
   }
 }
+
+/**
+ * collect and pass filter inputs,
+ * fetch data and render to the table
+ */
+async function displayFilteredPatients() {
+  const filterForm = document.getElementById('patient-profile-table-filter-form-js');
+  // add event submit listener to the filter form
+  filterForm.addEventListener('submit', async(e) => {
+    e.preventDefault(); // prevent login without inputing all fields
+
+    // collect form inputs
+    const gender = document.getElementById('patient-filter-gender').value;
+    const age = document.getElementById('patient-filter-age').value;
+    const status = document.getElementById('patient-filter-status').value;
+
+    try {
+      // pass inputs and fetch filter result
+      const patientFilterData = await loadFilterPatient(gender, age, status);
+
+      // if error  response
+      if(patientFilterData.error) {
+        const tableBody = document.querySelector('tbody td');
+        tableBody.classList.add('display-error-message');
+
+        tableBody.innerHTML = patientFilterData.error;
+        return;
+      }
+
+      // call function to render filtered patient data
+      renderPatientTable(patientFilterData);
+    } catch (error) {
+      const tableBody = document.querySelector('tbody');
+      tableBody.classList.add('display-error-message');
+
+      tableBody.innerHTML = 'Cannot fetch patient records';
+    }
+  });
+}
+
+/**
+ * Functions and events for rendering tables
+ */
+function renderPatientTable(patientData) {
+  // get table and table body to render filtered patient data
+  const tableDataElement = document.querySelector('.patient-profile-table tbody');
+  // clear existing content
+  tableDataElement.innerHTML = '';
+
+  // loop through the data and append each tab;e data (td) to the table
+  patientData.forEach(patient => {
+  // create table row element to handle each table data
+  const row = document.createElement('tr');
+
+  row.innerHTML = `
+    <td>${patient.id}</td>
+    <td>${patient.completeName}</td>
+    <td>${patient.gender}</td>
+    <td>${patient.age}</td>
+    <td>+63 ${patient.contactNumber}</td>
+    <td>${patient.verificationNumber}</td>
+    <td>${patient.status}</td>
+    <td>
+      <input type="checkbox" data-patient-id="${patient.id}">
+    </td>
+  `;
+
+    tableDataElement.appendChild(row);
+  });
+
+  return tableDataElement;
+}
+
+function renderAppointmentTable(appointmentData) {
+   // get table and table body to render patient data
+   const tableDataElement = document.querySelector('.appointment-table tbody');
+
+   // clear existing content
+   tableDataElement.innerHTML = '';
+
+   // loop through the data and append each tab;e data (td) to the table
+   appointmentData.forEach(appointment => {
+     // create table row element to handle each table data
+     const row = document.createElement('tr');
+
+     row.innerHTML = `
+       <td>${appointment.id}</td>
+       <td>${appointment.scheduleDate}</td>
+       <td>${appointment.patientId}</td>
+       <td>${appointment.patientName}</td>
+       <td>${appointment.doctorId}</td>
+       <td>${appointment.doctorName}</td>
+       <td>${appointment.status}</td>
+       <td>
+         <input type="checkbox" data-appointment-id="${appointment.id}">
+       </td>
+     `;
+
+     tableDataElement.appendChild(row);
+   });
+
+   return tableDataElement;
+}
+
+// event to reload patient table
+document.getElementById('reload-patient-table-js').addEventListener('click', () => {
+    // call function to display table again after reload
+    displayPatientTable();
+});
+
+// event to reload appointment table
+document.getElementById('reload-appointment-table-js').addEventListener('click', () => {
+  // call function to display table again after reload
+  displayAppointmentTable();
+});

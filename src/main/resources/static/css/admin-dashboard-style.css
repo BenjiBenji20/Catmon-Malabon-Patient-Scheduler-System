@@ -272,3 +272,18 @@ ACTIVE TAB INITIALLY
   box-shadow: 0 0 10px rgba(0, 123, 255, 0.7); 
   border-color: rgba(0, 123, 255, 0.9); 
 }
+
+.message-js {
+  position: relative;
+  width: fit-content;
+  left: 300px;
+  text-align: center;
+  padding-left: 5px; padding-right: 5px;
+  border-radius: 15px;
+  color: #ffff;
+  font-weight: 600;
+}
+
+.bi-arrow-clockwise {
+  cursor: pointer;
+}

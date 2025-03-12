@@ -139,10 +139,11 @@
                   <i class="bi bi-filter-square"></i> Filter
                 </button>
                 <form role="table-filter" class="filter-box" id="patient-profile-table-filter-form-js">
-                  <input type="text" id="filter-gender" class="form-control" placeholder="Filter by gender">
-                  <input type="number" id="filter-age" class="form-control" placeholder="Filter by age">
-
+                  <input type="text" id="patient-filter-gender" class="form-control" placeholder="Filter by gender">
+                  <input type="number" id="patient-filter-age" class="form-control" placeholder="Filter by age">
+ 
                   <select id="patient-filter-status" class="form-select">
+                    <option value="">SELECT STATUS</option>
                     <option value="PENDING">PENDING</option>
                     <option value="ONGOING">ONGOING</option>
                     <option value="DONE">DONE</option>
@@ -170,7 +171,9 @@
                 <th>Contact Number</th>
                 <th>Verification Code</th>
                 <th>Status</th>
-                <th></th>
+                <th>
+                  <i class="bi bi-arrow-clockwise" id="reload-patient-table-js" title="reload table"></i>
+                </th>
               </tr>
             </thead>
             <tbody>
@@ -228,7 +231,9 @@
                 <th>Doctor's ID</th>
                 <th>Doctor's Name</th>
                 <th>Status</th>
-                <th></th>
+                <th>
+                  <i class="bi bi-arrow-clockwise" id="reload-appointment-table-js" title="reload table"></i>
+                </th>
               </tr>
             </thead>
             <tbody>

@@ -278,4 +278,40 @@ export class AdminServiceAPI {
       return { error: "Cannot fetch appointment records." };
     }
   }
+
+  static async filterPatient(gender, age, status) {
+    try {
+      // validate parsed token. If token is null, redirect to login
+      validateParsedToken(this.token);
+
+      // Construct query parameters dynamically
+      const params = new URLSearchParams();
+      if (gender) params.append("gender", gender);
+      if (age) params.append("age", age);
+      if (status) params.append("status", status);
+
+      // Construct final URL
+      const url = `http://localhost:8002/api/admin/private/filter?${params.toString()}`;
+
+      // use the token to fetch all the doctors using the backend's api
+      const response = await fetch(url, {
+        method: 'GET',
+        headers: {
+          'Authorization' : `Bearer ${this.token}`,
+          'Content-Type' : 'application/json'
+        },
+      });
+
+      if(!response.ok) {
+        const errorData = await response.json();
+        return { error: errorData.error || 'Cannot fetch data' };
+      }
+
+      // if response isn't null, send the response to the controller
+      return response.json(); 
+    } catch (error) {
+      console.error("Error fetching data", error);
+      return { error: "Cannot fetch filter request." };
+    }
+  }
 } 
