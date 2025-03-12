@@ -279,6 +279,13 @@ export class AdminServiceAPI {
     }
   }
 
+  /**
+   * These params are came from user inputs
+   * @param {*} gender a string
+   * @param {*} age a numver
+   * @param {*} status an enum
+   * @returns patient data responsed from filter
+   */
   static async filterPatient(gender, age, status) {
     try {
       // validate parsed token. If token is null, redirect to login
@@ -312,6 +319,37 @@ export class AdminServiceAPI {
     } catch (error) {
       console.error("Error fetching data", error);
       return { error: "Cannot fetch filter request." };
+    }
+  }
+
+  /**
+   * 
+   * @param {*} keyword passed from search box
+   */
+  static async searchPatient(keyword) {
+    try {
+      // validate parsed token. If token is null, redirect to login
+      validateParsedToken(this.token);
+
+      // use the token to fetch all the doctors using the backend's api
+      const response = await fetch(`http://localhost:8002/api/admin/private/search-patient?keyword=${keyword}`, {
+        method: 'GET',
+        headers: {
+          'Authorization' : `Bearer ${this.token}`,
+          'Content-Type' : 'application/json'
+        },
+      });
+      if(!response.ok) {
+        const errorData = await response.json();
+        return { error: errorData.error || 'Cannot fetch data' };
+      }
+
+      // if response isn't null, send the response to the controller
+      return response.json(); 
+    } 
+    catch (error) {
+      console.error("Error fetching data", error);
+      return { error: "Cannot fetch request." };
     }
   }
 } 

@@ -1,6 +1,7 @@
 import { loadDoctorsList, loadPendingDoctorsList, loadAdminList,
   loadAdminProfile, acceptPendingDoctor, deletePendingDoctor,
-  loadPatientsList, loadAppointmentsList, loadFilterPatient
+  loadPatientsList, loadAppointmentsList, loadFilterPatient,
+  loadSearchPatients
  } from '../controller/admin-dashboard-controller.js';
 
 displayAdminProfile(); // display to render admin profile
@@ -411,6 +412,12 @@ function renderAppointmentTable(appointmentData) {
    return tableDataElement;
 }
 
+function displayErrorMessage(message) {
+  const tableBody = document.querySelector('tbody');
+  tableBody.classList.add('display-error-message');
+  tableBody.innerHTML = message;
+}
+
 // event to reload patient table
 document.getElementById('reload-patient-table-js').addEventListener('click', () => {
     // call function to display table again after reload
@@ -422,3 +429,41 @@ document.getElementById('reload-appointment-table-js').addEventListener('click',
   // call function to display table again after reload
   displayAppointmentTable();
 });
+
+const searchBar = document.getElementById('search-input-js');
+searchBar.addEventListener('input', debounce(async (e) => {
+  const keyword = e.target.value.trim(); // get search bar inputs
+
+  if(keyword.length === 0) {
+    // render table to its default content
+    displayPatientTable();
+    return;
+  }
+
+  try {
+    // pass and fetch the data
+    const searchData = await loadSearchPatients(keyword);
+
+    // validate response
+    if(searchData.error) {
+      displayErrorMessage(searchData.error);
+      return;
+    }
+
+    // call function to render searched patient via keyword
+    renderPatientTable(searchData);
+  } catch (error) {
+    console.error('Error fetching patient records:', error);
+    displayErrorMessage('Cannot fetch patient records');
+  }
+}, 300)); // 300ms delay to prevent execessive api calls
+
+// function that prevents execessive api calls
+function debounce(func, delay) {
+  let timer;
+
+  return(...args) => {
+    clearTimeout(timer);
+    timer = setTimeout(() => func(...args), delay);
+  };
+}

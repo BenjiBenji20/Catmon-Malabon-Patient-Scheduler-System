@@ -160,3 +160,24 @@ export async function loadFilterPatient(gender, age, status) {
     throw error;
   }
 }
+
+export async function loadSearchPatients(keyword) {
+  try {
+    // get the loaded data from service
+    const data = await AdminServiceAPI.searchPatient(keyword);
+
+    // if error happens
+    if(data.error) {
+      const tableBody = document.querySelector('tbody td');
+      tableBody.classList.add('display-error-message');
+
+      tableBody.innerHTML = data.error;
+      return;
+    }
+
+    return data;
+  } catch (error) {
+    console.error('Error fetching data', error);
+    throw error;
+  }
+}

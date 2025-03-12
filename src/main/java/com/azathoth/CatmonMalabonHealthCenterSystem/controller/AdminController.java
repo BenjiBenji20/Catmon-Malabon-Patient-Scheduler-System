@@ -324,6 +324,16 @@ public class AdminController {
     }
 
     /**
+     * Search Patient
+     */
+    @GetMapping("/private/search-patient")
+    public ResponseEntity<?> searchPatient(@RequestParam String keyword) {
+        List<PatientDTO> searchPatient = adminService.searchPatient(keyword);
+
+        return new ResponseEntity<>(searchPatient, HttpStatus.OK);
+    }
+
+    /**
      * GET all patients
      */
     @GetMapping("/private/get-all-patients")

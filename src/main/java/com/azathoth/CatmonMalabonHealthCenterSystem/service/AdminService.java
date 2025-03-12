@@ -256,6 +256,16 @@ public class AdminService {
     }
 
     /**
+     * Search Patient
+     */
+    public List<PatientDTO> searchPatient(String keyword) {
+        List<Patient> patients = patientRepository.searchPatient(keyword);
+        return patients.stream()
+                .map(this::convertToPatientDTO)
+                .collect(Collectors.toList());
+    }
+
+    /**
      * TABLE CONTROLLER TO FILTER PATIENT TABLE
      */
     public Optional<List<PatientDTO>> filterPatient(String gender, Integer age, String status) {
