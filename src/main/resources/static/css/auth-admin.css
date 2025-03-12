@@ -1,0 +1,49 @@
+.form-page {
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+form {
+  padding: 2rem;
+  box-shadow: rgba(255, 255, 255, 0.1) 0px 1px 1px 0px inset, rgba(50, 50, 93, 0.25) 0px 50px 100px -20px, rgba(0, 0, 0, 0.3) 0px 30px 60px -30px;
+  border-radius: 20px;
+  height: 40vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+form > h2 {
+  color: #007bff;
+  user-select: none;
+  text-align: center;
+}
+
+.password-container {
+  display: flex;
+}
+
+.password-eye-icon {
+  border-top-left-radius: 0 !important;
+  border-bottom-left-radius: 0 !important;
+  border-left: none !important;
+  background: none !important;
+}
+
+.input-password {
+  border-top-right-radius: 0 !important;
+  border-bottom-right-radius: 0 !important;
+  border-right: none !important;
+}
+
+.bi-eye-slash, .bi-eye {
+  cursor: pointer;
+}
+
+.message {
+  color: red;
+  text-align: center;
+}

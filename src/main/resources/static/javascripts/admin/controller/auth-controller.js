@@ -20,6 +20,10 @@ import { AdminServiceAPI } from "../service/admin-service.js";
     // if authentication failed, stay on the same page and sends a response
     if(response.error) {
       document.querySelector('.message').innerHTML = response.error;
+
+      setTimeout(() => {
+        document.querySelector('.message').innerHTML = '';
+      }, 1500);
       return;
     }
     
