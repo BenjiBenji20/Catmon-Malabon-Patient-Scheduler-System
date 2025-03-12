@@ -293,7 +293,7 @@ async function displayPatientTable() {
     const tableBody = document.querySelector('tbody');
       tableBody.classList.add('display-error-message');
 
-      tableBody.innerHTML = patientListData.error;
+      tableBody.innerHTML = 'Cannot fetch patient records';
   }
 }
 
@@ -342,9 +342,9 @@ async function displayAppointmentTable() {
     });
   } catch (error) {
     console.error('Error displaying patients list:', error);
-    const tableBody = document.querySelector('tbody');
+    const tableBody = document.querySelector('tbody td');
       tableBody.classList.add('display-error-message');
 
-      tableBody.innerHTML = appointmentListData.error;
+      tableBody.innerHTML = 'Cannot fetch appointment records';
   }
 }

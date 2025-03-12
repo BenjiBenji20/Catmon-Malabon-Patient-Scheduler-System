@@ -2,6 +2,10 @@
   padding: 10px;
 }
 
+.btn-primary {
+  background-color: #007bff !important;
+}
+
 .right-panel {
   transition: margin-left 0.3s ease-in-out, width 0.3s ease-in-out;
   width: calc(100% - 51px); /* Default width with only icon */
@@ -61,7 +65,7 @@
 
 
 .profile-container {
-  color: #4040a1;
+  color: #007bff;
   font-weight: 600;
   display: flex;
   flex-direction: column;
@@ -83,7 +87,7 @@
   padding: 20px;
   text-decoration: none;
   font-size: 1rem;
-  color: #4040a1;
+  color: #007bff;
   font-weight: 500;
   width: 100%;
 }
@@ -106,13 +110,17 @@
 .table thead {
   height: 50px;
   width: 100%;
+  border-bottom: transparent;
 }
 
 .table thead th {
   padding: 10px;
   background: transparent;
   padding: 20px;
+}
 
+th {
+  font-weight: 500;
 }
 
 .table thead tr {
@@ -125,11 +133,142 @@
   padding: 20px;
 }
 
-.display-error-message td{ /*This is table body*/
+.display-error-message { /*This is table body*/
   height: 30vh;
   text-align: center; 
   vertical-align: middle; 
   width: 100%;
   font-size: 18px;
   font-weight: bold;
+}
+
+.right-panel-header {
+  display: flex;
+  justify-content: end;
+}
+
+.nav {
+  width: 30%;
+  display: flex;
+  justify-content: space-around;
+}
+
+.nav-item {
+  width: 50%;
+  text-align: center;
+  border-radius: 20px;
+  padding: 3px;
+  cursor: pointer;
+}
+
+.nav-item a {
+  text-decoration: none;
+  color: #007bff;
+  font-weight: 600;
+}
+
+/*
+ACTIVE TAB INITIALLY
+*/
+.nav-active {
+  background-color: #A1E3F9;
+}
+
+.nav-active:hover {
+  background-color: #aee2f3;
+}
+
+.nav-active:active {
+  background-color: #91cfe4;
+}
+
+.health-center-logo {
+  display: flex;
+  align-items: center;
+  justify-content: end;
+  padding: 7px;
+}
+
+.health-center-logo img {
+  max-width: 150px;
+}
+
+.health-center-logo h2 {
+  margin-right: 10px;
+  width: 300px;
+  font-size: 2.3rem;
+  font-weight: 600;
+  color: #007bff;
+  text-align: center;
+}
+
+.table-controller {
+  display: flex;
+  justify-content: end;
+}
+
+.table-controller > fieldset {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  max-width: 40%;
+  margin-bottom: 5px;
+}
+
+/*
+  STYLING FILTER
+*/
+.filter-container {
+  position: relative;
+  display: inline-block;
+  margin-right: 10px;
+}
+
+.filter-box {
+  display: none;
+  position: absolute;
+  top: 100%;
+  left: 0;
+  background: white;
+  padding: 15px;
+  width: 200px;
+  border-radius: 5px;
+  box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
+  z-index: 1000;
+}
+
+.filter-box input,
+.filter-box select {
+  width: 100%;
+  margin-bottom: 10px;
+}
+
+.set-filter-btn {
+  width: 100%;
+}
+
+/*Search bar styling
+*/
+.d-flex {
+  border: 1px solid gray;
+  display: flex;
+  align-items: center;
+  border-radius: 20px;
+  padding-left: 10px;
+  margin-right: 10px;
+}
+
+.form-control {
+  border: none !important; /* Remove default border */
+  outline: none !important; /* Remove focus outline */
+}
+
+.form-control:focus {
+  border: none;
+  box-shadow: none !important; /* Remove Bootstrap's glow */
+}
+
+.d-flex:focus-within {
+  box-shadow: 0 0 10px rgba(0, 123, 255, 0.7); 
+  border-color: rgba(0, 123, 255, 0.9); 
 }
