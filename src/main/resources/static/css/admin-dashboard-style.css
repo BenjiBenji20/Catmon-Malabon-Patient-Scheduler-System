@@ -287,3 +287,13 @@ ACTIVE TAB INITIALLY
 .bi-arrow-clockwise {
   cursor: pointer;
 }
+
+#logout-button-js {
+  cursor: pointer;
+}
+
+.status-badge {
+  border-radius: 15px;
+  text-align: center;
+  padding: 2px;
+}

@@ -38,10 +38,10 @@ async function displayAdminProfile() {
             <div class="offcanvas-header admin-profile-container">
               <i class="bi bi-person-circle"></i>
               <div id="admin-name-js">
-                Name: ${adminData.adminName} 
+                ${adminData.adminName} 
                 <i class="bi bi-escape" id="logout-button-js" title="logout"></i>
                 <br>
-                Email: ${adminData.email}
+                ${adminData.email}
               </div>
             </div>
             
@@ -363,6 +363,7 @@ function renderPatientTable(patientData) {
   patientData.forEach(patient => {
   // create table row element to handle each table data
   const row = document.createElement('tr');
+  row.setAttribute('data-id', patient.id);
 
   row.innerHTML = `
     <td>${patient.id}</td>
@@ -371,7 +372,11 @@ function renderPatientTable(patientData) {
     <td>${patient.age}</td>
     <td>+63 ${patient.contactNumber}</td>
     <td>${patient.verificationNumber}</td>
-    <td>${patient.status}</td>
+    <td>
+      <div class="status-badge" data-status="${patient.status}">
+      ${patient.status}
+      </div>
+    </td>
     <td>
       <input type="checkbox" data-patient-id="${patient.id}">
     </td>
@@ -379,6 +384,9 @@ function renderPatientTable(patientData) {
 
     tableDataElement.appendChild(row);
   });
+
+  // design the status based on its value
+  colorStatus();
 
   return tableDataElement;
 }
@@ -394,6 +402,7 @@ function renderAppointmentTable(appointmentData) {
    appointmentData.forEach(appointment => {
      // create table row element to handle each table data
      const row = document.createElement('tr');
+     row.setAttribute('data-id', appointment.id);
 
      row.innerHTML = `
        <td>${appointment.id}</td>
@@ -402,7 +411,11 @@ function renderAppointmentTable(appointmentData) {
        <td>${appointment.patientName}</td>
        <td>${appointment.doctorId}</td>
        <td>${appointment.doctorName}</td>
-       <td>${appointment.status}</td>
+       <td>
+        <div class="status-badge" data-status="${appointment.status}">
+          ${appointment.status}
+        </div>
+       </td>
        <td>
          <input type="checkbox" data-appointment-id="${appointment.id}">
        </td>
@@ -410,8 +423,52 @@ function renderAppointmentTable(appointmentData) {
 
      tableDataElement.appendChild(row);
    });
+   // design the status based on its value
+  colorStatus();
 
    return tableDataElement;
+}
+
+function colorStatus() {
+  document.querySelectorAll('.status-badge').forEach(badge => {  
+    const status = badge.getAttribute('data-status'); // get data attribute
+  
+    switch (status.toUpperCase()) {
+      case 'PENDING':
+        badge.style.backgroundColor = '#ebbe41';
+        badge.style.color = '#ffff';
+        badge.style.fontWeight = '500';
+        badge.style.border = '2px solid #917826';
+        break;
+      
+      case 'CANCELLED':
+        badge.style.backgroundColor = '#bd3831';
+        badge.style.color = '#ffff';
+        badge.style.fontWeight = '500';
+        badge.style.border = '2px solid #664344';
+        break;
+      
+      case 'ONGOING':
+        badge.style.backgroundColor = '#5a8ed6';
+        badge.style.color = '#ffff';
+        badge.style.fontWeight = '500';
+        badge.style.border = '2px solid #3a5b8a';
+        break;
+  
+      case 'DONE':
+        badge.style.backgroundColor = '#59b56b';
+        badge.style.color = '#ffff';
+        badge.style.fontWeight = '500';
+        badge.style.border = '2px solid #416a4a';
+        break;
+    
+      default:
+        badge.style.backgroundColor = '#ffff';
+        badge.style.color = 'black';
+        badge.style.border = '2px solid black';
+        break;
+    }
+  });
 }
 
 function displayErrorMessage(message) {
