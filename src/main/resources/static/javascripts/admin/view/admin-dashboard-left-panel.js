@@ -38,7 +38,9 @@ async function displayAdminProfile() {
             <div class="offcanvas-header admin-profile-container">
               <i class="bi bi-person-circle"></i>
               <div id="admin-name-js">
-                Name: ${adminData.adminName} <br>
+                Name: ${adminData.adminName} 
+                <i class="bi bi-escape" id="logout-button-js" title="logout"></i>
+                <br>
                 Email: ${adminData.email}
               </div>
             </div>
@@ -429,6 +431,15 @@ document.getElementById('reload-appointment-table-js').addEventListener('click',
   // call function to display table again after reload
   displayAppointmentTable();
 });
+
+// logout admin and remove token from local storage
+document.getElementById('logout-button-js').addEventListener('click', () => {
+  localStorage.removeItem('adminJwt'); // remove token from storage
+
+  // redirect user
+  window.location.href = 'http://127.0.0.1:5500/src/main/resources/templates/admin/admin-auth.html';
+});
+
 
 const searchBar = document.getElementById('search-input-js');
 searchBar.addEventListener('input', debounce(async (e) => {

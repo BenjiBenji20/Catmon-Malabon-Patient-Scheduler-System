@@ -11,6 +11,20 @@
    <link rel="stylesheet" href="../../static/css/auth-admin.css">
 </head>
   <body>
+    <!-- 
+      BLOCK AUTHENTICATED ADMIN USERS TO ACCESS AUTHENTICATION PAGE VIA URL
+      THE ADMIN USER MUST LOG OUT (REMOVE JWT TO THE LOCAL STORAGE)
+      TO ACCESS AUTHENTICATION PAGE AND LOGIN AGAIN.
+    -->
+    <script>
+      document.addEventListener('DOMContentLoaded', () => {
+        const token = localStorage.getItem('adminJwt');
+        if (token) {
+          window.location.href = 'admin-dashboard.html'; // redirect admin user to the dashboard
+        }
+      });
+    </script>
+    
     <div class="container-fluid">
       <div class="form-page">
         <form id="login-form">

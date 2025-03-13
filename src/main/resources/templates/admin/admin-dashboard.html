@@ -11,6 +11,39 @@
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css"> 
 </head>
   <body>
+
+    <!-- 
+      PREVENT UNAUTHENTICATED USERS TO ACCESS ADMIN DASHBOARD PAGE VIA URL
+      USER MUST BE AUTHENTICATED AND AUTHORIZED AS ADMIN USER TO ACCESS
+      THE DASHBOARD.
+    -->
+    <script>
+      document.addEventListener('DOMContentLoaded', function() {
+        const token = localStorage.getItem('adminJwt'); // extract token from local storage
+        
+        // Redirect to login if token is missing
+        if (!token) {
+          window.location.href = 'admin-auth.html';
+          return;
+        }
+      
+        // Check token expiration
+        const parseJwt = (token) => {
+          try {
+            return JSON.parse(atob(token.split('.')[1]));
+          } catch (e) {
+            return null;
+          }
+        };
+      
+        const decodedToken = parseJwt(token);
+        if (decodedToken && decodedToken.exp * 1000 < Date.now()) {
+          localStorage.removeItem('adminJwt');
+          window.location.href = 'admin-auth.html';
+        }
+      });
+    </script>
+
     <div class="container-fluid">
       <aside class="left-panel">
         <i class="bi bi-layout-sidebar-reverse" data-bs-toggle="offcanvas" data-bs-target="#offcanvasScrolling" aria-controls="offcanvasScrolling" title="open side panel">
@@ -25,6 +58,7 @@
               <div id="admin-name-js">
                 <!-- LIST GENERATED IN JS admin-dashboard-left-panel.js-->
               </div>
+              <i class="bi bi-escape" id="logout-button-js" title="logout"></i>
             </div>
             <div id="admin-email-js">
               <!-- LIST GENERATED IN JS admin-dashboard-left-panel.js-->
