@@ -47,6 +47,14 @@ async function displayAdminProfile() {
             
           </div>
       `;
+
+      // logout admin and remove token from local storage
+      document.getElementById('logout-button-js').addEventListener('click', () => {
+        localStorage.removeItem('adminJwt'); // remove token from storage
+
+        // redirect user
+        window.location.href = 'http://127.0.0.1:5500/src/main/resources/templates/admin/admin-auth.html';
+      });
   } catch (error) {
     console.error('Error displaying doctors list:', error);
     document.querySelector('#admin-name-js').innerHTML = 'Failed to load admin info';
@@ -488,15 +496,6 @@ document.getElementById('reload-appointment-table-js').addEventListener('click',
   // call function to display table again after reload
   displayAppointmentTable();
 });
-
-// logout admin and remove token from local storage
-document.getElementById('logout-button-js').addEventListener('click', () => {
-  localStorage.removeItem('adminJwt'); // remove token from storage
-
-  // redirect user
-  window.location.href = 'http://127.0.0.1:5500/src/main/resources/templates/admin/admin-auth.html';
-});
-
 
 const searchBar = document.getElementById('search-input-js');
 searchBar.addEventListener('input', debounce(async (e) => {

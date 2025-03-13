@@ -1,6 +1,7 @@
 package com.azathoth.CatmonMalabonHealthCenterSystem.controller;
 
 import com.azathoth.CatmonMalabonHealthCenterSystem.dto.DoctorAuthenticationDTO;
+import com.azathoth.CatmonMalabonHealthCenterSystem.dto.DoctorDTO;
 import com.azathoth.CatmonMalabonHealthCenterSystem.dto.PatientDTO;
 import com.azathoth.CatmonMalabonHealthCenterSystem.exception.ResourceNotFoundException;
 import com.azathoth.CatmonMalabonHealthCenterSystem.model.PatientRecord;
@@ -10,7 +11,7 @@ import jakarta.validation.Valid;
 import org.hibernate.exception.DataException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.http.HttpStatus;
+import org.springframework.dao.DataAccessException;
 import org.springframework.http.ResponseEntity;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.web.bind.annotation.*;
@@ -57,6 +58,32 @@ public class DoctorController {
     }
 
     /**
+     * GET doctor profile (get the current profile of logged doctor)
+     * used the header to extract doctor data using jwt token.
+     */
+    @GetMapping("/private/get-doctor-profile")
+    public ResponseEntity<?> getDoctorProfile(@RequestHeader("Authorization") String authHeader) {
+        try {
+            // Extract token from header
+            String token = authHeader.replace("Bearer ", "");
+
+            // extract doctor profile
+            Optional<DoctorDTO> doctor = doctorService.getDoctorProfile(token);
+
+            return doctor.isEmpty() ?
+                    ResponseEntity.notFound().build() :
+                    ResponseEntity.ok(doctor);
+        }
+        catch (ResourceNotFoundException e) {
+            logger.error("Doctor not found: {}", e.getMessage());
+            return ResponseEntity.notFound().build();
+        }
+        catch (Exception e) {
+            return ResponseEntity.internalServerError().body(Map.of("error", "Server error while fetching data"));
+        }
+    }
+
+    /**
      * Get all my patients
      * Signed in doctor should pass his id here
      */
@@ -76,6 +103,31 @@ public class DoctorController {
         catch (Exception e) {
             logger.error("Error fetching patients by id: {}", myId, e);
             return ResponseEntity.internalServerError().body(Map.of("error", "Server error"));
+        }
+    }
+
+    /**
+     * Get patient details by id
+     */
+    @GetMapping("/private/get-patient-details/{id}")
+    public ResponseEntity<?> getPatientDetails(@PathVariable Long id) {
+        try {
+            Optional<PatientDTO> patient = doctorService.getPatientDetails(id);
+
+            return patient.isEmpty() ?
+                    ResponseEntity.notFound().build() :
+                    ResponseEntity.ok(patient);
+        }
+        catch (ResourceNotFoundException e) {
+            logger.error("Patient not found by id: {}", id);
+            return ResponseEntity.notFound().build();
+        }
+        catch (DataAccessException e) {
+            logger.error("Data cannot be fetch: {}", e.getMessage());
+            return ResponseEntity.internalServerError().body(Map.of("error", "Error occurred while fetching data."));
+        }
+        catch (Exception e) {
+            return ResponseEntity.internalServerError().body(Map.of("error", "Server error found"));
         }
     }
 

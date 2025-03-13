@@ -1,0 +1,79 @@
+body {
+  background-color: #E3F2FD;
+  padding: 10px;
+}
+
+/* Container for the entire layout */
+.container-fluid {
+  display: flex;
+} 
+
+/* Left Panel (Offcanvas) */
+.left-panel {
+  position: fixed;
+  z-index: 1000;
+}
+
+/* Offcanvas styling */
+.offcanvas.offcanvas-start {
+  box-shadow: rgba(0, 0, 0, 0.35) 0px 5px 15px;
+  width: 250px; /* Fixed width for offcanvas */
+  border-radius: 10px;
+  padding: 10px;
+  height: 97vh;
+  top: 10px;
+  left: 15px;
+  transition: transform 0.3s ease-in-out;
+  overflow-y: auto;
+}
+
+/* Right Panel (Main Content) */
+.right-panel {
+  flex-grow: 1;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-around;
+  gap: 10px; /* Space between cards */
+  padding: 10px;
+  margin-left: 30px; /* Default margin for the collapsed state */
+  transition: margin-left 0.3s ease-in-out;
+  height: 97vh;
+  border-radius: 10px;
+  box-shadow: rgba(0, 0, 0, 0.35) 0px 5px 15px;
+  overflow-y: auto;
+  overflow-x: hidden;
+  padding: 10px;
+  background-color: #ffff;
+}
+
+/* Adjust right panel when offcanvas is open */
+.right-panel.with-offcanvas {
+  margin-left: 270px; /* Adjust margin to accommodate offcanvas width */
+}
+
+/* Responsive design for smaller screens */
+@media (max-width: 768px) {
+  .right-panel {
+    margin-left: 0; /* On small screens, main content should not shift */
+  }
+
+  .right-panel.with-offcanvas {
+    margin-left: 0; /* On small screens, main content should not shift */
+  }
+}
+
+.close-canvas-btn {
+  position: absolute;
+  left: 215px;
+}
+
+.bi-layout-sidebar-reverse {
+  background-color: #ffff;
+  padding: 3px;
+  border-radius: 5px;
+  font-weight: 600;
+  top: 2px;
+  position: relative;
+  box-shadow: rgba(0, 0, 0, 0.35) 0px 5px 15px;
+  cursor: pointer;
+}

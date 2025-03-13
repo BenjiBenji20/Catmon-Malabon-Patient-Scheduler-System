@@ -4,8 +4,7 @@ document.addEventListener("DOMContentLoaded", function () {
    */
   const offcanvasElement = document.getElementById("offcanvasScrolling");
   const rightPanel = document.querySelector(".right-panel");
-
-  const displayMessage = document.querySelector('.message-js');
+  const container = document.querySelector('.container-fluid');
 
   // Bootstrap Offcanvas event listeners
   offcanvasElement.addEventListener("show.bs.offcanvas", function () {

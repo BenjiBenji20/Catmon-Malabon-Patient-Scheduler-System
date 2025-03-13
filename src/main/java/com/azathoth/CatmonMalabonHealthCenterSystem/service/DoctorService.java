@@ -1,6 +1,7 @@
 package com.azathoth.CatmonMalabonHealthCenterSystem.service;
 
 import com.azathoth.CatmonMalabonHealthCenterSystem.dto.DoctorAuthenticationDTO;
+import com.azathoth.CatmonMalabonHealthCenterSystem.dto.DoctorDTO;
 import com.azathoth.CatmonMalabonHealthCenterSystem.dto.PatientDTO;
 import com.azathoth.CatmonMalabonHealthCenterSystem.exception.ResourceNotFoundException;
 import com.azathoth.CatmonMalabonHealthCenterSystem.model.Appointment;
@@ -64,6 +65,33 @@ public class DoctorService {
     }
 
     /**
+     * The doctor entity has enforced the unique email from all its records.
+     * The doctor email is extracted using jwtService.extractEmail() method.
+     * This will take a jwt token and using this, it will extract its claims (email)
+     * And using this extracted email, we can find the doctor from db.
+     */
+    public Optional<DoctorDTO> getDoctorProfile(String token) {
+        try {
+            // extract doctor email using jwt token
+            String email = jwtService.extractEmail(token);
+
+            // extract doctor profile by unique email
+            Doctor doctor = doctorRepository.findDoctorByEmail(email);
+
+            // if doctor didn't find
+            if(doctor == null) {
+                return Optional.empty();
+            }
+
+            return Optional.of(doctor)
+                    .map(this::convertToDoctorDTO);
+        }
+        catch (ResourceNotFoundException e) {
+            return Optional.empty();
+        }
+    }
+
+    /**
      * Signed in doctor should pass his id here
      */
     public List<PatientDTO> getAllMyPatients(Long myId) {
@@ -84,29 +112,6 @@ public class DoctorService {
         return convertAllPatientsDTO(patientIds);
     }
 
-    private List<PatientDTO> convertAllPatientsDTO(List<Long> patientIds) {
-        List<PatientDTO> patientDTOS = new ArrayList<>();
-
-        patientIds.forEach(id -> {
-            PatientDTO dto = new PatientDTO();
-            Patient patient = patientRepository.findPatientById(id);
-            dto.setId(patient.getId());
-            dto.setCompleteName(patient.getCompleteName());
-            dto.setGender(patient.getGender());
-            dto.setAddress(patient.getAddress());
-            dto.setAge(patient.getAge());
-            dto.setContactNumber(patient.getContactNumber());
-            dto.setVerificationNumber(patient.getVerificationNumber());
-            dto.setScheduleDate(patient.getAppointment().getScheduleDate());
-            dto.setStatus(patient.getAppointment().getStatus());
-
-            patientDTOS.add(dto);
-        });
-
-        return patientDTOS;
-    }
-
-
     public Optional<PatientDTO> updatePatientStatus(Long patientId, Status newStatus) {
         Patient patient = patientRepository.findById(patientId)
                 .orElseThrow(() -> new ResourceNotFoundException("Patient is not found by id: " + patientId));
@@ -115,23 +120,9 @@ public class DoctorService {
 
         Patient updatedPatient = patientRepository.save(patient);
 
-        PatientDTO patientDTO = convertToDTO(updatedPatient);
+        PatientDTO patientDTO = convertToPatientDTO(updatedPatient);
 
         return Optional.of(patientDTO);
-    }
-
-    private PatientDTO convertToDTO(Patient patient) {
-        PatientDTO dto = new PatientDTO();
-        dto.setId(patient.getId());
-        dto.setCompleteName(patient.getCompleteName());
-        dto.setGender(patient.getGender());
-        dto.setAddress(patient.getAddress());
-        dto.setAge(patient.getAge());
-        dto.setContactNumber(patient.getContactNumber());
-        dto.setVerificationNumber(patient.getVerificationNumber());
-        dto.setScheduleDate(patient.getAppointment().getScheduleDate());
-        dto.setStatus(patient.getAppointment().getStatus());
-        return dto;
     }
 
     /**
@@ -167,5 +158,63 @@ public class DoctorService {
         PatientRecord recorded = patientRecordRepository.save(patientRecord);
 
         return Optional.of(recorded);
+    }
+
+    public Optional<PatientDTO> getPatientDetails(Long id) {
+        try {
+            // find patient using its id
+            Patient patient = patientRepository.findById(id)
+                    .orElseThrow(() -> new ResourceNotFoundException("Patient not found by id: " + id));
+
+            return Optional.of(patient)
+                    .map(this::convertToPatientDTO);
+        } catch (ResourceNotFoundException e) {
+            return Optional.empty();
+        }
+    }
+
+    private PatientDTO convertToPatientDTO(Patient patient) {
+        PatientDTO dto = new PatientDTO();
+        dto.setId(patient.getId());
+        dto.setCompleteName(patient.getCompleteName());
+        dto.setGender(patient.getGender());
+        dto.setAddress(patient.getAddress());
+        dto.setAge(patient.getAge());
+        dto.setContactNumber(patient.getContactNumber());
+        dto.setVerificationNumber(patient.getVerificationNumber());
+        dto.setScheduleDate(patient.getAppointment().getScheduleDate());
+        dto.setStatus(patient.getAppointment().getStatus());
+        return dto;
+    }
+
+    private List<PatientDTO> convertAllPatientsDTO(List<Long> patientIds) {
+        List<PatientDTO> patientDTOS = new ArrayList<>();
+
+        patientIds.forEach(id -> {
+            PatientDTO dto = new PatientDTO();
+            Patient patient = patientRepository.findPatientById(id);
+            dto.setId(patient.getId());
+            dto.setCompleteName(patient.getCompleteName());
+            dto.setGender(patient.getGender());
+            dto.setAddress(patient.getAddress());
+            dto.setAge(patient.getAge());
+            dto.setContactNumber(patient.getContactNumber());
+            dto.setVerificationNumber(patient.getVerificationNumber());
+            dto.setScheduleDate(patient.getAppointment().getScheduleDate());
+            dto.setStatus(patient.getAppointment().getStatus());
+
+            patientDTOS.add(dto);
+        });
+
+        return patientDTOS;
+    }
+
+    private DoctorDTO convertToDoctorDTO(Doctor doctor) {
+        return new DoctorDTO(
+          doctor.getId(),
+          doctor.getCompleteName(),
+          doctor.getEmail(),
+          doctor.getAvailableDays()
+        );
     }
 }
