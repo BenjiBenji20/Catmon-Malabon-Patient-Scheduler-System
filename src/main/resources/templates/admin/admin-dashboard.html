@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Admin Dash Board</title>
+  <title>Admin Dashboard</title>
   <!-- CSS LINK -->
    <link rel="stylesheet" href="../../static/css/admin-dashboard-style.css">
   <!--Bootstrap Link-->
@@ -17,7 +17,7 @@
       USER MUST BE AUTHENTICATED AND AUTHORIZED AS ADMIN USER TO ACCESS
       THE DASHBOARD.
     -->
-    <script>
+    <!-- <script>
       document.addEventListener('DOMContentLoaded', function() {
         const token = localStorage.getItem('adminJwt'); // extract token from local storage
         
@@ -42,86 +42,81 @@
           window.location.href = 'admin-auth.html';
         }
       });
-    </script>
+    </script> -->
 
     <div class="container-fluid">
       <aside class="left-panel">
         <i class="bi bi-layout-sidebar-reverse" data-bs-toggle="offcanvas" data-bs-target="#offcanvasScrolling" aria-controls="offcanvasScrolling" title="open side panel">
           <!--OPEN SIDE CANVAS/PANEL-->
-        </i> 
+        </i>
+
         <div class="offcanvas offcanvas-start" data-bs-scroll="true" data-bs-backdrop="false" tabindex="-1" id="offcanvasScrolling" aria-labelledby="offcanvasScrollingLabel">
-          <!--CLOSE SIDE CANVAS/PANEL BUTTON-->
-          <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close" title="close" style="position: relative; left: 360px; top: 10px;"></button>
-          <div class="profile-container">
-            <div class="offcanvas-header admin-profile-container" style="padding: 0;">
-              <i class="bi bi-person-circle"></i>
-              <div id="admin-name-js">
-                <!-- LIST GENERATED IN JS admin-dashboard-left-panel.js-->
+          <button type="button" class="btn-close close-canvas-btn" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+          <div class="offcanvas-header">
+            <div class="profile-container">
+              <div class="offcanvas-header admin-profile-container" style="padding: 0;">
+                <i class="bi bi-person-circle"></i>
+                <div id="admin-name-js">
+                  <!-- LIST GENERATED IN JS admin-dashboard-left-panel.js-->
+                </div>
               </div>
               <i class="bi bi-escape" id="logout-button-js" title="logout"></i>
             </div>
-            <div id="admin-email-js">
-              <!-- LIST GENERATED IN JS admin-dashboard-left-panel.js-->
-            </div>
           </div>
-          <div class="line-dash"></div>
-
-          <div class="co-admin-list">
-            <div data-bs-toggle="collapse" class="co-admin-list-collapse collapse-link" href="#admin-list-collapse" role="button" aria-expanded="false" aria-controls="admin-list-collapse">
-              Co-admins
-              <i class="bi bi-caret-down"></i>
-            </div>
-            <div class="row">
-              <div class="col">
-                <div class="collapse multi-collapse" id="admin-list-collapse">
-                  <div class="card card-body">
-                    <ul class="list-group list-group-flush">
-                      <!-- LIST GENERATED IN JS admin-dashboard-left-panel.js-->
-                    </ul>
+          <div class="offcanvas-body">
+            <div class="co-admin-list">
+              <div data-bs-toggle="collapse" class="co-admin-list-collapse collapse-link" href="#admin-list-collapse" role="button" aria-expanded="false" aria-controls="admin-list-collapse">
+                Co-admins
+                <i class="bi bi-caret-down"></i>
+              </div>
+              <div class="row">
+                <div class="col">
+                  <div class="collapse multi-collapse" id="admin-list-collapse">
+                    <div class="card card-body">
+                      <ul class="list-group list-group-flush">
+                        <!-- LIST GENERATED IN JS admin-dashboard-left-panel.js-->
+                      </ul>
+                    </div>
                   </div>
                 </div>
               </div>
             </div>
-          </div>
 
-          <div class="line-dash"></div>
-
-          <div class="doctors-list">
-            <div class="doctors-list-collapse collapse-link" href="#doctors-list-collapse" data-bs-toggle="collapse" role="button" aria-expanded="false" aria-controls="doctors-list-collapse">
-              Available Doctors
-              <i class="bi bi-caret-down"></i>
-            </div>
-            <div class="row">
-              <div class="col">
-                <div class="collapse multi-collapse" id="doctors-list-collapse">
-                  <div class="card card-body">
-                    <ul class="list-group list-group-flush">
-                      <li class="list-group-item doctor-data-cell" data-doctor-id="${doctor.id}">
-                        <!-- LIST GENERATED IN JS admin-dashboard-left-panel.js-->
-                      </li>
-                    </ul>
+            <div class="doctors-list">
+              <div class="doctors-list-collapse collapse-link" href="#doctors-list-collapse" data-bs-toggle="collapse" role="button" aria-expanded="false" aria-controls="doctors-list-collapse">
+                Available Doctors
+                <i class="bi bi-caret-down"></i>
+              </div>
+              <div class="row">
+                <div class="col">
+                  <div class="collapse multi-collapse" id="doctors-list-collapse">
+                    <div class="card card-body">
+                      <ul class="list-group list-group-flush">
+                        <li class="list-group-item doctor-data-cell" data-doctor-id="${doctor.id}">
+                          <!-- LIST GENERATED IN JS admin-dashboard-left-panel.js-->
+                        </li>
+                      </ul>
+                    </div>
                   </div>
                 </div>
               </div>
             </div>
-          </div>
 
-          <div class="line-dash"></div>
-
-          <div class="pending-doctors-list">
-            <div data-bs-toggle="collapse" class="pending-doctors-list-collapse collapse-link" href="#pending-doctors-list-collapse" role="button" aria-expanded="false" aria-controls="pending-doctors-list-collapse">
-              Pending Doctors
-              <i class="bi bi-caret-down"></i>
-            </div>
-            <div class="row">
-              <div class="col">
-                <div class="collapse multi-collapse" id="pending-doctors-list-collapse">
-                  <div class="card card-body">
-                    <ul class="list-group list-group-flush">
-                      <li class="list-group-item pending-doctor-data-cell" data-pending-doctor-id="${pendingDoctor.id}">
-                        <!-- LIST GENERATED IN JS admin-dashboard-left-panel.js-->
-                      </li>
-                    </ul>
+            <div class="pending-doctors-list">
+              <div data-bs-toggle="collapse" class="pending-doctors-list-collapse collapse-link" href="#pending-doctors-list-collapse" role="button" aria-expanded="false" aria-controls="pending-doctors-list-collapse">
+                Pending Doctors
+                <i class="bi bi-caret-down"></i>
+              </div>
+              <div class="row">
+                <div class="col">
+                  <div class="collapse multi-collapse" id="pending-doctors-list-collapse">
+                    <div class="card card-body">
+                      <ul class="list-group list-group-flush">
+                        <li class="list-group-item pending-doctor-data-cell" data-pending-doctor-id="${pendingDoctor.id}">
+                          <!-- LIST GENERATED IN JS admin-dashboard-left-panel.js-->
+                        </li>
+                      </ul>
+                    </div>
                   </div>
                 </div>
               </div>
@@ -131,10 +126,15 @@
       </aside>
 
       <main class="right-panel">
-        <div class="message-js">
+        <div class="message-js"> 
           <!-- DISPLAY RESPONSE HERE USING JS -->
         </div>
+
         <nav class="right-panel-header">
+          <div class="company-name">
+            <h4>Catmon Super Health Center</h4>
+          </div>
+
           <ul class="nav">
             <li class="nav-item patient-nav nav-active">
               <a href="#patients-profile-tab" class="patients-profile-tab">
@@ -150,133 +150,169 @@
             </li>
           </ul>
         </nav>
+  
+        <div class="right-panel-body">
+          <div class="graphs-body">
+            <div class="graph-header">
+              <h4>
+                Table Report
+              </h4>
+            </div>
 
-        <section class="health-center-logo">
-          <h2>
-            Catmon Super Health Center
-          </h2>
-          <img src="../../static/images/catmonlogo.png" alt="Health center logo">
-        </section>
-
-        <!-- PATIENT PROFILE TABLE AND CONTROLLERS -->
-        <section class="table-patient-profile-data">
-          <div class="table-patient-profile-controllers table-controller">
-            <fieldset>
-              <!-- SEARCH INPUT -->
-              <form class="d-flex bi bi-search" role="search" id="patient-profile-table-search-js">
-                <input class="form-control me-2" id="search-input-js" type="search" placeholder="Search Patient" aria-label="Search">
-              </form>
-
-              <!-- FILTER BUTTON -->
-              <div class="filter-container" title="filter patient table">
-                <button id="patient-filter-btn" class="btn btn-primary">
-                  <i class="bi bi-filter-square"></i> Filter
-                </button>
-                <form role="table-filter" class="filter-box" id="patient-profile-table-filter-form-js">
-                  <input type="text" id="patient-filter-gender" class="form-control" placeholder="Filter by gender">
-                  <input type="number" id="patient-filter-age" class="form-control" placeholder="Filter by age">
- 
-                  <select id="patient-filter-status" class="form-select">
-                    <option value="">SELECT STATUS</option>
-                    <option value="PENDING">PENDING</option>
-                    <option value="ONGOING">ONGOING</option>
-                    <option value="DONE">DONE</option>
-                    <option value="CANCELLED">CANCELLED</option>
-                  </select>
-                  <button type="submit" class="btn btn-primary set-filter-btn">Set Filter</button>
-                </form>
+            <div class="card" style="width: 18rem;">
+              <img src="../../static/images/chart1.png" class="card-img-top" alt="...">
+              <div class="card-body">
+                <p class="card-text">
+                  Some quick example text to build on the card title and make up the bulk of the card's content.
+                </p>
               </div>
+            </div>
 
-              <!-- DELETE ROWS -->
-              <button type="button" class="btn btn-danger" title="delete selected patients">
-                <i class="bi bi-trash3"></i>
-                Delete
-              </button>
-            </fieldset>
+            <div class="card" style="width: 18rem;">
+              <img src="../../static/images/chart2.png" class="card-img-top" alt="...">
+              <div class="card-body">
+                <p class="card-text">
+                  Some quick example text to build on the card title and make up the bulk of the card's content.
+                </p>
+              </div>
+            </div>
+
+            <div class="card" style="width: 18rem;">
+              <img src="../../static/images/chart3.png" class="card-img-top" alt="...">
+              <div class="card-body">
+                <p class="card-text">
+                  Some quick example text to build on the card title and make up the bulk of the card's content.
+                </p>
+              </div>
+            </div>
           </div>
 
-          <table class="table patient-profile-table table-hover">
-            <thead class="patient-profile-table-head-js">
-              <tr>
-                <th>ID</th>
-                <th>Complete Name</th>
-                <th>Gender</th>
-                <th>Age</th>
-                <th>Contact Number</th>
-                <th>Verification Code</th>
-                <th>Status</th>
-                <th>
-                  <i class="bi bi-arrow-clockwise" id="reload-patient-table-js" title="reload table"></i>
-                </th>
-              </tr>
-            </thead>
-            <tbody>
-              <td colspan="8"></td>
-              <tr>
-              </tr>
-            </tbody>
-          </table>
-        </section>
-
-
-        <!-- APPOINTMENT TABLE AND CONTROLLERS -->
-        <section class="table-appointment-data-hidden">
-          <div class="table-appointment-controllers table-controller">
-            <fieldset>
-              <!-- SEARCH INPUT -->
-              <form class="d-flex bi bi-search" role="search" id="appointment-table-search-js">
-                <input class="form-control me-2" type="search" placeholder="Search Patient" aria-label="Search">
-              </form>
-
-              <!-- FILTER BUTTON -->
-              <div class="filter-container">
-                <button id="appointment-filter-btn" class="btn btn-primary">
-                  <i class="bi bi-filter-square"></i> Filter
-                </button>
-                <form role="table-filter" class="filter-box" id="appointment-table-filter-form-js">
-                  <input type="text" id="filter-gender" class="form-control" placeholder="Filter by gender">
-                  <input type="number" id="filter-age" class="form-control" placeholder="Filter by age">
-
-                  <select id="appointment-filter-status" class="form-select">
-                    <option value="PENDING">PENDING</option>
-                    <option value="ONGOING">ONGOING</option>
-                    <option value="DONE">DONE</option>
-                    <option value="CANCELLED">CANCELLED</option>
-                  </select>
-                  <button type="submit" class="btn btn-primary set-filter-btn">Set Filter</button>
-                </form>
+          <div class="table-body">
+            <!-- PATIENT PROFILE TABLE AND CONTROLLERS -->
+            <section class="table-patient-profile-data">
+              <div class="table-patient-profile-controllers table-controller">
+                <div class="table-title">
+                  <h4>Patients Profile</h4>
+                </div>
+                <fieldset>
+                  <!-- SEARCH INPUT -->
+                  <form class="d-flex bi bi-search" role="search" id="patient-profile-table-search-js">
+                    <input class="form-control me-2" id="search-input-js" type="search" placeholder="Search Patient" aria-label="Search">
+                  </form>
+      
+                  <!-- FILTER BUTTON -->
+                  <div class="filter-container" title="filter patient table">
+                    <button id="patient-filter-btn" class="btn btn-primary">
+                      <i class="bi bi-filter-square"></i>
+                    </button>
+                    <form role="table-filter" class="filter-box" id="patient-profile-table-filter-form-js">
+                      <input type="text" id="patient-filter-gender" class="form-control" placeholder="Filter by gender">
+                      <input type="number" id="patient-filter-age" class="form-control" placeholder="Filter by age">
+      
+                      <select id="patient-filter-status" class="form-select">
+                        <option value="">SELECT STATUS</option>
+                        <option value="PENDING">PENDING</option>
+                        <option value="ONGOING">ONGOING</option>
+                        <option value="DONE">DONE</option>
+                        <option value="CANCELLED">CANCELLED</option>
+                      </select>
+                      <button type="submit" class="btn btn-primary set-filter-btn">Set Filter</button>
+                    </form>
+                  </div>
+      
+                  <!-- DELETE ROWS -->
+                  <button type="button" class="btn btn-danger" title="delete selected patients">
+                    <i class="bi bi-trash3"></i>
+                  </button>
+                </fieldset>
               </div>
-
-              <!-- DELETE ROWS -->
-              <button type="button" class="btn btn-danger">
-                <i class="bi bi-trash3"></i>
-                Delete
-              </button>
-            </fieldset>
+      
+              <table class="table patient-profile-table table-hover">
+                <thead class="patient-profile-table-head-js">
+                  <tr>
+                    <th>ID</th>
+                    <th>Complete Name</th>
+                    <th>Gender</th>
+                    <th>Age</th>
+                    <th>Contact Number</th>
+                    <th>Verification Code</th>
+                    <th>Status</th>
+                    <th>
+                      <i class="bi bi-arrow-clockwise" id="reload-patient-table-js" title="reload table"></i>
+                    </th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <td colspan="8"></td>
+                  <tr>
+                  </tr>
+                </tbody>
+              </table>
+            </section>
+      
+      
+            <!-- APPOINTMENT TABLE AND CONTROLLERS -->
+            <section class="table-appointment-data-hidden">
+              <div class="table-appointment-controllers table-controller">
+                <div class="table-title">
+                  <h4>Appointment List</h4>
+                </div>
+                <fieldset>
+                  <!-- SEARCH INPUT -->
+                  <form class="d-flex bi bi-search" role="search" id="appointment-table-search-js">
+                    <input class="form-control me-2" type="search" placeholder="Search Patient" aria-label="Search">
+                  </form>
+      
+                  <!-- FILTER BUTTON -->
+                  <div class="filter-container">
+                    <button id="appointment-filter-btn" class="btn btn-primary">
+                      <i class="bi bi-filter-square"></i> 
+                    </button>
+                    <form role="table-filter" class="filter-box" id="appointment-table-filter-form-js">
+                      <input type="text" id="filter-gender" class="form-control" placeholder="Filter by gender">
+                      <input type="number" id="filter-age" class="form-control" placeholder="Filter by age">
+      
+                      <select id="appointment-filter-status" class="form-select">
+                        <option value="PENDING">PENDING</option>
+                        <option value="ONGOING">ONGOING</option>
+                        <option value="DONE">DONE</option>
+                        <option value="CANCELLED">CANCELLED</option>
+                      </select>
+                      <button type="submit" class="btn btn-primary set-filter-btn">Set Filter</button>
+                    </form>
+                  </div>
+      
+                  <!-- DELETE ROWS -->
+                  <button type="button" class="btn btn-danger">
+                    <i class="bi bi-trash3"></i>
+                  </button>
+                </fieldset>
+              </div>
+      
+              <table class="table appointment-table table-hover">
+                <thead class="appointment-table-head-js">
+                  <tr>
+                    <th>ID</th>
+                    <th>Schedule Date</th>
+                    <th>Patient's ID</th>
+                    <th>Patient's Name</th>
+                    <th>Doctor's ID</th>
+                    <th>Doctor's Name</th>
+                    <th>Status</th>
+                    <th>
+                      <i class="bi bi-arrow-clockwise" id="reload-appointment-table-js" title="reload table"></i>
+                    </th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <td colspan="8"></td>
+                  <tr>
+                  </tr>
+                </tbody>
+              </table>
+            </section>  
           </div>
-
-          <table class="table appointment-table table-hover">
-            <thead class="appointment-table-head-js">
-              <tr>
-                <th>ID</th>
-                <th>Schedule Date</th>
-                <th>Patient's ID</th>
-                <th>Patient's Name</th>
-                <th>Doctor's ID</th>
-                <th>Doctor's Name</th>
-                <th>Status</th>
-                <th>
-                  <i class="bi bi-arrow-clockwise" id="reload-appointment-table-js" title="reload table"></i>
-                </th>
-              </tr>
-            </thead>
-            <tbody>
-              <td colspan="8"></td>
-              <tr>
-              </tr>
-            </tbody>
-          </table>
-        </section>
+        </div>
       </main>
     </div>
 

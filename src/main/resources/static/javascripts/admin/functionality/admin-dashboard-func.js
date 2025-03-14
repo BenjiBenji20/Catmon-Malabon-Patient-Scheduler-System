@@ -1,19 +1,18 @@
 document.addEventListener("DOMContentLoaded", function () {
-  /**
+   /**
    * MAKE MAIN CONTENT (TABLE) RESPONSIVE TO THE CANVAS
    */
-  const offcanvasElement = document.getElementById("offcanvasScrolling");
-  const rightPanel = document.querySelector(".right-panel");
-  const container = document.querySelector('.container-fluid');
-
-  // Bootstrap Offcanvas event listeners
-  offcanvasElement.addEventListener("show.bs.offcanvas", function () {
-    rightPanel.classList.add("with-offcanvas"); // Expand right panel when offcanvas opens
-  });
-
-  offcanvasElement.addEventListener("hide.bs.offcanvas", function () {
-    rightPanel.classList.remove("with-offcanvas"); // Reset when offcanvas closes
-  });
+   const offcanvasElement = document.getElementById("offcanvasScrolling");
+   const rightPanel = document.querySelector(".right-panel");
+ 
+   // Bootstrap Offcanvas event listeners
+   offcanvasElement.addEventListener("show.bs.offcanvas", function () {
+     rightPanel.classList.add("with-offcanvas"); // Expand right panel when offcanvas opens
+   });
+ 
+   offcanvasElement.addEventListener("hide.bs.offcanvas", function () {
+     rightPanel.classList.remove("with-offcanvas"); // Reset when offcanvas closes
+   });
 
   /**
  * MAKE THE TABLE HIDE AND VISIBLE WHEN CLICKING A TAB
@@ -90,9 +89,6 @@ document.addEventListener("DOMContentLoaded", function () {
     }
   });
 
-  /**
-   * ADD FUNCTIONALITY TO HIDE FILTER FORM BOTH PATIENT AND APPOINTMENT TABLE
-   */
   // patient table filter button
   const patientFilterBtn = document.getElementById("patient-filter-btn");
   const patientFilterBox = document.getElementById("patient-profile-table-filter-form-js");

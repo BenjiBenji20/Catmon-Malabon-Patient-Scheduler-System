@@ -35,17 +35,18 @@ async function displayAdminProfile() {
     // render data and append to html element using .innerHTML
     profileContainer.innerHTML = `
         <div class="profile-container">
-            <div class="offcanvas-header admin-profile-container">
-              <i class="bi bi-person-circle"></i>
-              <div id="admin-name-js">
-                ${adminData.adminName} 
-                <i class="bi bi-escape" id="logout-button-js" title="logout"></i>
-                <br>
-                ${adminData.email}
+          <div class="offcanvas-header admin-profile-container">
+            <i class="bi bi-person-circle"></i>
+            <div id="admin-name-js">
+              ${adminData.adminName} 
+              
+              <div class="admin-badge">
+                admin
               </div>
             </div>
-            
+            <i class="bi bi-escape" id="logout-button-js" title="logout"></i>
           </div>
+        </div>
       `;
 
       // logout admin and remove token from local storage
@@ -84,7 +85,12 @@ async function displayAdminList() {
     adminListData.forEach(admin => {
       adminListElement.innerHTML += `
         <li class="list-group-item" data-set-="admin-id" data-admin-id="${admin.id}">
-          ID: ${admin.id} : ${admin.adminName}
+          <div class="admin-name">
+            ${admin.adminName}
+            <span class="admin-badge">
+              admin
+            </span>
+          </div>
         </li>
       `;
     });
@@ -116,7 +122,7 @@ async function displayDoctorList() {
     doctorListData.forEach(doctor => {
       doctorList.innerHTML += `
         <li class="list-group-item doctor-data-cell d-flex justify-content-between align-items-center" data-doctor-id="${doctor.id}">
-          <span>ID: ${doctor.id} : ${doctor.completeName}</span>
+          <span>${doctor.completeName}</span>
           <div>
             <button class="btn btn-warning btn-sm ms-2" data-doctor-id="${doctor.id}" onclick="deleteDoctor(${doctor.id})">Delete</button>
           </div>
@@ -154,7 +160,7 @@ async function displayPendingDoctorList() {
       listItem.dataset.pendingDoctorId = pendingDoctor.id;
 
       listItem.innerHTML = `
-        <span>ID: ${pendingDoctor.id} : ${pendingDoctor.completeName}</span>
+        <span> ${pendingDoctor.completeName}</span>
         <div>
           <button class="btn btn-primary btn-sm accept-pending-doctor-button">Accept</button>
           <button class="btn btn-danger btn-sm ms-2 delete-pending-doctor-button">Delete</button>

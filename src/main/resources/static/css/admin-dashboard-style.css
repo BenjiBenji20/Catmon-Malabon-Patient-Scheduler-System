@@ -1,95 +1,154 @@
-.container-fluid {
+@import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Montserrat:ital,wght@0,100..900;1,100..900&family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap');
+
+body {
+  background-color: #E3F2FD !important;
   padding: 10px;
+  overflow-y: hidden;
 }
 
-.btn-primary {
-  background-color: #007bff !important;
+/* Container for the entire layout */
+.container-fluid {
+  display: flex !important;
+} 
+
+/* Left Panel (Offcanvas) */
+.left-panel {
+  position: fixed !important;
+  z-index: 1000 !important;
 }
 
+/* Offcanvas styling */
+.offcanvas.offcanvas-start {
+  box-shadow: rgba(0, 0, 0, 0.35) 0px 5px 15px;
+  width: 250px !important; /* Fixed width for offcanvas */
+  border-radius: 10px;
+  padding: 10px;
+  height: 97vh;
+  top: 10px !important;
+  left: 15px !important;
+  transition: transform 0.3s ease-in-out !important;
+  overflow-y: auto !important;
+}
+
+.offcanvas-body {
+  padding: 10px !important;
+  overflow-x: hidden;
+  overflow-y: auto;
+}
+
+
+/* Right Panel (Main Content) */
 .right-panel {
-  transition: margin-left 0.3s ease-in-out, width 0.3s ease-in-out;
-  width: calc(100% - 51px); /* Default width with only icon */
+  flex-grow: 1 !important;
+  display: flex !important;
+  flex-direction: column !important; /* Stack children vertically */
+  gap: 10px !important;
+  padding: 10px;
   margin-left: 30px; /* Default margin for the collapsed state */
+  transition: margin-left 0.3s ease-in-out !important;
+  height: 97vh; /* Use min-height instead of height */
+  border-radius: 10px !important;
+  box-shadow: rgba(0, 0, 0, 0.35) 0px 5px 15px;
+  overflow-y: hidden !important; /* Allow vertical scrolling if content overflows */
+  overflow-x: hidden !important;
+  background-color: #ffff;
 }
 
-/* RESPONSIVE CONTENT */
-.with-offcanvas {
-  width: calc(90% - 250px); /* Adjust width when offcanvas is open */
-  margin-left: 400px; /* Shift main panel to accommodate offcanvas */
+/* Adjust right panel when offcanvas is open */
+.right-panel.with-offcanvas {
+  margin-left: 270px !important; /* Adjust margin to accommodate offcanvas width */
 }
 
+/* Responsive design for smaller screens */
 @media (max-width: 768px) {
   .right-panel {
-    width: 100%;
-    margin-left: 0;
+    margin-left: 0 !important; /* On small screens, main content should not shift */
   }
 
-  .with-offcanvas {
-    width: 100%;
-    margin-left: 0; /* On small screens, main content should not shift */
+  .right-panel.with-offcanvas {
+    margin-left: 0 !important; /* On small screens, main content should not shift */
   }
 }
 
-.left-panel {
-  height: 0px;
+.close-canvas-btn {
+  font-size: 10px;
+  position: absolute !important;
+  left: 230px !important;
+  top: 5px !important;
 }
 
-.offcanvas {
-  margin-right: 10px;
-  overflow-y: auto;
-  overflow-x: hidden;
-}
-
-/*
-  Hidden initially
-*/
-/* Initially hidden */
-.table-appointment-data-hidden {
-  display: none;
-}
-
-.table-appointment-data-hidden,
-.table-patient-profile-data {
-  transform: translateY(10px);
-  transition: opacity 0.3s ease-in-out, transform 0.3s ease-in-out;
-}
-
-.left-panel > i {
-  font-size: 1.2rem;
+.bi-layout-sidebar-reverse {
+  background-color: #ffff;
+  padding: 3px;
+  border-radius: 5px;
+  font-weight: 600;
+  top: 2px;
+  position: relative;
+  box-shadow: rgba(0, 0, 0, 0.35) 0px 5px 15px;
   cursor: pointer;
 }
 
-.left-panel > i:hover {
-  font-size: 1.3rem;
-}
-
-
 .profile-container {
-  color: #007bff;
   font-weight: 600;
   display: flex;
   flex-direction: column;
 }
 
-.admin-profile-container {
-  padding: 0;
-  width: 100%;
-}
-
 .bi-person-circle {
-  font-size: 3rem;
+  font-size: 2rem;
   line-height: 1;
   margin-right: 5px;
 }
 
+.offcanvas-header {
+  padding: 10px !important;
+}
+
+.profile-container {
+  display: flex;
+  justify-content: space-between;
+  width: 100%;
+}
+
+.admin-profile-container {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  padding: 10px;
+  position: relative;
+}
+
+/* Pushes the logout button to the right */
+#logout-button-js {
+  margin-left: auto;
+  font-size: 1rem;
+  position: relative;
+  bottom: 5px;
+  cursor: pointer;
+}
+
+
 .co-admin-list-collapse, .doctors-list-collapse, .pending-doctors-list-collapse {
   height: fit-content;
-  padding: 20px;
+  padding: 10px;
   text-decoration: none;
-  font-size: 1rem;
-  color: #007bff;
+  font-size: 13px;
   font-weight: 500;
-  width: 100%;
+}
+
+#admin-name-js {
+  font-size: 13px;
+}
+
+.admin-badge {
+  border: 1px solid #007bff;
+  font-size: 10px;
+  padding-left: 5px; padding-right: 5px;
+  border-radius: 10px;
+  width: fit-content;
+  background-color: #A1E3F9;
+  color: #007bff;
+  font-weight: 600;
 }
 
 .collapse-link {
@@ -102,35 +161,34 @@
   background-color: #A1E3F9;
 }
 
-.table {
-  width: 100%;
-  border-collapse: collapse; /* Prevents double borders */
+.list-group > li {
+  font-size: 13px;
+  padding: 2px;
 }
 
-.table thead {
-  height: 50px;
-  width: 100%;
-  border-bottom: transparent;
+.list-group > li  > span {
+  font-size: 13px;
+  width: 70%;
 }
 
-.table thead th {
-  padding: 10px;
-  background: transparent;
-  padding: 20px;
+.card-body {
+  padding: 2px !important;
 }
 
-th {
-  font-weight: 500;
+.btn-warning {
+  width: 50px;
+  font-size: 13px !important;
+  padding: 2px !important;
 }
 
-.table thead tr {
-  border-radius: 20px;
-  background: #f7f7f7;
-  box-shadow: rgb(191, 196, 201) 6px 6px 12px 0px inset, rgba(208, 208, 208, 0.5) -3px -3px 6px 1px inset;
+.pending-doctor-data-cell > div{
+  display: flex !important;
 }
 
-.table tbody tr td {
-  padding: 20px;
+.accept-pending-doctor-button, .delete-pending-doctor-button {
+  width: 40px;
+  font-size: 10px !important;
+  padding: 1px !important;
 }
 
 .display-error-message { /*This is table body*/
@@ -144,11 +202,25 @@ th {
 
 .right-panel-header {
   display: flex;
-  justify-content: end;
+  width: 100%;
+  align-items: center;
+  justify-content: space-between;
 }
 
+.company-name > h4 {
+  margin-bottom: 0px;
+  font-family: "Bebas Neue", sans-serif;
+  font-weight: 400;
+  font-style: normal;
+  user-select: none;
+  color: #007bff;
+}
+
+/*
+ACTIVE TAB INITIALLY
+*/
 .nav {
-  width: 30%;
+  width: 28%;
   display: flex;
   justify-content: space-around;
 }
@@ -164,12 +236,10 @@ th {
 .nav-item a {
   text-decoration: none;
   color: #007bff;
+  font-size: 15px;
   font-weight: 600;
 }
 
-/*
-ACTIVE TAB INITIALLY
-*/
 .nav-active {
   background-color: #A1E3F9;
 }
@@ -182,29 +252,28 @@ ACTIVE TAB INITIALLY
   background-color: #91cfe4;
 }
 
-.health-center-logo {
+.table-title {
   display: flex;
   align-items: center;
-  justify-content: end;
-  padding: 7px;
-}
-
-.health-center-logo img {
-  max-width: 150px;
-}
-
-.health-center-logo h2 {
-  margin-right: 10px;
-  width: 300px;
-  font-size: 2.3rem;
-  font-weight: 600;
-  color: #007bff;
   text-align: center;
 }
 
+.table-title > h4 {
+  margin-bottom: 0px;
+  font-family: "Bebas Neue", sans-serif;
+  font-weight: 400;
+  font-style: normal;
+  user-select: none;
+  color: #007bff;
+}
+
+
+/* 
+  TABLE CONTROLLER 
+*/
 .table-controller {
   display: flex;
-  justify-content: end;
+  justify-content: space-between;
 }
 
 .table-controller > fieldset {
@@ -228,7 +297,7 @@ ACTIVE TAB INITIALLY
   display: none;
   position: absolute;
   top: 100%;
-  left: 0;
+  left: -160px;
   background: white;
   padding: 15px;
   width: 200px;
@@ -268,20 +337,46 @@ ACTIVE TAB INITIALLY
   box-shadow: none !important; /* Remove Bootstrap's glow */
 }
 
-.d-flex:focus-within {
-  box-shadow: 0 0 10px rgba(0, 123, 255, 0.7); 
-  border-color: rgba(0, 123, 255, 0.9); 
-}
-
 .message-js {
-  position: relative;
+  position: absolute;
   width: fit-content;
-  left: 300px;
+  left: 700px;
   text-align: center;
   padding-left: 5px; padding-right: 5px;
   border-radius: 15px;
   color: #ffff;
   font-weight: 600;
+}
+
+/* TABLE STYLING */
+.table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.table thead {
+  width: 100%;
+  border-bottom: transparent;
+}
+
+.table thead th {
+  background: transparent;
+  padding: 10px;
+  font-size: 13px;
+}
+
+th {
+  font-weight: 500;
+}
+
+td {
+  font-size: 15px;
+}
+
+.table thead tr {
+  border-radius: 20px;
+  background: #f7f7f7;
+  box-shadow: rgb(191, 196, 201) 6px 6px 12px 0px inset, rgba(208, 208, 208, 0.5) -3px -3px 6px 1px inset;
 }
 
 .bi-arrow-clockwise {
@@ -295,5 +390,82 @@ ACTIVE TAB INITIALLY
 .status-badge {
   border-radius: 15px;
   text-align: center;
-  padding: 2px;
+  padding: 3px;
+}
+
+td > .status-badge {
+  font-size: 11px;
+}
+
+.right-panel-body {
+  display: flex;
+  overflow-y: auto;
+  height: 85vh;
+}
+
+.graphs-body {
+  width: 30%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  overflow-y: auto;
+  max-height: 85vh;
+
+  scrollbar-width: none; 
+  -ms-overflow-style: none; 
+}
+
+.card {
+  margin-bottom: 20px;
+}
+
+.graphs-body::-webkit-scrollbar {
+  display: none; /* Hide scrollbar for Chrome, Safari, Edge */
+}
+
+.table-body {
+  width: 70%;
+  height: 100%;
+}
+
+.table-body > section {
+  overflow-y: auto;
+}
+
+/* For Webkit Browsers (Chrome, Edge, Safari) */
+::-webkit-scrollbar {
+  width: 10px; 
+  margin-left: 10px;
+}
+
+::-webkit-scrollbar-button {
+  display: none;
+}
+
+::-webkit-scrollbar-track {
+  background: #f1f1f1;
+  border-radius: 10px;
+  margin-left: 10px;
+}
+
+::-webkit-scrollbar-thumb {
+  background: gray;
+  border-radius: 10px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: darkgray;
+}
+
+.graph-header {
+  padding: 5px;
+}
+
+.graph-header > h4 {
+  margin-bottom: 0px;
+  font-family: "Bebas Neue", sans-serif;
+  font-weight: 400;
+  font-style: normal;
+  user-select: none;
+  color: #007bff;
 }
