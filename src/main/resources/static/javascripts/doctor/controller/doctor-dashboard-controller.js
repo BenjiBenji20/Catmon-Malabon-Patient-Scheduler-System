@@ -33,3 +33,21 @@ export async function loadPatientsToday() {
     throw error;
   }
 }
+
+export async function loadPatientsByDay() {
+  try {
+    // get data from service
+    const data = await DoctorServiceAPI.getPatientsByDay();
+
+    // validata
+    if(data.error) {
+      document.querySelector('.patients-by-day-js').innerHTML = data.error;
+      return;
+    }
+
+    return data;
+  } catch (error) {
+    console.error('Error fetching data', error);
+    throw error;
+  }
+}

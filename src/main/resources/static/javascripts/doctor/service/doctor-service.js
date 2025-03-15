@@ -37,7 +37,6 @@ export class DoctorServiceAPI {
       // validate parsed token. If token is null, redirect to login
       validateDoctorParsedToken(this.token);
 
-      // fetch auth api to extract jwt
       const response = await fetch('http://localhost:8002/api/doctor/private/get-doctor-profile', {
         method: 'GET',
         headers: { 
@@ -66,8 +65,10 @@ export class DoctorServiceAPI {
 
       // get the current date today
       const currentDate = new Date().toISOString().split('T')[0];
+      console.log(currentDate);
+      
 
-      // fetch auth api to extract jwt
+      // fetch using jwt
       const response = await fetch(`http://localhost:8002/api/doctor/private/get-patients-today/${currentDate}`, {
         method: 'GET',
         headers: { 
@@ -84,6 +85,33 @@ export class DoctorServiceAPI {
       const data = await response.json();
       
       return data ? data : []; 
+    } catch (error) {
+      console.error("Error fetching data", error);
+      return error;
+    }
+  }
+
+  static async getPatientsByDay() {
+    try {
+      // validate parsed token. If token is null, redirect to login
+      validateDoctorParsedToken(this.token);
+
+      const response = await fetch(`http://localhost:8002/api/doctor/private/patients-by-available-days`, {
+        method: 'GET',
+        headers: { 
+          'Authorization' : `Bearer ${this.token}`,
+          "Content-Type": "application/json" 
+        },
+      });
+
+      if(!response.ok) {
+        console.error(`Error: ${response.status} ${response.statusText}`);
+        return { error: `Failed to load patients: ${response.statusText}` };
+      }
+
+      const data = await response.json();
+      
+      return data ? data : [];
     } catch (error) {
       console.error("Error fetching data", error);
       return error;

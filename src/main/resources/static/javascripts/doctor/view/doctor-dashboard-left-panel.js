@@ -1,7 +1,8 @@
-import { loadDoctorProfile, loadPatientsToday } from "../controller/doctor-dashboard-controller.js"; 
+import { loadDoctorProfile, loadPatientsToday, loadPatientsByDay } from "../controller/doctor-dashboard-controller.js"; 
 
 displayDoctorProfile();
 displayPatientsToday();
+displayPatientsByDay();
 
 async function displayDoctorProfile() {
   const data = await loadDoctorProfile();
@@ -51,14 +52,14 @@ async function displayPatientsToday() {
   
   try {
     if(!patientsToday || patientsToday.error || patientsToday.length === 0) {
-      console.log('Error patients data: ' + patientsToday);
       listContainer.innerHTML = patientsToday?.error || "No patients available today.";
       return;
     }
 
     const cardBody = document.querySelector('.card-body');
     cardBody.innerHTML = ''; // clear existing content
-    patientsToday.forEach(patient => {
+
+    Object.keys(patientsToday).forEach(patient => {
       cardBody.innerHTML += `
           <ul class="list-group list-group-flush" data-patient-id="${patient.id}">
             ${patient.completeName} 
@@ -90,5 +91,58 @@ async function displayPatientsToday() {
   } catch (error) {
     console.error('Error fetching data', error);
     listContainer.innerHTML = 'No patients available today.';
+  }
+}
+
+async function displayPatientsByDay() {
+  const patientsByDayData = await loadPatientsByDay();
+  const container = document.querySelector('.patients-by-day-js');
+  try {
+    if(!patientsByDayData || patientsByDayData.error) {
+      container.innerHTML = patientsByDayData?.error || "No patients available today.";
+      return;
+    }
+
+    container.innerHTML = ''; // clear existing content
+
+    // loop through the object and render along with html element
+    Object.keys(patientsByDayData).forEach(day => {
+      if (patientsByDayData[day] && patientsByDayData[day].length > 0) {
+        
+        // Generate HTML for each day's section
+        container.innerHTML += `
+          <div class="day-list-collapse collapse-link" href="#${day}-list-collapse" data-bs-toggle="collapse" role="button" aria-expanded="false" aria-controls="${day}-list-collapse">
+            ${patientsByDayData[day].length} Patients in <span class="day">${day}</span> 
+            <i class="bi bi-caret-down"></i>
+          </div>
+          <div class="row">
+            <div class="col">
+              <div class="collapse multi-collapse" id="${day}-list-collapse">
+                <div class="card card-body">
+                  <ul class="list-group list-group-flush" id="${day}-patients-list">
+                    <!-- Patients will be inserted here dynamically -->
+                  </ul>
+                </div>
+              </div>
+            </div>
+          </div>
+        `;
+    
+        // Select the list where patients should be appended
+        const listContainer = document.getElementById(`${day}-patients-list`);
+    
+        // Loop through the patients array and append each patient
+        patientsByDayData[day].forEach(patient => {
+          listContainer.innerHTML += `
+            <li class="list-group-item patient-data-cell" data-patient-id="${patient.id}">
+              ${patient.completeName}
+            </li>
+          `;
+        });
+      }
+    });
+    
+  } catch (error) {
+    console.error('Error fetching data', error);
   }
 }
