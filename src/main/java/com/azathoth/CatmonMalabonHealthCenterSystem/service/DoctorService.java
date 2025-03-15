@@ -12,6 +12,7 @@ import com.azathoth.CatmonMalabonHealthCenterSystem.repository.AppointmentReposi
 import com.azathoth.CatmonMalabonHealthCenterSystem.repository.DoctorRepository;
 import com.azathoth.CatmonMalabonHealthCenterSystem.repository.PatientRecordRepository;
 import com.azathoth.CatmonMalabonHealthCenterSystem.repository.PatientRepository;
+import com.azathoth.CatmonMalabonHealthCenterSystem.utils.AvailableDay;
 import com.azathoth.CatmonMalabonHealthCenterSystem.utils.Status;
 import jakarta.validation.Valid;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -19,11 +20,10 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 
+import java.time.DayOfWeek;
 import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Optional;
+import java.time.format.DateTimeFormatter;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -123,6 +123,46 @@ public class DoctorService {
                     .collect(Collectors.toList());
         } catch (ResourceNotFoundException e) {
             return List.of();
+        }
+    }
+
+    /**
+     * Passed the data of logged doctor (current doctor) to fetch and group
+     * patients based on his/her available days.
+     * @param doctor
+     * @return
+     */
+    public Map<AvailableDay, List<PatientDTO>> getPatientsByAvailableDays(DoctorDTO doctor) {
+        try {
+            // get doctor's available days
+            List<AvailableDay> availableDays = Arrays.asList(doctor.getAvailableDays());
+
+            // get all patients
+            List<Patient> allPatients = patientRepository.findAll();
+
+            // Group patients by the day of their scheduleDate
+            Map<AvailableDay, List<PatientDTO>> patientsByDay = new HashMap<>();
+
+            for(Patient patient : allPatients) {
+                // Parse the patient's scheduleDate to a LocalDate
+                LocalDate scheduleDate = patient.getAppointment().getScheduleDate();
+
+                // Convert DayOfWeek to AvailableDay enum
+                DayOfWeek dayOfWeek = scheduleDate.getDayOfWeek();
+                AvailableDay availableDay = AvailableDay.valueOf(dayOfWeek.name());
+
+                // convert into patientDTO
+                PatientDTO patientDTO = convertToPatientDTO(patient);
+
+                // Check if the day matches the doctor's availability
+                if(availableDays.contains(availableDay)) {
+                    patientsByDay.computeIfAbsent(availableDay, k -> new ArrayList<>()).add(patientDTO); // needs to convert this into PatientDTO
+                }
+            }
+
+            return patientsByDay;
+        } catch (Exception e) {
+            throw new RuntimeException(e);
         }
     }
 

@@ -6,6 +6,7 @@ import com.azathoth.CatmonMalabonHealthCenterSystem.dto.PatientDTO;
 import com.azathoth.CatmonMalabonHealthCenterSystem.exception.ResourceNotFoundException;
 import com.azathoth.CatmonMalabonHealthCenterSystem.model.PatientRecord;
 import com.azathoth.CatmonMalabonHealthCenterSystem.service.DoctorService;
+import com.azathoth.CatmonMalabonHealthCenterSystem.utils.AvailableDay;
 import com.azathoth.CatmonMalabonHealthCenterSystem.utils.Status;
 import jakarta.validation.Valid;
 import org.hibernate.exception.DataException;
@@ -108,7 +109,6 @@ public class DoctorController {
         }
     }
 
-
     /**
      * Get all patients based on the current date
      */
@@ -118,7 +118,7 @@ public class DoctorController {
             List<PatientDTO> patientsToday = doctorService.getPatientsToday(date);
 
             return patientsToday.isEmpty() ?
-                    ResponseEntity.notFound().build() :
+                    ResponseEntity.noContent().build() :
                     ResponseEntity.ok().body(patientsToday);
         } catch (ResourceNotFoundException e) {
             logger.error("Resource not found by date: {}", date);
@@ -126,6 +126,35 @@ public class DoctorController {
         }
         catch (Exception e) {
             return ResponseEntity.internalServerError().body(Map.of("error", "Server error"));
+        }
+    }
+
+    @GetMapping("/private/patients-by-available-days")
+    public ResponseEntity<?> getPatientsByAvailableDays(@RequestHeader("Authorization") String authHeader) {
+        try {
+            // Extract token from header
+            String token = authHeader.replace("Bearer ", "");
+
+            // extract doctor profile
+            Optional<DoctorDTO> doctor = doctorService.getDoctorProfile(token);
+
+            if(doctor.isEmpty()) {
+                return ResponseEntity.notFound().build();
+            }
+
+            Map<AvailableDay, List<PatientDTO>> patients = doctorService.getPatientsByAvailableDays(doctor.get());
+
+            System.out.println(patients);
+
+            return patients.isEmpty() ?
+                    ResponseEntity.noContent().build() :
+                    ResponseEntity.ok(patients);
+        }
+        catch (ResourceNotFoundException e) {
+            return ResponseEntity.notFound().build();
+        }
+        catch (Exception e) {
+            return ResponseEntity.internalServerError().body(Map.of("error", "Server error while fetching data"));
         }
     }
 
