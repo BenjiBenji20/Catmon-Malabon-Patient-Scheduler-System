@@ -17,7 +17,7 @@
       USER MUST BE AUTHENTICATED AND AUTHORIZED AS ADMIN USER TO ACCESS
       THE DASHBOARD.
     -->
-    <!-- <script>
+    <script>
       document.addEventListener('DOMContentLoaded', function() {
         const token = localStorage.getItem('adminJwt'); // extract token from local storage
         
@@ -26,7 +26,7 @@
           window.location.href = 'admin-auth.html';
           return;
         }
-      
+       
         // Check token expiration
         const parseJwt = (token) => {
           try {
@@ -42,7 +42,7 @@
           window.location.href = 'admin-auth.html';
         }
       });
-    </script> -->
+    </script>
 
     <div class="container-fluid">
       <aside class="left-panel">
@@ -325,7 +325,7 @@
     <script type="module" src="../../static/javascripts/admin/view/admin-dashboard-left-panel.js"></script>
 
     <!-- JS LINK FOR FUNCTIONALITIES -->
-    <script type="module" src="../../static/javascripts/admin/validation/jwt-validation.js"></script>
+    <script type="module" src="../../static/javascripts/validation/jwt-validation.js"></script>
     <script src="../../static/javascripts/admin/functionality/admin-dashboard-func.js"></script>
   </body>
 </html>

@@ -12,7 +12,7 @@ displayPatientTable(); // display to render all patients data
 displayAppointmentTable(); // display to render all appoitnmetns data
 displayFilteredPatients();
 
-/**
+/**  
  * Render admin profile
  * admin name, admin email
  */

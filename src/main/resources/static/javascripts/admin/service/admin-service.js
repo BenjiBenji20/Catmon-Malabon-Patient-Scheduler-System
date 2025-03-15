@@ -1,4 +1,4 @@
-import { validateParsedToken } from "../validation/jwt-validation.js";
+import { validateParsedToken } from "../../validation/jwt-validation.js";
 
 export class AdminServiceAPI {
   /**
@@ -10,7 +10,7 @@ export class AdminServiceAPI {
       // fetch auth api to extract jwt
       const response = await fetch("http://localhost:8002/api/admin/public/auth", {
         method: "POST",
-        headers: {"Content-Type": "application/json"},
+        headers: {"Content-Type": "application/json"}, 
         body: JSON.stringify(adminCredentials)
       });
 

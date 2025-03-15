@@ -16,7 +16,7 @@ export async function loadAdminProfile() {
     console.error('Error fetching data', error);
     throw error;
   }
-}
+} 
 
 export async function loadAdminList() {
   try {
