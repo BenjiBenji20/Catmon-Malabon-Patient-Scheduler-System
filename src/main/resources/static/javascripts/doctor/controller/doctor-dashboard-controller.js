@@ -1,5 +1,4 @@
 import { DoctorServiceAPI } from '../service/doctor-service.js';
-import { dataValidator } from '../../validation/data-validator.js';
 
 export async function loadDoctorProfile() {
   try {
@@ -7,7 +6,10 @@ export async function loadDoctorProfile() {
     const data = await DoctorServiceAPI.getDoctorProfile();
 
     // validata
-    dataValidator(data, '#doctor-name-js');
+    if(data.error) {
+      document.querySelector('#doctor-name-js').innerHTML = data.error;
+      return;
+    }
 
     return data;
   } catch (error) {

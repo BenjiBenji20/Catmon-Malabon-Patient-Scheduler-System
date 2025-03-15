@@ -6,6 +6,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
+import java.time.LocalDate;
 import java.util.List;
 
 @Repository
@@ -27,4 +28,10 @@ public interface PatientRepository extends JpaRepository<Patient, Long> {
             @Param("gender") String gender,
             @Param("age") Integer age,
             @Param("status") String status);
+
+    /**
+     * Query patient based on the param date
+     */
+    @Query("SELECT p FROM Patient p JOIN p.appointment a WHERE a.scheduleDate = :date")
+    List<Patient> findPatientToday(@Param("date") LocalDate date);
 }

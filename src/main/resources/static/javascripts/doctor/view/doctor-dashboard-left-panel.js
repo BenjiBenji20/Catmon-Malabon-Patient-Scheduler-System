@@ -1,5 +1,4 @@
 import { loadDoctorProfile } from "../controller/doctor-dashboard-controller.js"; 
-import { dataValidator } from '../../validation/data-validator.js';
 
 displayDoctorProfile();
 
@@ -8,23 +7,26 @@ async function displayDoctorProfile() {
 
   try {
     // validata data
-    dataValidator(data, '#doctor-name-js');
+    if(data.error) {
+      document.querySelector('#doctor-name-js').innerHTML = data.error;
+      return;
+    }
 
     const profileContainer = document.querySelector('.profile-container');
 
     profileContainer.innerHTML = `
       <div class="profile-container">
-      <div class="offcanvas-header doctor-profile-container" style="padding: 0;">
-        <i class="bi bi-person-circle"></i>
-        <div id="doctor-name-js">
-          ${data.completeName}
+        <div class="offcanvas-header doctor-profile-container" style="padding: 0;">
+          <i class="bi bi-person-circle"></i>
+          <div id="doctor-name-js">
+            ${data.completeName}
+          </div>
+          <div class="doctor-badge">
+              doctor
+          </div>
         </div>
-        <div class="doctor-badge">
-            doctor
-        </div>
+        <i class="bi bi-escape" id="logout-button-js" title="logout"></i>
       </div>
-      <i class="bi bi-escape" id="logout-button-js" title="logout"></i>
-    </div>
     `;
 
     /**

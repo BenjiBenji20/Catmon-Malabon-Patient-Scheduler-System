@@ -19,10 +19,12 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 public class DoctorService {
@@ -110,6 +112,18 @@ public class DoctorService {
 
         // fetch patient by collected id
         return convertAllPatientsDTO(patientIds);
+    }
+
+    public List<PatientDTO> getPatientsToday(LocalDate date) {
+        try {
+            List<Patient> patients = patientRepository.findPatientToday(date);
+
+            return patients.stream()
+                    .map(this::convertToPatientDTO)
+                    .collect(Collectors.toList());
+        } catch (ResourceNotFoundException e) {
+            return List.of();
+        }
     }
 
     public Optional<PatientDTO> updatePatientStatus(Long patientId, Status newStatus) {

@@ -54,7 +54,7 @@ export class DoctorServiceAPI {
 
       return data;
     } catch (error) {
-      console.error("Error authenticating the doctor", error);
+      console.error("Error fetching data", error);
       return { error: "Something went wrong. Please try again." };
     }
   }

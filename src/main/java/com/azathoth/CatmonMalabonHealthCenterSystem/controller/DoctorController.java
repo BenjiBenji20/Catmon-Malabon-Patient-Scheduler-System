@@ -12,10 +12,12 @@ import org.hibernate.exception.DataException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.dao.DataAccessException;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.ResponseEntity;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -102,6 +104,27 @@ public class DoctorController {
         }
         catch (Exception e) {
             logger.error("Error fetching patients by id: {}", myId, e);
+            return ResponseEntity.internalServerError().body(Map.of("error", "Server error"));
+        }
+    }
+
+
+    /**
+     * Get all patients based on the current date
+     */
+    @GetMapping("/private/get-patients-today/{date}")
+    public ResponseEntity<?> getPatientsToday(@PathVariable @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate date) {
+        try {
+            List<PatientDTO> patientsToday = doctorService.getPatientsToday(date);
+
+            return patientsToday.isEmpty() ?
+                    ResponseEntity.notFound().build() :
+                    ResponseEntity.ok().body(patientsToday);
+        } catch (ResourceNotFoundException e) {
+            logger.error("Resource not found by date: {}", date);
+            return ResponseEntity.internalServerError().body(Map.of("error", "Not found by param date."));
+        }
+        catch (Exception e) {
             return ResponseEntity.internalServerError().body(Map.of("error", "Server error"));
         }
     }
