@@ -44,7 +44,7 @@ export class DoctorServiceAPI {
           'Authorization' : `Bearer ${this.token}`,
           "Content-Type": "application/json" 
         },
-      });
+      });      
 
       const data = await response.json();
 
@@ -56,6 +56,37 @@ export class DoctorServiceAPI {
     } catch (error) {
       console.error("Error fetching data", error);
       return { error: "Something went wrong. Please try again." };
+    }
+  }
+
+  static async getPatientsToday() {
+    try {
+      // validate parsed token. If token is null, redirect to login
+      validateDoctorParsedToken(this.token);
+
+      // get the current date today
+      const currentDate = new Date().toISOString().split('T')[0];
+
+      // fetch auth api to extract jwt
+      const response = await fetch(`http://localhost:8002/api/doctor/private/get-patients-today/${currentDate}`, {
+        method: 'GET',
+        headers: { 
+          'Authorization' : `Bearer ${this.token}`,
+          "Content-Type": "application/json" 
+        },
+      });
+
+      if(!response.ok) {
+        console.error(`Error: ${response.status} ${response.statusText}`);
+        return { error: `Failed to load patients: ${response.statusText}` };
+      }
+
+      const data = await response.json();
+      
+      return data ? data : []; 
+    } catch (error) {
+      console.error("Error fetching data", error);
+      return error;
     }
   }
 }

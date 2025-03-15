@@ -17,3 +17,19 @@ export async function loadDoctorProfile() {
     throw error;
   }
 }
+
+export async function loadPatientsToday() {
+  try {
+    const data = await DoctorServiceAPI.getPatientsToday();
+
+    if(data.error) {
+      document.querySelector('.patients-today-collapse').innerHTML = data.error;
+      return;
+    }
+
+    return data;
+  } catch (error) {
+    console.error('Error fetching data', error);
+    throw error;
+  }
+}

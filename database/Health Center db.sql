@@ -18,6 +18,7 @@ SELECT * FROM doctor_available_days;
 
 SELECT * FROM appointment;
 
-SELECT * FROM patient 
-	JOIN appointment a 
-    WHERE a.schedule_date = 2025-03-09;
+SELECT p.* 
+FROM patient p
+JOIN appointment a ON p.id = a.patient_id
+WHERE a.schedule_date = '2025-03-09';
