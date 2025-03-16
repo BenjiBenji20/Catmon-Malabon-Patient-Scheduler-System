@@ -184,6 +184,15 @@ public class DoctorService {
         return Optional.of(patientDTO);
     }
 
+    public Optional<List<PatientDTO>> filterPatient(Long id, String gender, Integer age, String status) {
+
+        List<Patient> filterResult = patientRepository.filterPatientByDoctor(id, gender, age, status);
+
+        return Optional.of(filterResult.stream()
+                .map(this::convertToPatientDTO)
+                .collect(Collectors.toList()));
+    }
+
     /**
      * pass json value pair: attended:boolean, prescription, string, diagnosis: string
      */
@@ -276,4 +285,6 @@ public class DoctorService {
           doctor.getAvailableDays()
         );
     }
+
+
 }

@@ -252,4 +252,39 @@ public class DoctorController {
             return ResponseEntity.internalServerError().body(Map.of("error", "An error occurred creating patient record"));
         }
     }
+
+    /**
+     * Filter table
+     * @RequestParam(required = false) makes the
+     * parameter binding flexible by not requiring each
+     * parameter to have value.
+     */
+    @GetMapping("/private/filter")
+    public ResponseEntity<?> filterPatient(
+            @RequestHeader("Authorization") String authHeader,
+            @RequestParam(required = false) String gender,
+            @RequestParam(required = false) Integer age,
+            @RequestParam(required = false) String status
+    ) {
+        try {
+            // Extract token from header
+            String token = authHeader.replace("Bearer ", "");
+
+            // extract doctor profile
+            DoctorDTO doctor = doctorService.getDoctorProfile(token)
+                    .orElseThrow(() -> new ResourceNotFoundException("Doctor not found. Invalid token: " + token));
+
+            Optional<List<PatientDTO>> filterPatient = doctorService.filterPatient(doctor.getId(), gender, age, status);
+
+            return filterPatient.isEmpty() ?
+                    ResponseEntity.noContent().build() :
+                    ResponseEntity.ok().body(filterPatient);
+        }
+        catch (ResourceNotFoundException e) {
+            return ResponseEntity.notFound().build();
+        }
+        catch (Exception e) {
+            return ResponseEntity.internalServerError().body(Map.of("error", "Server error"));
+        }
+    }
 }

@@ -28,4 +28,15 @@ public interface PatientRepository extends JpaRepository<Patient, Long> {
             @Param("gender") String gender,
             @Param("age") Integer age,
             @Param("status") String status);
+
+    @Query("SELECT p FROM Patient p JOIN p.appointment a JOIN " +
+            "a.doctor d WHERE d.id = :doctorId AND " +
+            "(:gender IS NULL OR LOWER(p.gender) = LOWER(:gender)) AND " +
+            "(:age IS NULL OR p.age = :age) AND " +
+            "(:status IS NULL OR LOWER(a.status) = LOWER(:status))")
+    List<Patient> filterPatientByDoctor(
+            Long doctorId,
+            @Param("gender") String gender,
+            @Param("age") Integer age,
+            @Param("status") String status);
 }
