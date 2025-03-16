@@ -11,6 +11,37 @@
   <link rel="stylesheet" href="../../static/css/doctor-dashboard.css">
 </head>
   <body> 
+    <!-- 
+      PREVENT UNAUTHENTICATED USERS TO ACCESS DOCTOOR DASHBOARD PAGE VIA URL
+      USER MUST BE AUTHENTICATED AND AUTHORIZED AS DOCTOOR USER TO ACCESS
+      THE DASHBOARD.
+    -->
+    <script>
+      document.addEventListener('DOMContentLoaded', function() {
+        const token = localStorage.getItem('doctorJwt'); // extract token from local storage
+        
+        // Redirect to login if token is missing
+        if (!token) {
+          window.location.href = 'doctor-auth.html';
+          return;
+        }
+       
+        // Check token expiration
+        const parseJwt = (token) => {
+          try {
+            return JSON.parse(atob(token.split('.')[1]));
+          } catch (e) {
+            return null;
+          }
+        };
+      
+        const decodedToken = parseJwt(token);
+        if (decodedToken && decodedToken.exp * 1000 < Date.now()) {
+          localStorage.removeItem('doctorJwt');
+          window.location.href = 'doctor-auth.html';
+        }
+      });
+    </script>
 
     <div class="container-fluid">
       <aside class="left-panel">

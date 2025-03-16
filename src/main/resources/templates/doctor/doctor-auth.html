@@ -16,14 +16,14 @@
       THE ADMIN USER MUST LOG OUT (REMOVE JWT TO THE LOCAL STORAGE)
       TO ACCESS AUTHENTICATION PAGE AND LOGIN AGAIN.
     -->
-    <!-- <script>
+    <script>
       document.addEventListener('DOMContentLoaded', () => {
-        const token = localStorage.getItem('adminJwt');
+        const token = localStorage.getItem('doctorJwt');
         if (token) {
-          window.location.href = 'admin-dashboard.html'; // redirect admin user to the dashboard
+          window.location.href = 'doctor-dashboard.html'; // redirect doctor user to the dashboard
         }
       });
-    </script> -->
+    </script>
     
     <div class="container-fluid">
       <div class="form-page">

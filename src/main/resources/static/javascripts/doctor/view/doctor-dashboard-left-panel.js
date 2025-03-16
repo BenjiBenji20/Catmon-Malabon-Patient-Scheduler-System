@@ -22,12 +22,12 @@ async function displayDoctorProfile() {
           <i class="bi bi-person-circle"></i>
           <div id="doctor-name-js">
             ${data.completeName}
-          </div>
-          <div class="doctor-badge">
+            <div class="doctor-badge">
               doctor
+            </div>
           </div>
+          <i class="bi bi-escape" id="logout-button-js" title="logout"></i>
         </div>
-        <i class="bi bi-escape" id="logout-button-js" title="logout"></i>
       </div>
     `;
 
@@ -65,9 +65,6 @@ async function displayPatientsToday() {
           <a role="button" data-bs-toggle="modal" data-bs-target="#patientModal" data-patient-id="${patient.id}">
             <ul class="list-group list-group-flush" data-bs-whatever="@mdo">
               ${patient.completeName} 
-              <span class="patient-status" data-patient-status="${patient.status}">
-                ${patient.status.toLowerCase()}
-              </span>
             </ul>
           </a>
         </div>
