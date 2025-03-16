@@ -117,4 +117,32 @@ export class DoctorServiceAPI {
       return error;
     }
   }
+
+  static async setPatientRecord(patientId, record) {
+    try {
+      // validate parsed token. If token is null, redirect to login
+      validateDoctorParsedToken(this.token);
+
+      const response = await fetch(`http://localhost:8002/api/doctor/private/patient-record/${patientId}`, {
+        method: 'POST',
+        headers: { 
+          'Authorization' : `Bearer ${this.token}`,
+          "Content-Type": "application/json" 
+        },
+        body: JSON.stringify(record) // pass the inputs as request body
+      });
+
+      if(!response.ok) {
+        console.error(`Error: ${response.status} ${response.statusText}`);
+        return { error: `Failed to load patients: ${response.statusText}` };
+      }
+
+      const data = await response.json();
+
+      return data;
+    } catch (error) {
+      console.error("Error sending and fetching data", error);
+      return error;
+    }
+  }
 }
