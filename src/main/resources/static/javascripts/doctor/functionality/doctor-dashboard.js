@@ -14,4 +14,47 @@ document.addEventListener('DOMContentLoaded', () => {
       rightPanel.classList.remove("with-offcanvas"); // Reset when offcanvas closes
     });
   
+    // patient table filter button
+  const patientFilterBtn = document.getElementById("patient-filter-btn");
+  const patientFilterBox = document.getElementById("patient-profile-table-filter-form-js");
+
+  // Show/hide filter box on button click
+  patientFilterBtn.addEventListener("click", function (event) {
+      event.stopPropagation();
+      patientFilterBox.style.display = (patientFilterBox.style.display === "block") ? "none" : "block";
+  });
+
+  // Hide filter box when clicking outside
+  document.addEventListener("click", function (event) {
+      if (!patientFilterBox.contains(event.target) && event.target !== patientFilterBtn) {
+          patientFilterBox.style.display = "none";
+      }
+  });
+
+  // Prevent hiding when clicking inside the filter box
+  patientFilterBox.addEventListener("click", function (event) {
+      event.stopPropagation();
+  });
+
+  // appointment table filter button
+  const appointmentFilterBtn = document.getElementById("appointment-filter-btn");
+  const appointmentFilterBox = document.getElementById("appointment-table-filter-form-js");
+
+  // Show/hide filter box on button click
+  appointmentFilterBtn.addEventListener("click", function (event) {
+      event.stopPropagation();
+      appointmentFilterBox.style.display = (appointmentFilterBox.style.display === "block") ? "none" : "block";
+  });
+
+  // Hide filter box when clicking outside
+  document.addEventListener("click", function (event) {
+      if (!appointmentFilterBox.contains(event.target) && event.target !== appointmentFilterBtn) {
+          appointmentFilterBox.style.display = "none";
+      }
+  });
+
+  // Prevent hiding when clicking inside the filter box
+  appointmentFilterBox.addEventListener("click", function (event) {
+      event.stopPropagation();
+  });
 });

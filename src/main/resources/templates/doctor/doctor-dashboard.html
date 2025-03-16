@@ -115,14 +115,14 @@
             <h4>Catmon Super Health Center</h4>
           </div>
 
-          <ul class="nav">
+          <!-- <ul class="nav">
             <li class="nav-item patient-nav nav-active">
               <a href="#patients-profile-tab" class="patients-profile-tab">
                 <i class="bi bi-person-arms-up"></i>
                 Table
               </a>
             </li>
-            <!-- <li class="nav-item record-nav nav-off">
+            <li class="nav-item record-nav nav-off">
               <a href="#record-list-tab" class="record-list-tab">
                 <i class="bi bi-hospital"></i>
                 Patient Record
@@ -175,23 +175,29 @@
                         <textarea class="form-control" id="setPrescription"></textarea>
                       </div>
             
-                      <select class="form-select" id="isAttended">
-                        <option value="true">True</option>
-                        <option value="false">False</option>
-                      </select>
-            
-                      <select class="form-select" id="setRecordStatus">
-                        <option value="">SELECT STATUS</option>
-                        <option value="PENDING">PENDING</option>
-                        <option value="ONGOING">ONGOING</option>
-                        <option value="DONE">DONE</option>
-                        <option value="CANCELLED">CANCELLED</option>
-                      </select>
+                      <div class="form-select-option">
+                        <select class="form-select" id="isAttended">
+                          <option value="true">True</option>
+                          <option value="false">False</option>
+                        </select>
+              
+                        <select class="form-select" id="setRecordStatus">
+                          <option value="">SELECT STATUS</option>
+                          <option value="PENDING">PENDING</option>
+                          <option value="ONGOING">ONGOING</option>
+                          <option value="DONE">DONE</option>
+                          <option value="CANCELLED">CANCELLED</option>
+                        </select>
+                      </div>
                     </form>
                   </div>
                   <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                    <button type="button" class="btn btn-primary" id="savePatientRecord">Save</button>
+                    <div class="modal-error-message">
+                    </div>
+                    <div class="modal-buttons">
+                      <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                      <button type="button" class="btn btn-primary" id="savePatientRecord">Save</button>
+                    </div>
                   </div>
                 </div>
               </div>

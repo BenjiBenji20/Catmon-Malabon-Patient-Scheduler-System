@@ -181,3 +181,290 @@ body {
   display: flex;
   justify-content: space-between;
 }
+
+.display-error-message { /*This is table body*/
+  height: 30vh;
+  text-align: center; 
+  vertical-align: middle; 
+  width: 100%;
+  font-size: 18px;
+  font-weight: bold;
+}
+
+.right-panel-header {
+  display: flex;
+  width: 100%;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.company-name > h4 {
+  margin-bottom: 0px;
+  font-family: "Bebas Neue", sans-serif;
+  font-weight: 400;
+  font-style: normal;
+  user-select: none;
+  color: #007bff;
+}
+
+.nav {
+  width: 28%;
+  display: flex;
+  justify-content: space-around;
+}
+
+.nav-item {
+  width: 50%;
+  text-align: center;
+  border-radius: 20px;
+  padding: 3px;
+  cursor: pointer;
+}
+
+.nav-item a {
+  text-decoration: none;
+  color: #007bff;
+  font-size: 15px;
+  font-weight: 600;
+}
+
+.nav-active {
+  background-color: #A1E3F9;
+}
+
+.nav-active:hover {
+  background-color: #aee2f3;
+}
+
+.nav-active:active {
+  background-color: #91cfe4;
+}
+
+.right-panel-body {
+  display: flex;
+  height: 90vh;
+}
+
+.table-summary {
+  width: 30%;
+  padding: 10px;
+}
+
+.table-title {
+  display: flex;
+  align-items: center;
+  text-align: center;
+}
+
+.table-title > h4 {
+  margin-bottom: 0px;
+  font-family: "Bebas Neue", sans-serif;
+  font-weight: 400;
+  font-style: normal;
+  user-select: none;
+  color: #007bff;
+}
+
+/* 
+  TABLE CONTROLLER 
+*/
+.table-controller {
+  display: flex;
+  justify-content: space-between;
+}
+
+.table-controller > fieldset {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  max-width: 40%;
+  margin-bottom: 5px;
+}
+
+/*
+  STYLING FILTER
+*/
+.filter-container {
+  position: relative;
+  display: inline-block;
+  margin-right: 10px;
+}
+
+.filter-box {
+  display: none;
+  position: absolute;
+  top: 100%;
+  left: -160px;
+  background: white;
+  padding: 15px;
+  width: 200px;
+  border-radius: 5px;
+  box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
+  z-index: 1000;
+}
+
+.filter-box input,
+.filter-box select {
+  width: 100%;
+  margin-bottom: 10px;
+}
+
+.set-filter-btn {
+  width: 100%;
+}
+
+/*Search bar styling
+*/
+.d-flex {
+  border: 1px solid gray;
+  display: flex;
+  align-items: center;
+  border-radius: 20px;
+  padding-left: 10px;
+  margin-right: 10px;
+}
+
+.form-control {
+  border: none !important; /* Remove default border */
+  outline: none !important; /* Remove focus outline */
+}
+
+.form-control:focus {
+  border: none;
+  box-shadow: none !important; /* Remove Bootstrap's glow */
+}
+
+.message-js {
+  position: absolute;
+  width: fit-content;
+  left: 700px;
+  text-align: center;
+  padding-left: 5px; padding-right: 5px;
+  border-radius: 15px;
+  color: #ffff;
+  font-weight: 600;
+}
+
+/* TABLE STYLING */
+.table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.table thead {
+  width: 100%;
+  border-bottom: transparent;
+}
+
+.table thead th {
+  background: transparent;
+  padding: 10px;
+  font-size: 13px;
+}
+
+th {
+  font-weight: 500;
+}
+
+td {
+  font-size: 15px;
+}
+
+.table thead tr {
+  border-radius: 20px;
+  background: #f7f7f7;
+  box-shadow: rgb(191, 196, 201) 6px 6px 12px 0px inset, rgba(208, 208, 208, 0.5) -3px -3px 6px 1px inset;
+}
+
+.bi-arrow-clockwise {
+  cursor: pointer;
+}
+
+#logout-button-js {
+  cursor: pointer;
+}
+
+.status-badge {
+  border-radius: 15px;
+  text-align: center;
+  padding: 3px;
+}
+
+td > .status-badge {
+  font-size: 11px;
+}
+
+.table-body {
+  width: 70%;
+  height: 100%;
+}
+
+.table-body > section {
+  overflow-y: auto;
+}
+
+/* For Webkit Browsers (Chrome, Edge, Safari) */
+::-webkit-scrollbar {
+  width: 10px; 
+  margin-left: 10px;
+}
+
+::-webkit-scrollbar-button {
+  display: none;
+}
+
+::-webkit-scrollbar-track {
+  background: #f1f1f1;
+  border-radius: 10px;
+  margin-left: 10px;
+}
+
+::-webkit-scrollbar-thumb {
+  background: gray;
+  border-radius: 10px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: darkgray;
+}
+
+.modal-header, .modal-footer {
+  background-color: #91cfe4;
+}
+
+.modal-body {
+  background: #ecf5fb;
+}
+
+.form-select-option {
+  display: flex;
+}
+
+#isAttended {
+  margin-right: 10px;
+}
+
+.details-body {
+  display: flex;
+  justify-content: space-between;
+  font-family: Arial, Helvetica, sans-serif;
+  font-size: 15px;
+  padding: 5px;
+}
+
+.col-form-label {
+  font-weight: 600;
+}
+
+#isAttended, #setRecordStatus {
+  cursor: pointer;
+}
+
+.modal-footer {
+  display: flex;
+  justify-content: space-between;
+}
+
+.modal-error-message {
+  color: red;
+}

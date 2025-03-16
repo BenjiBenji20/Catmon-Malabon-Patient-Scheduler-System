@@ -222,6 +222,12 @@ function displayErrorMessage(message) {
   tableBody.innerHTML = message;
 }
 
+// event to reload patient table
+document.getElementById('reload-patient-table-js').addEventListener('click', () => {
+  // call function to display table again after reload
+  displayPatientTable();
+});
+
 const searchBar = document.getElementById('search-input-js');
 searchBar.addEventListener('input', debounce(async (e) => {
   const keyword = e.target.value.trim(); // get search bar inputs
