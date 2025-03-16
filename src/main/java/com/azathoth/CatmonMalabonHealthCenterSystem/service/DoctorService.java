@@ -114,9 +114,14 @@ public class DoctorService {
         return convertAllPatientsDTO(patientIds);
     }
 
-    public List<PatientDTO> getPatientsToday(LocalDate date) {
+    public List<PatientDTO> getPatientsToday(LocalDate date, Long id) {
         try {
-            List<Patient> patients = patientRepository.findPatientToday(date);
+            // fetch appointments by doctor's id and param date
+            List<Appointment> appointments = appointmentRepository.findAppointmentsByDateAndDoctor(date, id);
+
+            // fetch the list of patients by appoints based on date param
+            List<Patient> patients = appointments.stream()
+                    .map(Appointment::getPatient).toList();
 
             return patients.stream()
                     .map(this::convertToPatientDTO)
@@ -156,13 +161,13 @@ public class DoctorService {
 
                 // Check if the day matches the doctor's availability
                 if(availableDays.contains(availableDay)) {
-                    patientsByDay.computeIfAbsent(availableDay, k -> new ArrayList<>()).add(patientDTO); // needs to convert this into PatientDTO
+                    patientsByDay.computeIfAbsent(availableDay, k -> new ArrayList<>()).add(patientDTO);
                 }
             }
 
             return patientsByDay;
-        } catch (Exception e) {
-            throw new RuntimeException(e);
+        } catch (ResourceNotFoundException e) {
+            return Map.of();
         }
     }
 

@@ -113,9 +113,18 @@ public class DoctorController {
      * Get all patients based on the current date
      */
     @GetMapping("/private/get-patients-today/{date}")
-    public ResponseEntity<?> getPatientsToday(@PathVariable @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate date) {
+    public ResponseEntity<?> getPatientsToday(@PathVariable @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate date,
+                                              @RequestHeader("Authorization") String authHeader
+                                              ) {
         try {
-            List<PatientDTO> patientsToday = doctorService.getPatientsToday(date);
+            // Extract token from header
+            String token = authHeader.replace("Bearer ", "");
+
+            // extract doctor profile
+            DoctorDTO doctor = doctorService.getDoctorProfile(token)
+                    .orElseThrow(() -> new ResourceNotFoundException("Doctor not found"));
+
+            List<PatientDTO> patientsToday = doctorService.getPatientsToday(date, doctor.getId());
 
             return patientsToday.isEmpty() ?
                     ResponseEntity.noContent().build() :
