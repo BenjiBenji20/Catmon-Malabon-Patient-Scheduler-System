@@ -51,3 +51,73 @@ export async function loadPatientsByDay() {
     throw error;
   }
 }
+
+export async function setPatientRecord(patientId, record) {
+  try {
+    // pass inputs to the service method param
+    const postInputs = await DoctorServiceAPI.setPatientRecord(patientId, record);
+
+    // validate
+    if(postInputs.error) {
+      document.querySelector('.message-js').innerHTML = data.error;
+      return;
+    }
+
+    return postInputs;
+  } catch (error) {
+    console.error('Error sending and fetching data', error);
+    throw error;
+  }
+}
+
+export async function loadAllMyPatients() {
+  try {
+    // pass inputs to the service method param
+    const data = await DoctorServiceAPI.getAllMyPatients();
+
+    // validate
+    if(data.error) {
+      document.querySelector('.message-js').innerHTML = data.error;
+      return;
+    }
+
+    return data;
+  } catch (error) {
+    console.error('Error fetching data', error);
+    throw error;
+  }
+}
+
+export async function loadPatientDetails(id) {
+  try {
+    const data = await DoctorServiceAPI.getPatientDetails(id);
+
+    // validate
+    if(data.error) {
+      document.querySelector('.message-js').innerHTML = data.error;
+      return;
+    }
+
+    return data;
+  } catch (error) {
+    console.error('Error fetching data', error);
+    throw error;
+  }
+}
+
+export async function loadUpdatedPatientStatus(id, status) {
+  try {
+    const response = await DoctorServiceAPI.updatePatientStatus(id, status);
+
+    // validate
+    if(response.error) {
+      document.querySelector('.message-js').innerHTML = response.error;
+      return;
+    }
+
+    return response;
+  } catch (error) {
+    console.error('Error updating record', error);
+    throw error;
+  }
+}
