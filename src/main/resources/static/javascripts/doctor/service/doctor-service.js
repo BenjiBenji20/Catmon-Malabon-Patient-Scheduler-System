@@ -118,6 +118,31 @@ export class DoctorServiceAPI {
     }
   }
 
+  static async getAllMyPatients() {
+    try {
+      // validate parsed token. If token is null, redirect to login
+      validateDoctorParsedToken(this.token);
+
+      const response = await fetch(`http://localhost:8002/api/doctor/private/get-all-my-patients`, {
+        method: 'GET',
+        headers: { 
+          'Authorization' : `Bearer ${this.token}`,
+          "Content-Type": "application/json" 
+        },
+      });
+
+      if(!response.ok) {
+        console.error(`Error: ${response.status} ${response.statusText}`);
+        return { error: `Failed to load patients: ${response.statusText}` };
+      }
+
+      return await response.json();
+    } catch (error) {
+      console.error("Error fetching data", error);
+      return error;
+    }
+  }
+
   static async setPatientRecord(patientId, record) {
     try {
       // validate parsed token. If token is null, redirect to login
