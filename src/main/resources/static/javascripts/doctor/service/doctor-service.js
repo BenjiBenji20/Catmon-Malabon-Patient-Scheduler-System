@@ -170,4 +170,28 @@ export class DoctorServiceAPI {
       return error;
     }
   }
+
+  static async getPatientDetails(id) {
+    try {
+      validateDoctorParsedToken(this.token);
+
+      const response = await fetch(`http://localhost:8002/api/doctor/private/get-patient-details/${id}`, {
+        method: 'GET',
+        headers: { 
+          'Authorization' : `Bearer ${this.token}`,
+          "Content-Type": "application/json" 
+        },
+      });
+
+      if(!response.ok) {
+        console.error(`Error: ${response.status} ${response.statusText}`);
+        return { error: `Failed to load patients: ${response.statusText}` };
+      }
+
+      return await response.json();
+    } catch (error) {
+      console.error("Error fetching data", error);
+      return error;
+    }
+  }
 }
