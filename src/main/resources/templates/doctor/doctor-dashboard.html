@@ -53,7 +53,7 @@
               <!-- DOCTOR LIST OF WORKING DAYS GENERATED THROUGH JS -->
               
             </div>
-          </div>
+          </div> 
 
           <div class="notification-container">
             <div data-bs-toggle="collapse" class="notification-container-collapse collapse-link" href="#notification-collapse" role="button" aria-expanded="false" aria-controls="notification-collapse">
@@ -74,9 +74,161 @@
           </div>
       </aside>
 
-      <div class="right-panel">
-        
-      </div>
+      <main class="right-panel">
+        <div class="message-js"> 
+          <!-- DISPLAY RESPONSE HERE USING JS -->
+        </div>
+
+        <nav class="right-panel-header">
+          <div class="company-name">
+            <h4>Catmon Super Health Center</h4>
+          </div>
+
+          <ul class="nav">
+            <li class="nav-item patient-nav nav-active">
+              <a href="#patients-profile-tab" class="patients-profile-tab">
+                <i class="bi bi-person-arms-up"></i>
+                Table
+              </a>
+            </li>
+            <!-- <li class="nav-item record-nav nav-off">
+              <a href="#record-list-tab" class="record-list-tab">
+                <i class="bi bi-hospital"></i>
+                Patient Record
+              </a>
+            </li> -->
+          </ul>
+        </nav>
+
+        <div class="right-panel-body">
+          <section class="table-summary">
+            <article class="status-count-summary-js">
+              <!-- STATUS COUNT SUMMARY GENERATED VIA JS -->
+            </article>
+
+            <article class="patient-by-day-count-summary-js">
+              <!-- PATIENTS BY COUNT DAY SUMMARY GENERATED VIA JS -->
+            </article>
+
+            <article class="gender-count-summary-js">
+              <!-- GENDER COUNT GENERATED VIA JS -->
+            </article>
+          </section>
+
+          <!-- POP UP PATIENT RECORD BOX WHEN CLICKING ROW/COLLAPSE -->
+          <section class="patient-record-display-bootstrap">
+            <div class="modal fade" id="patient-${patient.id}" tabindex="-1" aria-labelledby="patient-${patient.id}-label" aria-hidden="true">
+              <div class="modal-dialog">
+                <div class="modal-content">
+                  <div class="modal-header">
+                    <h1 class="modal-title fs-5" id="patient-${patient.id}-label">Patient Record</h1>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                  </div>
+                  <div class="modal-body">
+                    <div class="modal-patient-details-container">
+                      <h4 class="patient-name fs-5">Name</h4>
+                      <div class="details-body">
+                        <div>Age</div>
+                        <div>Gender</div>
+                        <div>Status</div>
+                      </div>
+                    </div>
+                    <form id="patient-record-form-${patient.id}">
+                      <div class="mb-3 diagnosis-container">
+                        <label for="set-diagnosis" class="col-form-label">Diagnosis:</label>
+                        <textarea class="form-control" id="set-diagnosis"></textarea>
+                      </div>
+
+                      <div class="mb-3 prescription-container">
+                        <label for="set-prescription" class="col-form-label">Prescription:</label>
+                        <textarea class="form-control" id="set-prescription"></textarea>
+                      </div>
+
+                      <select class="form-select" id="is-attended">
+                        <option value="1">True</option>
+                        <option value="0">False</option>
+                      </select>
+
+                      <select class="form-select" id="set-record-status">
+                        <option value="">SELECT STATUS</option>
+                        <option value="PENDING">PENDING</option>
+                        <option value="ONGOING">ONGOING</option>
+                        <option value="DONE">DONE</option>
+                        <option value="CANCELLED">CANCELLED</option>
+                      </select>
+                    </form>
+                  </div>
+                  <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-primary">Save</button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </section>
+
+          <section class="table-body">
+            <div class="table-patient-profile-controllers table-controller">
+              <div class="table-title">
+                <h4>Your Patients Table</h4>
+              </div>
+              <fieldset>
+                <!-- SEARCH INPUT -->
+                <form class="d-flex bi bi-search" role="search" id="patient-profile-table-search-js">
+                  <input class="form-control me-2" id="search-input-js" type="search" placeholder="Search Patient" aria-label="Search">
+                </form>
+    
+                <!-- FILTER BUTTON -->
+                <div class="filter-container" title="filter patient table">
+                  <button id="patient-filter-btn" class="btn btn-primary">
+                    <i class="bi bi-filter-square"></i>
+                  </button>
+                  <form role="table-filter" class="filter-box" id="patient-profile-table-filter-form-js">
+                    <input type="text" id="patient-filter-gender" class="form-control" placeholder="Filter by gender">
+                    <input type="number" id="patient-filter-age" class="form-control" placeholder="Filter by age">
+    
+                    <select id="patient-filter-status" class="form-select">
+                      <option value="">SELECT STATUS</option>
+                      <option value="PENDING">PENDING</option>
+                      <option value="ONGOING">ONGOING</option>
+                      <option value="DONE">DONE</option>
+                      <option value="CANCELLED">CANCELLED</option>
+                    </select>
+                    <button type="submit" class="btn btn-primary set-filter-btn">Set Filter</button>
+                  </form>
+                </div>
+    
+                <!-- DELETE ROWS -->
+                <button type="button" class="btn btn-danger" title="delete selected patients">
+                  <i class="bi bi-trash3"></i>
+                </button>
+              </fieldset>
+            </div>
+
+            <table class="table patient-profile-table table-hover">
+              <thead class="patient-profile-table-head-js">
+                <tr>
+                  <th>ID</th>
+                  <th>Complete Name</th>
+                  <th>Gender</th>
+                  <th>Age</th>
+                  <th>Contact Number</th>
+                  <th>Verification Code</th>
+                  <th>Status</th>
+                  <th>
+                    <i class="bi bi-arrow-clockwise" id="reload-patient-table-js" title="reload table"></i>
+                  </th>
+                </tr>
+              </thead>
+              <tbody>
+                <td colspan="8"></td>
+                <tr>
+                </tr>
+              </tbody>
+            </table>
+          </section>
+        </div>
+      </main>
     </div>
 
     <!-- Bootstrap link -->
@@ -85,6 +237,7 @@
     <script type="module" src="../../static/javascripts/doctor/service/doctor-service.js"></script>
     <script type="module" src="../../static/javascripts/doctor/controller/doctor-dashboard-controller.js"></script>
     <script type="module" src="../../static/javascripts/doctor/view/doctor-dashboard-left-panel.js"></script>
+    <script type="module" src="../../static/javascripts/doctor/view/doctor-dashboard-right-panel.js"></script>
 
     <!-- JS FUNCTIONALITIES LINK -->
     <script src="../../static/javascripts/doctor/functionality/doctor-dashboard.js"></script>
