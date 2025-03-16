@@ -122,3 +122,45 @@ export async function loadUpdatedPatientStatus(id, status) {
     throw error;
   }
 }
+
+export async function loadFilterPatient(gender, age, status) {
+  try {
+    // get the loaded data from service
+    const data = await DoctorServiceAPI.filterPatient(gender, age, status);
+
+    // if error happens
+    if(data.error) {
+      const tableBody = document.querySelector('tbody td');
+      tableBody.classList.add('display-error-message');
+
+      tableBody.innerHTML = data.error;
+      return;
+    }
+
+    return data;
+  } catch (error) {
+    console.error('Error fetching data', error);
+    throw error;
+  }
+}
+
+export async function loadSearchPatients(keyword) {
+  try {
+    // get the loaded data from service
+    const data = await DoctorServiceAPI.searchPatient(keyword);
+
+    // if error happens
+    if(data.error) {
+      const tableBody = document.querySelector('tbody td');
+      tableBody.classList.add('display-error-message');
+
+      tableBody.innerHTML = data.error;
+      return;
+    }
+
+    return data;
+  } catch (error) {
+    console.error('Error fetching data', error);
+    throw error;
+  }
+}
