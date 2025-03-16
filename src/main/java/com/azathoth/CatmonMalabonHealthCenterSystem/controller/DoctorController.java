@@ -14,6 +14,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.dao.DataAccessException;
 import org.springframework.format.annotation.DateTimeFormat;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.web.bind.annotation.*;
@@ -286,5 +287,22 @@ public class DoctorController {
         catch (Exception e) {
             return ResponseEntity.internalServerError().body(Map.of("error", "Server error"));
         }
+    }
+
+    /**
+     * Search Patient
+     */
+    @GetMapping("/private/search-patient")
+    public ResponseEntity<?> searchPatient(@RequestHeader("Authorization") String authHeader, @RequestParam String keyword) {
+        // Extract token from header
+        String token = authHeader.replace("Bearer ", "");
+
+        // extract doctor profile
+        DoctorDTO doctor = doctorService.getDoctorProfile(token)
+                .orElseThrow(() -> new ResourceNotFoundException("Doctor not found. Invalid token: " + token));
+
+        List<PatientDTO> searchPatient = doctorService.searchPatient(doctor.getId(), keyword);
+
+        return new ResponseEntity<>(searchPatient, HttpStatus.OK);
     }
 }

@@ -193,6 +193,13 @@ public class DoctorService {
                 .collect(Collectors.toList()));
     }
 
+    public List<PatientDTO> searchPatient(Long id, String keyword) {
+        List<Patient> patients = patientRepository.searchPatientByDoctor(id, keyword);
+        return patients.stream()
+                .map(this::convertToPatientDTO)
+                .collect(Collectors.toList());
+    }
+
     /**
      * pass json value pair: attended:boolean, prescription, string, diagnosis: string
      */
@@ -285,6 +292,7 @@ public class DoctorService {
           doctor.getAvailableDays()
         );
     }
+
 
 
 }

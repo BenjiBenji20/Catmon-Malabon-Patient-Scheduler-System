@@ -13,11 +13,29 @@ import java.util.List;
 public interface PatientRepository extends JpaRepository<Patient, Long> {
     Patient findPatientById(long id);
 
+    /**
+     * This method is for admin
+     * @param keyword
+     * @return
+     */
     @Query("SELECT p FROM Patient p WHERE " +
             "LOWER(p.completeName) LIKE LOWER(CONCAT('%', :keyword, '%')) OR " +
             "LOWER(p.gender) LIKE LOWER(CONCAT('%', :keyword, '%')) OR " +
             "LOWER(p.address) LIKE LOWER(CONCAT('%', :keyword, '%'))")
     List<Patient> searchPatient(String keyword);
+
+    /**
+     * This method is for doctor
+     * @param doctorId
+     * @param keyword
+     * @return
+     */
+    @Query("SELECT p FROM Patient p JOIN p.appointment a JOIN " +
+            "a.doctor d WHERE d.id = :doctorId AND " +
+            "LOWER(p.completeName) LIKE LOWER(CONCAT('%', :keyword, '%')) OR " +
+            "LOWER(p.gender) LIKE LOWER(CONCAT('%', :keyword, '%')) OR " +
+            "LOWER(p.address) LIKE LOWER(CONCAT('%', :keyword, '%'))")
+    List<Patient> searchPatientByDoctor(Long doctorId, String keyword);
 
     // querying patient with gender, age and status will equal to method parameters
     @Query("SELECT p FROM Patient p JOIN p.appointment a WHERE " +
