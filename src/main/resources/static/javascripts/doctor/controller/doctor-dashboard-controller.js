@@ -97,7 +97,8 @@ export async function loadPatientDetails(id) {
       document.querySelector('.message-js').innerHTML = data.error;
       return;
     }
-
+    console.log("Controller load details: ", data);
+    
     return data;
   } catch (error) {
     console.error('Error fetching data', error);

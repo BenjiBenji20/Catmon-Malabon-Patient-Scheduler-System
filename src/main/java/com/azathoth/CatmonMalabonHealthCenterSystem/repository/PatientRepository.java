@@ -28,10 +28,4 @@ public interface PatientRepository extends JpaRepository<Patient, Long> {
             @Param("gender") String gender,
             @Param("age") Integer age,
             @Param("status") String status);
-
-    /**
-     * Query patient based on the param date
-     */
-    @Query("SELECT p FROM Patient p JOIN p.appointment a WHERE a.scheduleDate = :date")
-    List<Patient> findPatientToday(@Param("date") LocalDate date);
 }

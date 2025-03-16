@@ -59,14 +59,18 @@ async function displayPatientsToday() {
     const cardBody = document.querySelector('.card-body');
     cardBody.innerHTML = ''; // clear existing content
 
-    Object.keys(patientsToday).forEach(patient => {
+    patientsToday.forEach(patient => {
       cardBody.innerHTML += `
-          <ul class="list-group list-group-flush" data-patient-id="${patient.id}">
-            ${patient.completeName} 
-            <span class="patient-status" data-patient-status="${patient.status}">
-              ${patient.status.toLowerCase()}
-            </span>
-          </ul>
+        <div class="modal-button">
+          <a role="button" data-bs-toggle="modal" data-bs-target="#patientModal" data-patient-id="${patient.id}">
+            <ul class="list-group list-group-flush" data-bs-whatever="@mdo">
+              ${patient.completeName} 
+              <span class="patient-status" data-patient-status="${patient.status}">
+                ${patient.status.toLowerCase()}
+              </span>
+            </ul>
+          </a>
+        </div>
       `;
     });
 
@@ -134,9 +138,15 @@ async function displayPatientsByDay() {
         // Loop through the patients array and append each patient
         patientsByDayData[day].forEach(patient => {
           listContainer.innerHTML += `
-            <li class="list-group-item patient-data-cell" data-patient-id="${patient.id}">
-              ${patient.completeName}
-            </li>
+              <li class="list-group-item patient-data-cell" data-patient-id="${patient.id}">
+                <div class="modal-button">
+                  <a role="button" data-bs-toggle="modal" data-bs-target="#patientModal" data-patient-id="${patient.id}">
+                    <ul class="list-group list-group-flush" data-bs-whatever="@mdo">
+                      ${patient.completeName}
+                    </ul>
+                  </a>
+                </div>
+              </li>
           `;
         });
       }

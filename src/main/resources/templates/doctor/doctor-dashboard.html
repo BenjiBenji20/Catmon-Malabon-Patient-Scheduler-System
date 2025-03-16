@@ -117,39 +117,39 @@
 
           <!-- POP UP PATIENT RECORD BOX WHEN CLICKING ROW/COLLAPSE -->
           <section class="patient-record-display-bootstrap">
-            <div class="modal fade" id="patient-${patient.id}" tabindex="-1" aria-labelledby="patient-${patient.id}-label" aria-hidden="true">
+            <div class="modal fade" id="patientModal" tabindex="-1" aria-labelledby="patientModalLabel" aria-hidden="true">
               <div class="modal-dialog">
                 <div class="modal-content">
                   <div class="modal-header">
-                    <h1 class="modal-title fs-5" id="patient-${patient.id}-label">Patient Record</h1>
+                    <h1 class="modal-title fs-5" id="patientModalLabel">Patient Record</h1>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                   </div>
                   <div class="modal-body">
                     <div class="modal-patient-details-container">
-                      <h4 class="patient-name fs-5">Name</h4>
+                      <h4 class="patient-name fs-5" id="modalPatientName">Name</h4>
                       <div class="details-body">
-                        <div>Age</div>
-                        <div>Gender</div>
-                        <div>Status</div>
+                        <div id="modalPatientAge">Age</div>
+                        <div id="modalPatientGender">Gender</div>
+                        <div id="modalPatientStatus">Status</div>
                       </div>
                     </div>
-                    <form id="patient-record-form-${patient.id}">
+                    <form id="patientRecordForm">
                       <div class="mb-3 diagnosis-container">
-                        <label for="set-diagnosis" class="col-form-label">Diagnosis:</label>
-                        <textarea class="form-control" id="set-diagnosis"></textarea>
+                        <label for="setDiagnosis" class="col-form-label">Diagnosis:</label>
+                        <textarea class="form-control" id="setDiagnosis"></textarea>
                       </div>
-
+            
                       <div class="mb-3 prescription-container">
-                        <label for="set-prescription" class="col-form-label">Prescription:</label>
-                        <textarea class="form-control" id="set-prescription"></textarea>
+                        <label for="setPrescription" class="col-form-label">Prescription:</label>
+                        <textarea class="form-control" id="setPrescription"></textarea>
                       </div>
-
-                      <select class="form-select" id="is-attended">
-                        <option value="1">True</option>
-                        <option value="0">False</option>
+            
+                      <select class="form-select" id="isAttended">
+                        <option value="true">True</option>
+                        <option value="false">False</option>
                       </select>
-
-                      <select class="form-select" id="set-record-status">
+            
+                      <select class="form-select" id="setRecordStatus">
                         <option value="">SELECT STATUS</option>
                         <option value="PENDING">PENDING</option>
                         <option value="ONGOING">ONGOING</option>
@@ -160,7 +160,7 @@
                   </div>
                   <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                    <button type="button" class="btn btn-primary">Save</button>
+                    <button type="button" class="btn btn-primary" id="savePatientRecord">Save</button>
                   </div>
                 </div>
               </div>

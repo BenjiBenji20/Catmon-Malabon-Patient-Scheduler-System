@@ -65,8 +65,6 @@ export class DoctorServiceAPI {
 
       // get the current date today
       const currentDate = new Date().toISOString().split('T')[0];
-      console.log(currentDate);
-      
 
       // fetch using jwt
       const response = await fetch(`http://localhost:8002/api/doctor/private/get-patients-today/${currentDate}`, {
@@ -136,7 +134,9 @@ export class DoctorServiceAPI {
         return { error: `Failed to load patients: ${response.statusText}` };
       }
 
-      return await response.json();
+      const data = await response.json();
+      
+      return data;  
     } catch (error) {
       console.error("Error fetching data", error);
       return error;
@@ -144,6 +144,9 @@ export class DoctorServiceAPI {
   }
 
   static async setPatientRecord(patientId, record) {
+    console.log('Record in service: ', record);
+    
+
     try {
       // validate parsed token. If token is null, redirect to login
       validateDoctorParsedToken(this.token);
@@ -154,7 +157,12 @@ export class DoctorServiceAPI {
           'Authorization' : `Bearer ${this.token}`,
           "Content-Type": "application/json" 
         },
-        body: JSON.stringify(record) // pass the inputs as request body
+        body: JSON.stringify({
+          diagnosis: document.getElementById('setDiagnosis').value,
+          prescription: document.getElementById('setPrescription').value,
+          isAttended: document.getElementById('isAttended').value,
+          status: document.getElementById('setRecordStatus').value,
+        }) // pass the inputs as request body
       });
 
       if(!response.ok) {
@@ -188,7 +196,9 @@ export class DoctorServiceAPI {
         return { error: `Failed to load patients: ${response.statusText}` };
       }
 
-      return await response.json();
+      const data = await response.json();
+
+      return data;  
     } catch (error) {
       console.error("Error fetching data", error);
       return error;
@@ -199,8 +209,8 @@ export class DoctorServiceAPI {
     try {
       validateDoctorParsedToken(this.token);
 
-      const response = await fetch(`http://localhost:8002/api/doctor/private/update-patient-status/${id}/${status}`, {
-        method: 'UPDATE',
+      const response = await fetch(`http://localhost:8002/api/doctor/private/update-patient-status?patientId=${id}&newStatus=${status}`, {
+        method: 'PUT',
         headers: { 
           'Authorization' : `Bearer ${this.token}`,
           "Content-Type": "application/json" 
@@ -212,7 +222,9 @@ export class DoctorServiceAPI {
         return { error: `Failed to load patients: ${response.statusText}` };
       }
 
-      return await response.json();
+       const data = await response.json();
+      
+      return data;  
     } catch (error) {
       console.error("Error fetching data", error);
       return error;

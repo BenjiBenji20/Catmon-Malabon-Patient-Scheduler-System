@@ -203,10 +203,15 @@ public class DoctorController {
      * Update patient status
      * patient id should be from getAllMyPatients() method
      */
-    @PutMapping("/private/update-patient-status/{patientId}/{newStatus}")
-    public ResponseEntity<?> updatePatientStatus(@PathVariable Long patientId, @PathVariable Status newStatus) {
+    @PutMapping("/private/update-patient-status")
+    public ResponseEntity<?> updatePatientStatus(
+            @RequestParam Long patientId,
+            @RequestParam String newStatus) {
         try {
-            Optional<PatientDTO> updatedPatient = doctorService.updatePatientStatus(patientId, newStatus);
+            // convert string into enum
+            Status status = Status.valueOf(newStatus.toUpperCase());
+
+            Optional<PatientDTO> updatedPatient = doctorService.updatePatientStatus(patientId, status);
 
             if(updatedPatient.isPresent()) {
                 // Broadcast the updated patient status to all WebSocket /patients subscribers
@@ -220,7 +225,7 @@ public class DoctorController {
             return  ResponseEntity.notFound().build();
         }
         catch (Exception e) {
-            logger.error("Error occurred updating patient status: {}", e.getMessage());
+            logger.info("Updating status for patient {} to {}", patientId, newStatus);
             return ResponseEntity.internalServerError().body(Map.of("error", "Server error"));
         }
     }
