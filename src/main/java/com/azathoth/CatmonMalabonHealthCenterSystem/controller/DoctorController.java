@@ -90,21 +90,28 @@ public class DoctorController {
      * Get all my patients
      * Signed in doctor should pass his id here
      */
-    @GetMapping("/private/get-all-my-patients/{myId}")
-    public ResponseEntity<?> getAllMyPatients(@PathVariable Long myId) {
+    @GetMapping("/private/get-all-my-patients")
+    public ResponseEntity<?> getAllMyPatients(@RequestHeader("Authorization") String authHeader) {
         try {
-            List<PatientDTO> allMyPatients = doctorService.getAllMyPatients(myId);
+            // Extract token from header
+            String token = authHeader.replace("Bearer ", "");
+
+            // extract doctor profile
+            DoctorDTO doctor = doctorService.getDoctorProfile(token)
+                    .orElseThrow(() -> new ResourceNotFoundException("Doctor not found. Invalid token: " + token));
+
+            List<PatientDTO> allMyPatients = doctorService.getAllMyPatients(doctor.getId());
 
             return allMyPatients.isEmpty() ?
                     ResponseEntity.noContent().build() :
                     ResponseEntity.ok().body(allMyPatients);
         }
         catch (ResourceNotFoundException e) {
-            logger.error("Doctor not found by id: {}", myId, e);
+            logger.error("Doctor not found");
             return ResponseEntity.notFound().build();
         }
         catch (Exception e) {
-            logger.error("Error fetching patients by id: {}", myId, e);
+            logger.error("Error fetching patients");
             return ResponseEntity.internalServerError().body(Map.of("error", "Server error"));
         }
     }
