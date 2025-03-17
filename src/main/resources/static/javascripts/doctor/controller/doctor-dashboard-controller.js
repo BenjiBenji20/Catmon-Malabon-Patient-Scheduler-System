@@ -59,8 +59,8 @@ export async function setPatientRecord(patientId, record) {
 
     // validate
     if(postInputs.error) {
-      document.querySelector('.message-js').innerHTML = data.error;
-      return;
+      console.error("Error sending data:", response.error);
+      return { error: response.error };
     }
 
     return postInputs;
@@ -108,6 +108,7 @@ export async function loadPatientDetails(id) {
 
 export async function loadUpdatedPatientStatus(id, status) {
   try {
+    console.log(`Updating status for patient ${id} to ${status}`);
     const response = await DoctorServiceAPI.updatePatientStatus(id, status);
 
     // validate

@@ -4,6 +4,7 @@ import { setPatientRecord, loadAllMyPatients, loadPatientDetails,
 
 displayPatientTable();
 displayFilteredPatients();
+// displayTableSummary();
 
 document.addEventListener('DOMContentLoaded', async () => {
   const modal = new bootstrap.Modal(document.getElementById('patientModal'));
@@ -134,6 +135,61 @@ async function displayFilteredPatients() {
     }
   });
 }
+
+// async function displayTableSummary() {
+//   const statusCountContainer = document.querySelector('.status-count-summary');
+//   const patientByDayCountContainer = document.querySelector('.patient-by-day-count-summary');
+//   const genderCountContainer = document.querySelector('.gender-count-summary');
+
+//   const allMyPatientData = await loadAllMyPatients();
+//   try {
+//     if(allMyPatientData.error) {
+//       statusCountContainer.innerHTML = allMyPatientData.error;
+//       patientByDayCountContainer.innerHTML = allMyPatientData.error;
+//       genderCountContainer.innerHTML = allMyPatientData.error;
+
+//       return;
+//     }
+
+//     let statusCounter = {
+//       pending: 0,
+//       ongoing: 0,
+//       done: 0,
+//       cancelled: 0
+//     }
+
+//     let genderCounter = {
+//       male: 0,
+//       female: 0,
+//       others: 0
+//     }
+
+//     // accumulate by looping to the object
+//     allMyPatientData.forEach(patient => {
+//       // accumulate each status and save to obj of arrays
+//       if(patient.status === 'PENDING') {
+//         statusCounter.pending++;
+//       } else if(patient.status === 'ONGOING') {
+//         statusCounter.ongoing++;
+//       } else if(patient.status === 'DONE') {
+//         statusCounter.done++;
+//       } else {
+//         statusCounter.cancelled++;
+//       }
+
+//       if(patient.gender === 'Male') {
+//         genderCounter.male++;
+//       } else if(patient.gender === 'Female') {
+//         genderCounter.female++;
+//       } else {
+//         genderCounter.others++;
+//       } 
+//     });
+
+//   } catch (error) {
+    
+//   }
+// }
 
 function renderPatientTable(patientData) {
   // get table and table body to render filtered patient data

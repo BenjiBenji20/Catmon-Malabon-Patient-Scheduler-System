@@ -59,16 +59,23 @@ async function displayPatientsToday() {
     const cardBody = document.querySelector('.card-body');
     cardBody.innerHTML = ''; // clear existing content
 
+    // In displayPatientsToday()
     patientsToday.forEach(patient => {
-      cardBody.innerHTML += `
-        <div class="modal-button">
-          <a role="button" data-bs-toggle="modal" data-bs-target="#patientModal" data-patient-id="${patient.id}">
-            <ul class="list-group list-group-flush" data-bs-whatever="@mdo">
-              ${patient.completeName} 
-            </ul>
-          </a>
-        </div>
+      const link = document.createElement('a');
+      link.role = "button";
+      link.dataset.patientId = patient.id;
+      link.dataset.bsToggle = "modal";
+      link.dataset.bsTarget = "#patientModal";
+      link.innerHTML = `
+        <ul class="list-group list-group-flush">
+          ${patient.completeName}
+        </ul>
       `;
+      
+      const container = document.createElement('div');
+      container.className = 'modal-button';
+      container.appendChild(link);
+      cardBody.appendChild(container);
     });
 
     // get the current date today

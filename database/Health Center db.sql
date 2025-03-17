@@ -22,3 +22,5 @@ SELECT p.*
 FROM patient p
 JOIN appointment a ON p.id = a.patient_id
 WHERE a.schedule_date = '2025-03-09';
+
+UPDATE appointment set patient_status = 'CANCELLED' WHERE patient_id = 13;

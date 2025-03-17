@@ -35,26 +35,4 @@ document.addEventListener('DOMContentLoaded', () => {
   patientFilterBox.addEventListener("click", function (event) {
       event.stopPropagation();
   });
-
-  // appointment table filter button
-  const appointmentFilterBtn = document.getElementById("appointment-filter-btn");
-  const appointmentFilterBox = document.getElementById("appointment-table-filter-form-js");
-
-  // Show/hide filter box on button click
-  appointmentFilterBtn.addEventListener("click", function (event) {
-      event.stopPropagation();
-      appointmentFilterBox.style.display = (appointmentFilterBox.style.display === "block") ? "none" : "block";
-  });
-
-  // Hide filter box when clicking outside
-  document.addEventListener("click", function (event) {
-      if (!appointmentFilterBox.contains(event.target) && event.target !== appointmentFilterBtn) {
-          appointmentFilterBox.style.display = "none";
-      }
-  });
-
-  // Prevent hiding when clicking inside the filter box
-  appointmentFilterBox.addEventListener("click", function (event) {
-      event.stopPropagation();
-  });
 });
