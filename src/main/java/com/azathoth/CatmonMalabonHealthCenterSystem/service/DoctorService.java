@@ -14,6 +14,7 @@ import com.azathoth.CatmonMalabonHealthCenterSystem.repository.PatientRecordRepo
 import com.azathoth.CatmonMalabonHealthCenterSystem.repository.PatientRepository;
 import com.azathoth.CatmonMalabonHealthCenterSystem.utils.AvailableDay;
 import com.azathoth.CatmonMalabonHealthCenterSystem.utils.Status;
+import jakarta.transaction.Transactional;
 import jakarta.validation.Valid;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -171,17 +172,26 @@ public class DoctorService {
         }
     }
 
-    public Optional<PatientDTO> updatePatientStatus(Long patientId, Status newStatus) {
+    /**
+     *
+     * @param patientId
+     * @param newStatus
+     * @return int values of affected by update query
+     */
+    @Transactional // uses transactional to tell spring that this method makes some changes to the existing db record
+    public int updatePatientStatus(Long patientId, Status newStatus) {
         Patient patient = patientRepository.findById(patientId)
                 .orElseThrow(() -> new ResourceNotFoundException("Patient is not found by id: " + patientId));
 
-        patient.getAppointment().setStatus(newStatus);
+        if (patient.getAppointment() == null) {
+            throw new IllegalStateException("Patient does not have an associated appointment.");
+        }
 
-        Patient updatedPatient = patientRepository.save(patient);
+        // Get the appointment ID
+        Long appointmentId = patient.getAppointment().getId();
 
-        PatientDTO patientDTO = convertToPatientDTO(updatedPatient);
-
-        return Optional.of(patientDTO);
+        // passed the appointment id associated with patient's id
+        return appointmentRepository.updatePatientStatus(appointmentId, newStatus);
     }
 
     public Optional<List<PatientDTO>> filterPatient(Long id, String gender, Integer age, String status) {
@@ -292,7 +302,4 @@ public class DoctorService {
           doctor.getAvailableDays()
         );
     }
-
-
-
 }

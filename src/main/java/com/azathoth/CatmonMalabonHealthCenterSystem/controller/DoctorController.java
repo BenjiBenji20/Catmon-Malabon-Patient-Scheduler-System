@@ -207,26 +207,25 @@ public class DoctorController {
     @PutMapping("/private/update-patient-status")
     public ResponseEntity<?> updatePatientStatus(
             @RequestParam Long patientId,
-            @RequestParam String newStatus) {
+            @RequestParam Status newStatus) {
         try {
-            // convert string into enum
-            Status status = Status.valueOf(newStatus.toUpperCase());
+            int updatedPatient = doctorService.updatePatientStatus(patientId, newStatus);
 
-            Optional<PatientDTO> updatedPatient = doctorService.updatePatientStatus(patientId, status);
-
-            if(updatedPatient.isPresent()) {
-                // Broadcast the updated patient status to all WebSocket /patients subscribers
-                messagingTemplate.convertAndSend("/topic/patients", updatedPatient.get());
-
-                // return the updated patient
-                return ResponseEntity.ok().body(updatedPatient);
-            }
-
-            // return not found response if there's no patient matching by patientId
-            return  ResponseEntity.notFound().build();
+            return updatedPatient > 0 ?
+                    ResponseEntity.ok().body(Map.of("message", "Rows updated successfully: " + updatedPatient)) :
+                    // return not found response if there's no patient matching by patientId
+                    ResponseEntity.notFound().build();
+        }
+        catch (IllegalArgumentException e) {
+            logger.error("Invalid status value: {}", newStatus, e);
+            return ResponseEntity.badRequest().body(Map.of("error", "Invalid status value: " + newStatus));
+        }
+        catch (IllegalStateException e) {
+            logger.error("Cannot update status: {}", e.getMessage());
+            return ResponseEntity.badRequest().body(Map.of("error", e.getMessage()));
         }
         catch (Exception e) {
-            logger.info("Updating status for patient {} to {}", patientId, newStatus);
+            logger.error("Error updating status for patient {} to {}: {}", patientId, newStatus, e.getMessage(), e);
             return ResponseEntity.internalServerError().body(Map.of("error", "Server error"));
         }
     }
