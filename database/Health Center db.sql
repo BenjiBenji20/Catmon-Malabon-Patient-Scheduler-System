@@ -24,3 +24,8 @@ JOIN appointment a ON p.id = a.patient_id
 WHERE a.schedule_date = '2025-03-09';
 
 UPDATE appointment set patient_status = 'CANCELLED' WHERE patient_id = 13;
+
+-- checking patient record constraints
+SHOW CREATE TABLE patient_record;
+
+DELETE FROM patient_record WHERE appointment_id = 5;

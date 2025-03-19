@@ -144,8 +144,6 @@ export class DoctorServiceAPI {
   }
 
   static async setPatientRecord(patientId, record) {
-    console.log('Record in service: ', record);
-    
 
     try {
       // validate parsed token. If token is null, redirect to login
@@ -157,12 +155,7 @@ export class DoctorServiceAPI {
           'Authorization' : `Bearer ${this.token}`,
           "Content-Type": "application/json" 
         },
-        body: JSON.stringify({
-          diagnosis: document.getElementById('setDiagnosis').value,
-          prescription: document.getElementById('setPrescription').value,
-          isAttended: document.getElementById('isAttended').value,
-          status: document.getElementById('setRecordStatus').value,
-        }) // pass the inputs as request body
+        body: JSON.stringify(record) // pass the inputs as request body
       });
 
       if(!response.ok) {
@@ -231,78 +224,78 @@ export class DoctorServiceAPI {
     }
   }
 
-  /**
-     * These params are came from user inputs
-     * @param {*} gender a string
-     * @param {*} age a numver
-     * @param {*} status an enum
-     * @returns patient data responsed from filter
-     */
-    static async filterPatient(gender, age, status) {
-      try {
-        // validate parsed token. If token is null, redirect to login
-        validateDoctorParsedToken(this.token);
-  
-        // Construct query parameters dynamically
-        const params = new URLSearchParams();
-        if (gender) params.append("gender", gender);
-        if (age) params.append("age", age);
-        if (status) params.append("status", status);
-  
-        // Construct final URL
-        const url = `http://localhost:8002/api/doctor/private/filter?${params.toString()}`;
-  
-        // use the token to fetch all the doctors using the backend's api
-        const response = await fetch(url, {
-          method: 'GET',
-          headers: {
-            'Authorization' : `Bearer ${this.token}`,
-            'Content-Type' : 'application/json'
-          },
-        });
-  
-        if(!response.ok) {
-          const errorData = await response.json();
-          return { error: errorData.error || 'Cannot fetch data' };
-        }
-  
-        // if response isn't null, send the response to the controller
-        return response.json(); 
-      } catch (error) {
-        console.error("Error fetching data", error);
-        return error;
-      }
-    }
+/**
+ * These params are came from user inputs
+ * @param {*} gender a string
+ * @param {*} age a numver
+ * @param {*} status an enum
+ * @returns patient data responsed from filter
+ */
+  static async filterPatient(gender, age, status) {
+    try {
+      // validate parsed token. If token is null, redirect to login
+      validateDoctorParsedToken(this.token);
 
-    /**
-       * 
-       * @param {*} keyword passed from search box
-       */
-      static async searchPatient(keyword) {
-        try {
-          // validate parsed token. If token is null, redirect to login
-          validateDoctorParsedToken(this.token);
-    
-          // use the token to fetch all the doctors using the backend's api
-          const response = await fetch(`http://localhost:8002/api/doctor/private/search-patient?keyword=${keyword}`, {
-            method: 'GET',
-            headers: {
-              'Authorization' : `Bearer ${this.token}`,
-              'Content-Type' : 'application/json'
-            },
-          });
-          
-          if(!response.ok) {
-            const errorData = await response.json();
-            return { error: errorData.error || 'Cannot fetch data' };
-          }
-    
-          // if response isn't null, send the response to the controller
-          return response.json(); 
-        } 
-        catch (error) {
-          console.error("Error fetching data", error);
-          return { error: "Cannot fetch request." };
-        }
+      // Construct query parameters dynamically
+      const params = new URLSearchParams();
+      if (gender) params.append("gender", gender);
+      if (age) params.append("age", age);
+      if (status) params.append("status", status);
+
+      // Construct final URL
+      const url = `http://localhost:8002/api/doctor/private/filter?${params.toString()}`;
+
+      // use the token to fetch all the doctors using the backend's api
+      const response = await fetch(url, {
+        method: 'GET',
+        headers: {
+          'Authorization' : `Bearer ${this.token}`,
+          'Content-Type' : 'application/json'
+        },
+      });
+
+      if(!response.ok) {
+        const errorData = await response.json();
+        return { error: errorData.error || 'Cannot fetch data' };
       }
+
+      // if response isn't null, send the response to the controller
+      return response.json(); 
+    } catch (error) {
+      console.error("Error fetching data", error);
+      return error;
+    }
+  }
+
+/**
+   * 
+   * @param {*} keyword passed from search box
+   */
+  static async searchPatient(keyword) {
+    try {
+      // validate parsed token. If token is null, redirect to login
+      validateDoctorParsedToken(this.token);
+
+      // use the token to fetch all the doctors using the backend's api
+      const response = await fetch(`http://localhost:8002/api/doctor/private/search-patient?keyword=${keyword}`, {
+        method: 'GET',
+        headers: {
+          'Authorization' : `Bearer ${this.token}`,
+          'Content-Type' : 'application/json'
+        },
+      });
+      
+      if(!response.ok) {
+        const errorData = await response.json();
+        return { error: errorData.error || 'Cannot fetch data' };
+      }
+
+      // if response isn't null, send the response to the controller
+      return response.json(); 
+    } 
+    catch (error) {
+      console.error("Error fetching data", error);
+      return { error: "Cannot fetch request." };
+    }
+  }
 }

@@ -19,7 +19,6 @@ document.addEventListener('DOMContentLoaded', async () => {
 
       // Fetch patient details
       const patientDetails = await loadPatientDetails(currentPatientId);
-      console.log('Patient details:', patientDetails);
 
       if (patientDetails.error) {
         alert(patientDetails.error);
@@ -52,11 +51,9 @@ document.addEventListener('DOMContentLoaded', async () => {
 
     // Save the record
     const result = await setPatientRecord(currentPatientId, record);
-    console.log('Setting patient record result:', result);
 
-    // save status individually
+    // save status 
     const statusResult = await loadUpdatedPatientStatus(currentPatientId, status);
-    console.log(statusResult);
     
 
     if (result.error) {
@@ -68,7 +65,7 @@ document.addEventListener('DOMContentLoaded', async () => {
       // Reset input fields
       document.getElementById('setDiagnosis').value = '';
       document.getElementById('setPrescription').value = '';
-      document.getElementById('isAttended').value === 'true';
+      document.getElementById('isAttended').value = 'true';
       document.getElementById('setRecordStatus').value = '';
     }
   });
