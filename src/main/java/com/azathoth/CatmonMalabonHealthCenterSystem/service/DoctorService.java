@@ -213,36 +213,52 @@ public class DoctorService {
     /**
      * pass json value pair: attended:boolean, prescription, string, diagnosis: string
      */
+    @Transactional
     public Optional<PatientRecord> createPatientRecord(Long patientId, PatientRecord record) {
+        // Find the patient by ID
         Patient patient = patientRepository.findById(patientId)
                 .orElseThrow(() -> new ResourceNotFoundException("Patient is not found by id: " + patientId));
 
+        // Get the patient's appointment
         Appointment appointment = patient.getAppointment();
-
         if (appointment == null) {
             return Optional.empty();
         }
 
-        PatientRecord patientRecord = patientRecordRepository.findAppointmentById(patient.getAppointment().getId());
-        if(patientRecord == null) {
-            patientRecord = new PatientRecord(
+        // Check if a patient record already exists for this appointment
+        PatientRecord existingRecord = patientRecordRepository.findAppointmentById(appointment.getId());
+
+        if (existingRecord == null) {
+            // If no record exists, create a new one
+            PatientRecord newRecord = new PatientRecord(
                     appointment,
                     record.isAttended(),
                     record.getPrescription(),
                     record.getDiagnosis(),
                     null
             );
-            // Set the bidirectional relationship
-            appointment.setPatientRecord(patientRecord);
+
+            // save new record
+            existingRecord = patientRecordRepository.save(newRecord);
+        } else {
+            // If a record exists, update it using the JPQL query
+            int updatedRows = patientRecordRepository.updatePatientRecord(
+                    appointment.getId(),
+                    record.isAttended(),
+                    record.getDiagnosis(),
+                    record.getPrescription()
+            );
+
+            if (updatedRows == 0) {
+                // If no rows were updated, throw an exception or handle the error
+                throw new RuntimeException("Failed to update patient record for appointment ID: " + appointment.getId());
+            }
+
+            // Fetch the updated record
+            existingRecord = patientRecordRepository.findAppointmentById(appointment.getId());
         }
 
-        patientRecord.setAttended(record.isAttended());
-        patientRecord.setDiagnosis(record.getDiagnosis());
-        patientRecord.setPrescription(record.getPrescription());
-
-        PatientRecord recorded = patientRecordRepository.save(patientRecord);
-
-        return Optional.of(recorded);
+        return Optional.ofNullable(existingRecord);
     }
 
     public Optional<PatientDTO> getPatientDetails(Long id) {

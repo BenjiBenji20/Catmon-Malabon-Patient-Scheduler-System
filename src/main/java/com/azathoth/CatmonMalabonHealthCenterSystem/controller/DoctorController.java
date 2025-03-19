@@ -13,6 +13,7 @@ import org.hibernate.exception.DataException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.dao.DataAccessException;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -246,6 +247,10 @@ public class DoctorController {
 
             // return not found response if there's no patient matching by patientId
             return  ResponseEntity.notFound().build();
+        }
+        catch (DataIntegrityViolationException e) {
+            logger.error("Duplicate entry for patient record: {}", e.getMessage());
+            return ResponseEntity.badRequest().body(Map.of("error", "A record already exists for this appointment."));
         }
         catch (Exception e) {
             logger.error("An error occurred creating patient record: {}", e.getMessage());
