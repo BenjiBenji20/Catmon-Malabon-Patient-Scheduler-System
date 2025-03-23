@@ -351,48 +351,77 @@
 
       <div class="container" data-aos="fade-up" data-aos-delay="100">
 
-        <form action="forms/appointment.php" method="post" role="form" class="php-email-form">
+        <form role="form" id="registration-form" class="registration-form needs-validation" novalidate>
           <div class="row">
             <div class="col-md-4 form-group">
-              <input type="text" name="name" class="form-control" id="name" placeholder="Your Name" required="">
+              <input type="text" class="form-control validationServer01" id="completeName" placeholder="Complete Name" required>
+              <div class="valid-feedback">
+                Looks good!
+              </div>
+              <div class="invalid-feedback">
+                Please indicate your complete name.
+              </div>
             </div>
+
             <div class="col-md-4 form-group mt-3 mt-md-0">
-              <input type="email" class="form-control" name="email" id="email" placeholder="Your Email" required="">
+              <input type="text" class="form-control validationServer01" id="gender" placeholder="Gender" required>
+              <div class="valid-feedback">
+                Looks good!
+              </div>
+              <div class="invalid-feedback">
+                Please indicate your gender
+              </div>
             </div>
+
             <div class="col-md-4 form-group mt-3 mt-md-0">
-              <input type="tel" class="form-control" name="phone" id="phone" placeholder="Your Phone" required="">
+              <input type="text" class="form-control validationServer01" id="address" placeholder="Complete Address" required>
+              <div class="valid-feedback">
+                Looks good!
+              </div>
+              <div class="invalid-feedback">
+                Please indicate your complete address.
+              </div>
             </div>
-          </div>
-          <div class="row">
-            <div class="col-md-4 form-group mt-3">
-              <input type="datetime-local" name="date" class="form-control datepicker" id="date" placeholder="Appointment Date" required="">
+
+            <div class="col-md-4 form-group mt-3 mt-md-0">
+              <input type="number" class="form-control validationServer01" min="1" max="3" id="age" placeholder="Age" required>
+              <div class="valid-feedback">
+                Looks good!
+              </div>
+              <div class="invalid-feedback">
+                Please indicate your age.
+              </div>
             </div>
-            <div class="col-md-4 form-group mt-3">
-              <select name="department" id="department" class="form-select" required="">
-                <option value="">Select Department</option>
-                <option value="Department 1">Department 1</option>
-                <option value="Department 2">Department 2</option>
-                <option value="Department 3">Department 3</option>
-              </select>
+
+            <div class="col-md-4 form-group mt-3 mt-md-0">
+              <input type="text" class="form-control validationServer01" id="contactNumber" max="11" placeholder="Contact Number" required>
+              <div class="valid-feedback">
+                Looks good!
+              </div>
+              <div class="invalid-feedback">
+                Please indicate your contact number.
+              </div>
             </div>
-            <div class="col-md-4 form-group mt-3">
-              <select name="doctor" id="doctor" class="form-select" required="">
-                <option value="">Select Doctor</option>
-                <option value="Doctor 1">Doctor 1</option>
-                <option value="Doctor 2">Doctor 2</option>
-                <option value="Doctor 3">Doctor 3</option>
-              </select>
+
+            <div class="col-md-4 form-group mt-3 mt-md-0">
+              <input type="date" class="form-control" id="scheduleDate" required>
+              <div class="valid-feedback">
+                Looks good!
+              </div>
+              <div class="invalid-feedback">
+                Please indicate your selected schedule.
+              </div>
+
+              <input type="hidden" id="status" value="PENDING">
             </div>
           </div>
 
-          <div class="form-group mt-3">
-            <textarea class="form-control" name="message" rows="5" placeholder="Message (Optional)"></textarea>
-          </div>
           <div class="mt-3">
-            <div class="loading">Loading</div>
             <div class="error-message"></div>
-            <div class="sent-message">Your appointment request has been sent successfully. Thank you!</div>
-            <div class="text-center"><button type="submit">Make an Appointment</button></div>
+            <div class="sent-message"></div>
+            <div class="text-center">
+              <button type="submit">Make an Appointment</button>
+            </div>
           </div>
         </form>
 
@@ -743,7 +772,7 @@
           </div>
 
           <div class="col-lg-8">
-            <form action="forms/contact.php" method="post" class="php-email-form" data-aos="fade-up" data-aos-delay="200">
+            <form class="php-email-form" data-aos="fade-up" data-aos-delay="200">
               <div class="row gy-4">
 
                 <div class="col-md-6">
@@ -872,7 +901,7 @@
 
   <!-- Vendor JS Files -->
   <script src="../static/javascripts/main/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
-  <script src="../static/javascripts/main/vendor/php-email-form/validate.js"></script>
+  <script src="../static/javascripts/validation/patient-registration-validation.js"></script>
   <script src="../static/javascripts/main/vendor/aos/aos.js"></script>
   <script src="../static/javascripts/main/vendor/glightbox/js/glightbox.min.js"></script>
   <script src="../static/javascripts/main/vendor/purecounter/purecounter_vanilla.js"></script>

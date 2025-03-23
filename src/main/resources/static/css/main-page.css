@@ -1186,17 +1186,17 @@ section,
 /*--------------------------------------------------------------
 # Appointment Section
 --------------------------------------------------------------*/
-.appointment .php-email-form {
+.appointment .registration-form {
   width: 100%;
-}
+} 
 
-.appointment .php-email-form .form-group {
+.appointment .registration-form .form-group {
   padding-bottom: 8px;
+  margin-bottom: 10px;
 }
 
-.appointment .php-email-form input,
-.appointment .php-email-form textarea,
-.appointment .php-email-form select {
+.appointment .registration-form input,
+.appointment .registration-form select {
   color: var(--default-color);
   background-color: transparent;
   border-color: color-mix(in srgb, var(--default-color), transparent 80%);
@@ -1206,28 +1206,28 @@ section,
   padding: 10px !important;
 }
 
-.appointment .php-email-form input:focus,
-.appointment .php-email-form textarea:focus,
-.appointment .php-email-form select:focus {
+.appointment .registration-form input:focus,
+.appointment .registration-form textarea:focus,
+.appointment .registration-form select:focus {
   border-color: var(--accent-color);
 }
 
-.appointment .php-email-form input::placeholder,
-.appointment .php-email-form textarea::placeholder,
-.appointment .php-email-form select::placeholder {
+.appointment .registration-form input::placeholder,
+.appointment .registration-form textarea::placeholder,
+.appointment .registration-form select::placeholder {
   color: color-mix(in srgb, var(--default-color), transparent 70%);
 }
 
-.appointment .php-email-form input,
-.appointment .php-email-form select {
+.appointment .registration-form input,
+.appointment .registration-form select {
   height: 44px;
 }
 
-.appointment .php-email-form textarea {
+.appointment .registration-form textarea {
   padding: 10px 12px;
 }
 
-.appointment .php-email-form button[type=submit] {
+.appointment .registration-form button[type=submit] {
   background: var(--accent-color);
   border: 0;
   padding: 10px 35px;
@@ -1236,7 +1236,7 @@ section,
   border-radius: 50px;
 }
 
-.appointment .php-email-form button[type=submit]:hover {
+.appointment .registration-form button[type=submit]:hover {
   background: color-mix(in srgb, var(--accent-color) 90%, white 15%);
 }
 
