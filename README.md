@@ -102,6 +102,8 @@
 <div>
   <h3>Dependencies</h3>
   
+  [Download Dependencies](https://start.spring.io/) in Spring Initializr
+  
  - org.springframework.boot:spring-boot-starter-data-jpa
 
  - org.springframework.boot:spring-boot-starter-security
