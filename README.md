@@ -54,6 +54,7 @@
 
   </div>
 
+  <br>
   <div>
     <h3>Overview</h3><br>
     <p>
@@ -99,8 +100,9 @@
 
 ---
 
+<br>
 <div>
-  <h3>Dependencies</h3>
+  <h3>Dependencies</h3><br>
   
   [Download Dependencies](https://start.spring.io/) in Spring Initializr
   
@@ -126,8 +128,12 @@
 
 </div>
 
+---
+
+<br>
 <div>
   <h3>Project Setup</h3>
+  <br>
   
   Update **application.properties**
   
@@ -177,6 +183,8 @@ logging.level.org.springframework.security=DEBUG
 ```
 
 </div>
+
+<br><br>
 
 **🏥 Streamlining Healthcare Appointments for Catmon Malabon!**
   
